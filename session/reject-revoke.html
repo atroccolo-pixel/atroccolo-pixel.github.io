@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Rifiuta Revoca</title>
+</head>
+<body style="font-family:Arial, sans-serif; padding:20px;">
+  <h1>⚠️ Revoca Rifiutata</h1>
+  <p id="info"></p>
+  <p>Hai rifiutato la revoca. Il consenso resta valido.</p>
+
+  <script>
+    const path = window.location.pathname.split("/");
+    const sessionId = path[path.indexOf("session") + 1] || "Sconosciuto";
+    document.getElementById("info").textContent =
+      "Revoca rifiutata per consenso ID: " + sessionId;
+  </script>
+</body>
+</html>
