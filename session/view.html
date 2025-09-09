@@ -4,15 +4,17 @@
   <meta charset="UTF-8">
   <title>Visualizza Consenso</title>
 </head>
-<body style="font-family:Arial, sans-serif; padding:20px;">
+<body style="font-family:Arial,sans-serif; padding:20px;">
   <h1>📄 Visualizza Consenso</h1>
   <p id="info"></p>
 
   <script>
     const path = window.location.pathname.split("/");
-    const sessionId = path[path.indexOf("session") + 1] || "Sconosciuto";
+    const sessionIndex = path.indexOf("session");
+    const sessionId = path[sessionIndex + 1] || "Sconosciuto";
     document.getElementById("info").textContent =
       "Stai visualizzando il consenso con ID: " + sessionId;
   </script>
 </body>
 </html>
+
