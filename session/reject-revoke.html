@@ -2,20 +2,20 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>TrueConsent - Rifiuta Revoca</title>
+  <title>TrueConsent - Revoca Rifiutata</title>
 </head>
-<body>
-  <h1>Rifiuta Revoca</h1>
-  <p>Sessione: <span id="sessionId"></span></p>
-  <button onclick="alert('Revoca rifiutata per sessione: ' + sessionId)">Rifiuta</button>
+<body style="font-family: Arial, sans-serif; padding: 20px;">
+  <h1>⚠️ Revoca Rifiutata</h1>
+  <p>ID sessione: <span id="sessionId"></span></p>
+  <p>Hai rifiutato la revoca. Il consenso rimane valido.</p>
 
   <script>
     const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("sessionId") || "Nessun ID trovato";
-    document.getElementById("sessionId").textContent = sessionId;
+    document.getElementById("sessionId").textContent = params.get("sessionId") || "Nessun ID trovato";
   </script>
 </body>
 </html>
+
 
 
 
