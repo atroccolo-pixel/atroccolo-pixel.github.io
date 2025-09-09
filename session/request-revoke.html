@@ -2,43 +2,17 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Richiesta di Revoca</title>
+  <title>Richiedi Revoca</title>
 </head>
-<body style="font-family:Arial,sans-serif;padding:20px;">
-  <h1 style="color:#c0392b;">❌ Richiesta di Revoca</h1>
-  <p id="info"></p>
-  <button onclick="sendRevoke()">Invia Richiesta</button>
-  <p id="result" style="color:red;"></p>
+<body>
+  <h1>❌ Richiesta di Revoca</h1>
+  <p>Stai chiedendo la revoca del consenso.</p>
+  <p><b>Session ID:</b> <span id="sessionId"></span></p>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("sessionId") || "Sconosciuto";
-    document.getElementById("info").textContent =
-      "Richiesta di revoca per consenso ID: " + sessionId;
-
-    async function sendRevoke() {
-      try {
-        const res = await fetch(
-          "https://us-central1-trueconsent-cab73.cloudfunctions.net/requestRevoke",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sessionId }),
-          }
-        );
-        if (res.ok) {
-          document.getElementById("result").textContent =
-            "✅ Richiesta inviata con successo";
-          document.getElementById("result").style.color = "green";
-        } else {
-          document.getElementById("result").textContent =
-            "❌ Errore invio richiesta revoca";
-        }
-      } catch (err) {
-        document.getElementById("result").textContent =
-          "❌ Errore connessione al server";
-      }
-    }
+    const parts = window.location.pathname.split("/");
+    const sessionId = parts[parts.length - 2];
+    document.getElementById("sessionId").textContent = sessionId;
   </script>
 </body>
 </html>
