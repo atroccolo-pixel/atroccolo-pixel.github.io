@@ -2,19 +2,21 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>TrueConsent - Accetta Revoca</title>
+  <title>Revoca Accettata</title>
 </head>
-<body style="font-family: Arial, sans-serif; padding: 20px;">
+<body>
   <h1>✅ Revoca Accettata</h1>
-  <p>ID sessione: <span id="sessionId"></span></p>
-  <p>Hai accettato la revoca. Il consenso è terminato.</p>
+  <p>La revoca del consenso è stata accettata.</p>
+  <p><b>Session ID:</b> <span id="sessionId"></span></p>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    document.getElementById("sessionId").textContent = params.get("sessionId") || "Nessun ID trovato";
+    const parts = window.location.pathname.split("/");
+    const sessionId = parts[parts.length - 2];
+    document.getElementById("sessionId").textContent = sessionId;
   </script>
 </body>
 </html>
+
 
 
 
