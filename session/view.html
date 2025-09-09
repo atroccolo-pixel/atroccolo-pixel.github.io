@@ -2,18 +2,21 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>TrueConsent - Visualizza Consenso</title>
+  <title>Visualizza Consenso</title>
 </head>
-<body style="font-family: Arial, sans-serif; padding: 20px;">
+<body style="font-family:Arial,sans-serif;padding:20px;">
   <h1>📄 Visualizza Consenso</h1>
-  <p>ID sessione: <span id="sessionId"></span></p>
+  <p id="info"></p>
 
   <script>
     const params = new URLSearchParams(window.location.search);
-    document.getElementById("sessionId").textContent = params.get("sessionId") || "Nessun ID trovato";
+    const sessionId = params.get("sessionId") || "Sconosciuto";
+    document.getElementById("info").textContent =
+      "Stai visualizzando il consenso con ID: " + sessionId;
   </script>
 </body>
 </html>
+
 
 
 
