@@ -4,31 +4,18 @@
   <meta charset="UTF-8">
   <title>Accetta Revoca</title>
 </head>
-<body style="font-family:Arial, sans-serif; padding:20px;">
+<body style="font-family:Arial,sans-serif; padding:20px;">
   <h1>✅ Revoca Accettata</h1>
   <p id="info"></p>
-  <button id="btn">Accetta Revoca</button>
-  <p id="result" style="margin-top:20px;color:green;"></p>
 
   <script>
     const path = window.location.pathname.split("/");
-    const sessionId = path[path.indexOf("session") + 1] || "Sconosciuto";
+    const sessionIndex = path.indexOf("session");
+    const sessionId = path[sessionIndex + 1] || "Sconosciuto";
     document.getElementById("info").textContent =
-      "Accetta revoca per consenso ID: " + sessionId;
-
-    document.getElementById("btn").addEventListener("click", async () => {
-      const userId = "testUser"; // TODO: sostituire con ID reale utente A
-      const url = `https://us-central1-trueconsent-cab73.cloudfunctions.net/acceptRevokeHttp?sessionId=${sessionId}&userId=${userId}`;
-      try {
-        const res = await fetch(url);
-        const text = await res.text();
-        document.getElementById("result").textContent = text;
-      } catch (err) {
-        document.getElementById("result").textContent = "❌ Errore accettazione revoca";
-        document.getElementById("result").style.color = "red";
-      }
-    });
+      "Hai accettato la revoca per il consenso con ID: " + sessionId;
   </script>
 </body>
 </html>
+
 
