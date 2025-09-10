@@ -2,48 +2,56 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Richiesta di Revoca</title>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-</head>
-<body style="font-family: Arial, sans-serif; padding:20px;">
-  <h1 style="color:#c0392b;">❌ Richiesta di Revoca</h1>
-  <p id="status">Elaborazione...</p>
+  <title>Richiedi Revoca</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-  <script>
-    // ⚠️ Inserisci la tua config Firebase
+    // Config Firebase reale
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
+      apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
+      authDomain: "trueconsent-cab73.firebaseapp.com",
+      projectId: "trueconsent-cab73",
+      storageBucket: "trueconsent-cab73.firebasestorage.app",
+      messagingSenderId: "298691251398",
+      appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
     };
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore(app);
 
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("sessionId");
-    const userId = params.get("userId");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    async function requestRevoke() {
-      if (!sessionId || !userId) {
-        document.getElementById("status").innerText = "❌ Errore: dati mancanti.";
-        return;
+    // Prendi parametri da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get("sessionId");
+    const userId = urlParams.get("userId");
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      document.getElementById("sessionId").textContent = sessionId || "non trovato";
+
+      if (sessionId && userId) {
+        try {
+          await updateDoc(doc(db, "users", userId, "sessions", sessionId), {
+            revokeRequesterUid: "fromEmailLink",
+            revokeRequesterAt: new Date().toISOString()
+          });
+          document.getElementById("result").textContent = "✅ Richiesta di revoca registrata.";
+        } catch (err) {
+          document.getElementById("result").textContent = "❌ Errore: " + err;
+        }
+      } else {
+        document.getElementById("result").textContent = "❌ Parametri mancanti.";
       }
-      try {
-        await db.collection("users").doc(userId)
-          .collection("sessions").doc(sessionId)
-          .update({ revokeRequesterUid: "mail-link", revokeRequesterAt: new Date().toISOString() });
-        document.getElementById("status").innerText = "✅ Revoca richiesta con successo.";
-      } catch (err) {
-        console.error(err);
-        document.getElementById("status").innerText = "❌ Errore durante la richiesta.";
-      }
-    }
-
-    requestRevoke();
+    });
   </script>
+</head>
+<body>
+  <h1>❌ Richiesta di Revoca</h1>
+  <p>Stai chiedendo la revoca del consenso.</p>
+  <p><b>Session ID:</b> <span id="sessionId"></span></p>
+  <p id="result"></p>
 </body>
 </html>
+
 
 
 
