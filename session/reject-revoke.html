@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>Revoca Rifiutata</title>
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
@@ -19,39 +19,25 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const sessionId = urlParams.get("sessionId");
-    const userId = urlParams.get("userId");
+    window.onload = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const userId = params.get("userId");
+      const sessionId = params.get("sessionId");
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      document.getElementById("sessionId").textContent = sessionId || "non trovato";
-
-      if (sessionId && userId) {
-        try {
-          await updateDoc(doc(db, "users", userId, "sessions", sessionId), {
-            revokeStatus: "rejected"
-          });
-          document.getElementById("result").textContent = "⚠️ Revoca rifiutata registrata.";
-        } catch (err) {
-          document.getElementById("result").textContent = "❌ Errore: " + err;
-        }
-      } else {
-        document.getElementById("result").textContent = "❌ Parametri mancanti.";
+      if (userId && sessionId) {
+        await updateDoc(doc(db, "users", userId, "sessions", sessionId), {
+          revokeStatus: "rejected"
+        });
+        document.getElementById("sessionId").textContent = sessionId;
+        document.getElementById("status").textContent = "⚠️ Revoca rifiutata registrata.";
       }
-    });
+    };
   </script>
 </head>
 <body>
   <h1>⚠️ Revoca Rifiutata</h1>
   <p>La richiesta di revoca è stata rifiutata.</p>
   <p><b>Session ID:</b> <span id="sessionId"></span></p>
-  <p id="result"></p>
+  <p id="status"></p>
 </body>
 </html>
-
-
-
-
-
-
-
