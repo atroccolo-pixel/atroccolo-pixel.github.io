@@ -3,48 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <title>Revoca Rifiutata</title>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-</head>
-<body style="font-family: Arial, sans-serif; padding:20px;">
-  <h1 style="color:#e67e22;">❌ Revoca Rifiutata</h1>
-  <p id="status">Elaborazione...</p>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-  <script>
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
+      apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
+      authDomain: "trueconsent-cab73.firebaseapp.com",
+      projectId: "trueconsent-cab73",
+      storageBucket: "trueconsent-cab73.firebasestorage.app",
+      messagingSenderId: "298691251398",
+      appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
     };
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore(app);
 
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("sessionId");
-    const userId = params.get("userId");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    async function rejectRevoke() {
-      if (!sessionId || !userId) {
-        document.getElementById("status").innerText = "❌ Errore: dati mancanti.";
-        return;
-      }
-      try {
-        await db.collection("users").doc(userId)
-          .collection("sessions").doc(sessionId)
-          .update({
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get("sessionId");
+    const userId = urlParams.get("userId");
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      document.getElementById("sessionId").textContent = sessionId || "non trovato";
+
+      if (sessionId && userId) {
+        try {
+          await updateDoc(doc(db, "users", userId, "sessions", sessionId), {
             revokeStatus: "rejected"
           });
-        document.getElementById("status").innerText = "⚠️ Revoca rifiutata. Il consenso resta valido fino a scadenza.";
-      } catch (err) {
-        console.error(err);
-        document.getElementById("status").innerText = "❌ Errore durante il rifiuto.";
+          document.getElementById("result").textContent = "⚠️ Revoca rifiutata registrata.";
+        } catch (err) {
+          document.getElementById("result").textContent = "❌ Errore: " + err;
+        }
+      } else {
+        document.getElementById("result").textContent = "❌ Parametri mancanti.";
       }
-    }
-
-    rejectRevoke();
+    });
   </script>
+</head>
+<body>
+  <h1>⚠️ Revoca Rifiutata</h1>
+  <p>La richiesta di revoca è stata rifiutata.</p>
+  <p><b>Session ID:</b> <span id="sessionId"></span></p>
+  <p id="result"></p>
 </body>
 </html>
+
 
 
 
