@@ -3,19 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <title>Revoca Accettata</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 </head>
-<body>
-  <h1>✅ Revoca Accettata</h1>
-  <p>La revoca del consenso è stata accettata.</p>
-  <p><b>Session ID:</b> <span id="sessionId"></span></p>
+<body style="font-family: Arial, sans-serif; padding:20px;">
+  <h1 style="color:#27ae60;">✅ Revoca Accettata</h1>
+  <p id="status">Elaborazione...</p>
 
   <script>
-    const parts = window.location.pathname.split("/");
-    const sessionId = parts[parts.length - 2];
-    document.getElementById("sessionId").textContent = sessionId;
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+    };
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("sessionId");
+    const userId = params.get("userId");
+
+    async function acceptRevoke() {
+      if (!sessionId || !userId) {
+        document.getElementById("status").innerText = "❌ Errore: dati mancanti.";
+        return;
+      }
+      try {
+        await db.collection("users").doc(userId)
+          .collection("sessions").doc(sessionId)
+          .update({
+            revokeStatus: "accepted",
+            revokedAt: new Date().toISOString()
+          });
+        document.getElementById("status").innerText = "✅ Revoca accettata con successo.";
+      } catch (err) {
+        console.error(err);
+        document.getElementById("status").innerText = "❌ Errore durante l'accettazione.";
+      }
+    }
+
+    acceptRevoke();
   </script>
 </body>
 </html>
+
 
 
 
