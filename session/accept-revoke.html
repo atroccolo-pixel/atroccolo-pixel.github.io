@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Accetta revoca</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px;">
+  <h2>Accetta revoca consenso</h2>
+  <div id="result">⏳ Invio conferma...</div>
+
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
@@ -17,41 +20,34 @@
       messagingSenderId: "298691251398",
       appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
     };
-
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const auth = getAuth(app);
+
+    const url = new URL(window.location.href);
+    const userId = url.searchParams.get("userId");
+    const sessionId = url.searchParams.get("sessionId");
 
     async function acceptRevoke() {
       try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get("userId");
-        const sessionId = urlParams.get("sessionId");
+        if (!userId || !sessionId) throw new Error("Parametri mancanti");
 
-        await signInAnonymously(auth);
         const ref = doc(db, "users", userId, "sessions", sessionId);
-
         await updateDoc(ref, {
           status: "revoked",
-          revokedAt: new Date(),
-          revokeCounterpartyUid: auth.currentUser?.uid || "anon",
-          revokeCounterpartyAt: new Date()
+          revokedAt: serverTimestamp()
         });
 
-        document.getElementById("msg").innerText =
-          "✅ Revoca accettata e completata.";
+        document.getElementById("result").innerHTML =
+          "✅ Revoca accettata e consenso terminato.";
       } catch (err) {
         console.error(err);
-        document.getElementById("msg").innerText =
-          "❌ Errore durante l’accettazione della revoca.";
+        document.getElementById("result").innerHTML =
+          "❌ Errore durante l'accettazione della revoca.";
       }
     }
 
-    window.onload = acceptRevoke;
+    acceptRevoke();
   </script>
-</head>
-<body style="font-family: Arial, sans-serif; padding: 20px;">
-  <h2>Accetta revoca consenso</h2>
-  <p id="msg">Elaborazione in corso...</p>
 </body>
 </html>
+
