@@ -2,7 +2,12 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Richiesta di Revoca</title>
+  <title>Richiesta revoca consenso</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px;">
+  <h2>Richiesta revoca consenso</h2>
+  <div id="result">⏳ Invio richiesta in corso...</div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -19,31 +24,33 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // Prendo parametri URL
+    const url = new URL(window.location.href);
+    const userId = url.searchParams.get("userId");
+    const sessionId = url.searchParams.get("sessionId");
+
     async function requestRevoke() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const userId = urlParams.get("userId");
-      const sessionId = urlParams.get("sessionId");
-
-      const ref = doc(db, "users", userId, "sessions", sessionId);
-
       try {
+        if (!userId || !sessionId) throw new Error("Parametri mancanti");
+
+        const ref = doc(db, "users", userId, "sessions", sessionId);
         await updateDoc(ref, {
           status: "revoke_pending",
-          revokeRequesterUid: "via_link",
+          revokeRequesterUid: "via_email",
           revokeRequesterAt: serverTimestamp()
         });
-        document.getElementById("result").innerHTML = "✅ Richiesta di revoca registrata.";
-      } catch (e) {
-        console.error(e);
-        document.getElementById("result").innerHTML = "❌ Errore durante la richiesta di revoca.";
+
+        document.getElementById("result").innerHTML =
+          "✅ Richiesta di revoca registrata correttamente.";
+      } catch (err) {
+        console.error(err);
+        document.getElementById("result").innerHTML =
+          "❌ Errore durante la richiesta di revoca.";
       }
     }
 
-    window.onload = requestRevoke;
+    requestRevoke();
   </script>
-</head>
-<body>
-  <h1>❌ Richiesta di Revoca</h1>
-  <p id="result">Elaborazione in corso...</p>
 </body>
 </html>
+
