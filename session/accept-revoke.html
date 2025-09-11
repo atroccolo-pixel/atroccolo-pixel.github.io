@@ -34,7 +34,8 @@
         const ref = doc(db, "users", userId, "sessions", sessionId);
         await updateDoc(ref, {
           status: "revoked",
-          revokedAt: serverTimestamp()
+          revokedAt: serverTimestamp(),
+          revokeCounterpartyAt: serverTimestamp()
         });
 
         document.getElementById("result").innerHTML =
@@ -50,4 +51,3 @@
   </script>
 </body>
 </html>
-
