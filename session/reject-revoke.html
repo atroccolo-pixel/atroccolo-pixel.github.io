@@ -2,10 +2,10 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Rifiuta revoca</title>
+  <title>Rifiuta Revoca</title>
 </head>
 <body style="font-family: Arial, sans-serif; padding: 20px;">
-  <h2>Rifiuto revoca consenso</h2>
+  <h2>🚫 Rifiuto Revoca</h2>
   <div id="result">⏳ Invio rifiuto...</div>
 
   <script type="module">
@@ -30,7 +30,6 @@
     async function rejectRevoke() {
       try {
         if (!userId || !sessionId) throw new Error("Parametri mancanti");
-
         const ref = doc(db, "users", userId, "sessions", sessionId);
         await updateDoc(ref, {
           status: "valid",
@@ -38,16 +37,11 @@
           revokeRequesterAt: null,
           revokeCounterpartyAt: serverTimestamp()
         });
-
-        document.getElementById("result").innerHTML =
-          "✅ Revoca rifiutata, consenso ancora valido.";
+        document.getElementById("result").innerHTML = "✅ Revoca rifiutata, consenso ancora valido.";
       } catch (err) {
-        console.error(err);
-        document.getElementById("result").innerHTML =
-          "❌ Errore durante il rifiuto della revoca.";
+        document.getElementById("result").innerHTML = "❌ Errore durante il rifiuto della revoca.";
       }
     }
-
     rejectRevoke();
   </script>
 </body>
