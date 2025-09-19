@@ -2,17 +2,16 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Richiesta revoca consenso</title>
+  <title>Richiesta Revoca Consenso</title>
 </head>
 <body style="font-family: Arial, sans-serif; padding: 20px;">
-  <h2>Richiesta revoca consenso</h2>
-  <div id="result">⏳ Invio richiesta in corso...</div>
+  <h2>❌ Richiesta Revoca</h2>
+  <div id="result">⏳ Invio richiesta...</div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // Config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
@@ -24,7 +23,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Prendo parametri URL
     const url = new URL(window.location.href);
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
@@ -32,25 +30,18 @@
     async function requestRevoke() {
       try {
         if (!userId || !sessionId) throw new Error("Parametri mancanti");
-
         const ref = doc(db, "users", userId, "sessions", sessionId);
         await updateDoc(ref, {
           status: "revoke_pending",
           revokeRequesterUid: "via_email",
           revokeRequesterAt: serverTimestamp()
         });
-
-        document.getElementById("result").innerHTML =
-          "✅ Richiesta di revoca registrata correttamente.";
+        document.getElementById("result").innerHTML = "✅ Revoca richiesta registrata.";
       } catch (err) {
-        console.error(err);
-        document.getElementById("result").innerHTML =
-          "❌ Errore durante la richiesta di revoca.";
+        document.getElementById("result").innerHTML = "❌ Errore durante la richiesta di revoca.";
       }
     }
-
     requestRevoke();
   </script>
 </body>
 </html>
-
