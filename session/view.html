@@ -4,22 +4,16 @@
   <meta charset="UTF-8">
   <title>Vedi Consenso</title>
 </head>
-<body>
-  <h1>📄 Dettagli Consenso</h1>
-  <p>Hai aperto la pagina di visualizzazione consenso.</p>
-  <p><b>Session ID:</b> <span id="sessionId"></span></p>
+<body style="font-family: Arial, sans-serif; padding: 20px;">
+  <h2>📄 Dettagli Consenso</h2>
+  <p><b>User ID:</b> <span id="uid"></span></p>
+  <p><b>Session ID:</b> <span id="sid"></span></p>
 
   <script>
-    // Prende l'ID dalla URL
-    const parts = window.location.pathname.split("/");
-    const sessionId = parts[parts.length - 2];
-    document.getElementById("sessionId").textContent = sessionId;
+    const url = new URL(window.location.href);
+    document.getElementById("uid").textContent = url.searchParams.get("userId");
+    document.getElementById("sid").textContent = url.searchParams.get("sessionId");
   </script>
 </body>
 </html>
-
-
-
-
-
 
