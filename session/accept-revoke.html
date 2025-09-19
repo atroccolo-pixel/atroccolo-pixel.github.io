@@ -2,11 +2,11 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Richiesta Revoca Consenso</title>
+  <title>Accetta Revoca</title>
 </head>
 <body style="font-family: Arial, sans-serif; padding: 20px;">
-  <h2>❌ Richiesta Revoca</h2>
-  <div id="result">⏳ Invio richiesta...</div>
+  <h2>✅ Accettazione Revoca</h2>
+  <div id="result">⏳ Invio conferma...</div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -27,21 +27,21 @@
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
 
-    async function requestRevoke() {
+    async function acceptRevoke() {
       try {
         if (!userId || !sessionId) throw new Error("Parametri mancanti");
         const ref = doc(db, "users", userId, "sessions", sessionId);
         await updateDoc(ref, {
-          status: "revoke_pending",
-          revokeRequesterUid: "via_email",
-          revokeRequesterAt: serverTimestamp()
+          status: "revoked",
+          revokedAt: serverTimestamp(),
+          revokeCounterpartyAt: serverTimestamp()
         });
-        document.getElementById("result").innerHTML = "✅ Revoca richiesta registrata.";
+        document.getElementById("result").innerHTML = "✅ Revoca accettata, consenso terminato.";
       } catch (err) {
-        document.getElementById("result").innerHTML = "❌ Errore durante la richiesta di revoca.";
+        document.getElementById("result").innerHTML = "❌ Errore durante l'accettazione della revoca.";
       }
     }
-    requestRevoke();
+    acceptRevoke();
   </script>
 </body>
 </html>
