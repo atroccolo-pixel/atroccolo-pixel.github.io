@@ -1,146 +1,99 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Dettagli Consenso</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: #f8f9fa;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    h2 {
-      margin-bottom: 15px;
-      color: #2c3e50;
-    }
-    .field {
-      margin: 8px 0;
-    }
-    .field strong {
-      display: inline-block;
-      width: 160px;
-      color: #555;
-    }
-    .status {
-      display: inline-block;
-      padding: 6px 12px;
-      border-radius: 6px;
-      color: #fff;
-      font-weight: bold;
-    }
-    .status.valid { background: #27ae60; }
-    .status.expired { background: #7f8c8d; }
-    .status.revoked { background: #c0392b; }
-    .status.revoke_pending { background: #e67e22; }
-    .media {
-      margin-top: 20px;
-    }
-    .media img {
-      max-width: 300px;
-      display: block;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .error {
-      color: #c0392b;
-      font-weight: bold;
-      margin-top: 20px;
-    }
+    body { font-family: Arial, sans-serif; margin: 30px; background: #f9f9f9; }
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    h2 { color: #2c3e50; }
+    .row { margin-bottom: 10px; }
+    .label { font-weight: bold; }
+    .file-link { margin: 5px 0; display: block; }
+    .error { color: red; font-weight: bold; }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="card">
     <h2>Dettagli Consenso</h2>
     <div id="content">Caricamento...</div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    // ✅ Config Firebase (stessa del tuo progetto)
+  <script>
+    // Config Firebase (quella del tuo progetto TrueConsent)
     const firebaseConfig = {
-      apiKey: "TUO_API_KEY",
+      apiKey: "AIzaSyBfh17HL7fTyo-Xe0EjUMnU3kJvdKfG5FI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
       projectId: "trueconsent-cab73",
       storageBucket: "trueconsent-cab73.appspot.com",
-      messagingSenderId: "TUO_SENDER_ID",
-      appId: "TUO_APP_ID"
+      messagingSenderId: "1064479248599",
+      appId: "1:1064479248599:web:0cf50c47f0ef31f3b0a2d6"
     };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
 
-    // ✅ Parametri da URL
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // Leggi parametri URL
     const params = new URLSearchParams(window.location.search);
     const userId = params.get("userId");
     const sessionId = params.get("sessionId");
 
-    async function loadSession() {
-      const content = document.getElementById("content");
-      try {
-        if (!userId || !sessionId) {
-          content.innerHTML = "<p class='error'>Parametri mancanti</p>";
-          return;
-        }
+    const contentDiv = document.getElementById("content");
 
-        const ref = doc(db, "users", userId, "sessions", sessionId);
-        const snap = await getDoc(ref);
+    if (!userId || !sessionId) {
+      contentDiv.innerHTML = "<p class='error'>❌ Parametri mancanti nell'URL</p>";
+    } else {
+      // Path corretto: users/{userId}/sessions/{sessionId}
+      db.collection("users")
+        .doc(userId)
+        .collection("sessions")
+        .doc(sessionId)
+        .get()
+        .then(async (doc) => {
+          if (!doc.exists) {
+            contentDiv.innerHTML = "<p class='error'>❌ Consenso non trovato</p>";
+            return;
+          }
 
-        if (!snap.exists()) {
-          content.innerHTML = "<p class='error'>Errore: Consenso non trovato</p>";
-          return;
-        }
+          const data = doc.data();
+          let html = `
+            <div class="row"><span class="label">Tipo:</span> ${data.type}</div>
+            <div class="row"><span class="label">Controparte:</span> ${data.counterpartName} (${data.counterpartEmail})</div>
+            <div class="row"><span class="label">Telefono:</span> ${data.counterpartPhone}</div>
+            <div class="row"><span class="label">Inizio:</span> ${data.startAt?.toDate ? data.startAt.toDate() : data.startAt}</div>
+            <div class="row"><span class="label">Fine:</span> ${data.endAt?.toDate ? data.endAt.toDate() : data.endAt || "—"}</div>
+            <div class="row"><span class="label">Stato:</span> ${data.status}</div>
+          `;
 
-        const data = snap.data();
-        let html = `
-          <div class="field"><strong>Tipo:</strong> ${data.type || ""}</div>
-          <div class="field"><strong>Controparte:</strong> ${data.counterpartName || ""}</div>
-          <div class="field"><strong>Email:</strong> ${data.counterpartEmail || ""}</div>
-          <div class="field"><strong>Telefono:</strong> ${data.counterpartPhone || ""}</div>
-          <div class="field"><strong>Inizio:</strong> ${data.startAt?.toDate ? data.startAt.toDate() : data.startAt}</div>
-          <div class="field"><strong>Fine:</strong> ${data.endAt?.toDate ? data.endAt.toDate() : data.endAt}</div>
-          <div class="field"><strong>Stato:</strong> <span class="status ${data.status}">${data.status}</span></div>
-          <div class="field"><strong>ID Consenso:</strong> ${sessionId}</div>
-        `;
+          // Firma
+          if (data.signaturePath) {
+            const url = await storage.ref(data.signaturePath).getDownloadURL();
+            html += `<div class="row"><span class="label">Firma:</span><br><img src="${url}" width="200"></div>`;
+          }
 
-        // Media
-        html += `<div class="media">`;
-        if (data.signaturePath) {
-          html += `<div><strong>Firma:</strong><br>
-            <img src="${data.signaturePath}" alt="Firma">
-            <a href="${data.signaturePath}" download>Scarica firma</a></div>`;
-        }
-        if (data.selfiePath) {
-          html += `<div><strong>Selfie:</strong><br>
-            <img src="${data.selfiePath}" alt="Selfie">
-            <a href="${data.selfiePath}" download>Scarica selfie</a></div>`;
-        }
-        if (data.audioPath) {
-          html += `<div><strong>Audio:</strong><br>
-            <audio controls src="${data.audioPath}"></audio><br>
-            <a href="${data.audioPath}" download>Scarica audio</a></div>`;
-        }
-        html += `</div>`;
+          // Selfie
+          if (data.selfiePath) {
+            const url = await storage.ref(data.selfiePath).getDownloadURL();
+            html += `<div class="row"><span class="label">Selfie:</span><br><img src="${url}" width="200"></div>`;
+          }
 
-        content.innerHTML = html;
-      } catch (err) {
-        console.error(err);
-        content.innerHTML = "<p class='error'>Errore durante il caricamento</p>";
-      }
+          // Audio
+          if (data.audioPath) {
+            const url = await storage.ref(data.audioPath).getDownloadURL();
+            html += `<div class="row"><span class="label">Audio:</span><br><audio controls src="${url}"></audio></div>`;
+          }
+
+          contentDiv.innerHTML = html;
+        })
+        .catch((err) => {
+          console.error("Errore:", err);
+          contentDiv.innerHTML = "<p class='error'>❌ Errore nel recupero del consenso</p>";
+        });
     }
-
-    loadSession();
   </script>
 </body>
 </html>
