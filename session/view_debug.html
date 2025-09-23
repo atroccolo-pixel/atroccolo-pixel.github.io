@@ -1,58 +1,65 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <title>Debug Consenso - TrueConsent</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <meta charset="UTF-8">
+  <title>Debug Consenso</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f9fa; padding: 20px; }
+    h1 { font-size: 20px; margin-bottom: 10px; }
+    .card { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .error { color: red; font-weight: bold; }
+    pre { background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; }
+  </style>
 </head>
 <body>
-  <h2>Debug Consenso</h2>
-  <div id="log" style="white-space: pre-wrap; font-family: monospace; background: #eee; padding: 10px;"></div>
+  <h1>Debug Consenso</h1>
+  <div class="card" id="debug">Inizializzo Firebase...</div>
 
   <script>
-    function log(msg) {
-      console.log(msg);
-      document.getElementById("log").textContent += msg + "\n";
-    }
-
-    // Config Firebase (uguale al tuo progetto)
+    // Config Firebase
     const firebaseConfig = {
-      apiKey: "AIzaSyC2b6QdN...TUACHIAVE...",
+      apiKey: "AIzaSyB-iyHQ_rTF0atAbXb7NQwxHrlZnrQN0dA",
       authDomain: "trueconsent-cab73.firebaseapp.com",
       projectId: "trueconsent-cab73",
+      storageBucket: "trueconsent-cab73.appspot.com",
+      messagingSenderId: "907657829247",
+      appId: "1:907657829247:web:04ed0d82ec90cf83cb0aa7"
     };
 
-    log("Inizializzo Firebase...");
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Leggo parametri URL
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("userId");
     const sessionId = urlParams.get("sessionId");
 
-    log("userId = " + userId);
-    log("sessionId = " + sessionId);
+    const debugEl = document.getElementById("debug");
+    debugEl.innerHTML += `<br>userId = ${userId}<br>sessionId = ${sessionId}<br>Cerco documento Firestore...<br>`;
 
-    if (!userId || !sessionId) {
-      log("❌ Parametri mancanti");
-    } else {
+    if (userId && sessionId) {
       const docRef = db.collection("users").doc(userId).collection("sessions").doc(sessionId);
-      log("Cerco documento Firestore...");
 
-      docRef.get()
-        .then(doc => {
-          if (!doc.exists) {
-            log("❌ Documento non trovato in Firestore");
-          } else {
-            log("✅ Documento trovato!");
-            log(JSON.stringify(doc.data(), null, 2));
-          }
-        })
-        .catch(err => {
-          log("❌ Errore Firestore: " + err.message);
-        });
+      docRef.get().then((doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+          debugEl.innerHTML = `
+            <h3>Dati Consenso</h3>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+            <h3>File</h3>
+            <p><a href="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o${encodeURIComponent(data.signaturePath)}?alt=media" target="_blank">📄 Firma</a></p>
+            <p><a href="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o${encodeURIComponent(data.selfiePath)}?alt=media" target="_blank">🖼️ Selfie</a></p>
+            <p><a href="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o${encodeURIComponent(data.audioPath)}?alt=media" target="_blank">🎤 Audio</a></p>
+          `;
+        } else {
+          debugEl.innerHTML = "<span class='error'>❌ Documento non trovato in Firestore</span>";
+        }
+      }).catch((err) => {
+        debugEl.innerHTML = `<span class='error'>❌ Errore Firestore: ${err}</span>`;
+      });
+    } else {
+      debugEl.innerHTML = "<span class='error'>❌ Parametri mancanti nell'URL</span>";
     }
   </script>
 </body>
