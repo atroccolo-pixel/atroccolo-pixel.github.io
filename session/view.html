@@ -2,17 +2,122 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Vedi Consenso</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrueConsent - Dettagli Consenso</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <style>
+    body { background:#f8f9fa; }
+    .container { max-width:800px; margin-top:40px; }
+    .card { box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    .label { font-weight:600; }
+    img.signature { max-width:100%; border:1px solid #ccc; background:#fff; padding:4px; }
+    img.selfie { max-width:100%; border:1px solid #ccc; background:#000; }
+  </style>
 </head>
-<body style="font-family: Arial, sans-serif; padding: 20px;">
-  <h2>📄 Dettagli Consenso</h2>
-  <p><b>User ID:</b> <span id="uid"></span></p>
-  <p><b>Session ID:</b> <span id="sid"></span></p>
+<body>
+  <div class="container">
+    <div class="card p-4">
+      <h2 class="mb-3">📄 Dettagli Consenso</h2>
+      <div id="loading">Caricamento...</div>
+      <div id="content" style="display:none;">
+        <p><span class="label">Tipo:</span> <span id="consentType"></span></p>
+        <p><span class="label">Controparte:</span> <span id="counterpartName"></span></p>
+        <p><span class="label">Telefono:</span> <span id="counterpartPhone"></span></p>
+        <p><span class="label">Email:</span> <span id="counterpartEmail"></span></p>
+        <p><span class="label">Inizio:</span> <span id="startAt"></span></p>
+        <p><span class="label">Fine:</span> <span id="endAt"></span></p>
+        <p><span class="label">Stato:</span> <span id="status"></span></p>
+        <p><span class="label">ID Consenso:</span> <span id="sessionId"></span></p>
+
+        <hr>
+        <h5>Firma</h5>
+        <img id="signature" class="signature mb-3" alt="Firma">
+
+        <h5>Selfie</h5>
+        <img id="selfie" class="selfie mb-3" alt="Selfie">
+
+        <h5>Audio</h5>
+        <audio id="audio" controls class="w-100 mb-3"></audio>
+      </div>
+      <div id="error" class="text-danger" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
 
   <script>
-    const url = new URL(window.location.href);
-    document.getElementById("uid").textContent = url.searchParams.get("userId");
-    document.getElementById("sid").textContent = url.searchParams.get("sessionId");
+    // TODO: inserisci la stessa config Firebase della tua app
+    const firebaseConfig = {
+      apiKey: "XXX",
+      authDomain: "trueconsent-cab73.firebaseapp.com",
+      projectId: "trueconsent-cab73",
+      storageBucket: "trueconsent-cab73.appspot.com",
+      messagingSenderId: "XXX",
+      appId: "XXX"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // Legge parametri da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get("userId");
+    const sessionId = urlParams.get("sessionId");
+
+    async function loadConsent() {
+      if (!userId || !sessionId) {
+        document.getElementById("loading").style.display="none";
+        document.getElementById("error").innerText="Parametri mancanti.";
+        document.getElementById("error").style.display="block";
+        return;
+      }
+      try {
+        const docRef = db.collection("users").doc(userId).collection("sessions").doc(sessionId);
+        const snap = await docRef.get();
+        if (!snap.exists) throw new Error("Consenso non trovato");
+        const data = snap.data();
+
+        // Popola i campi
+        document.getElementById("consentType").innerText = data.type || (data.indefinite ? "indeterminato" : "determinato");
+        document.getElementById("counterpartName").innerText = data.counterpartName || "";
+        document.getElementById("counterpartPhone").innerText = data.counterpartPhone || "";
+        document.getElementById("counterpartEmail").innerText = data.counterpartEmail || "";
+        document.getElementById("startAt").innerText = data.startAt?.toDate().toLocaleString() || "";
+        document.getElementById("endAt").innerText   = data.endAt?.toDate().toLocaleString() || (data.indefinite ? "—" : "");
+        document.getElementById("status").innerText  = data.status || "";
+        document.getElementById("sessionId").innerText = sessionId;
+
+        // Firma
+        if (data.signaturePath) {
+          const url = await storage.ref(data.signaturePath).getDownloadURL();
+          document.getElementById("signature").src = url;
+        }
+
+        // Selfie
+        if (data.selfiePath) {
+          const url = await storage.ref(data.selfiePath).getDownloadURL();
+          document.getElementById("selfie").src = url;
+        }
+
+        // Audio
+        if (data.audioPath) {
+          const url = await storage.ref(data.audioPath).getDownloadURL();
+          document.getElementById("audio").src = url;
+        }
+
+        document.getElementById("loading").style.display="none";
+        document.getElementById("content").style.display="block";
+      } catch (err) {
+        document.getElementById("loading").style.display="none";
+        document.getElementById("error").innerText = "Errore: " + err.message;
+        document.getElementById("error").style.display="block";
+      }
+    }
+
+    loadConsent();
   </script>
 </body>
 </html>
