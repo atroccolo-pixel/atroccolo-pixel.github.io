@@ -1,108 +1,94 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Dettagli Consenso</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #f7f7f7; }
-    .card { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-    h2 { margin-top: 0; }
-    img { max-width: 100%; margin-top: 10px; border: 1px solid #ddd; border-radius: 4px; }
-    audio { width: 100%; margin-top: 10px; }
-    .error { color: red; }
+    body { font-family: Arial, sans-serif; margin: 30px; background:#f8f9fa; }
+    .card { background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    h2 { margin-top:0; color:#2c3e50; }
+    .field { margin:8px 0; }
+    .label { font-weight:bold; }
+    .error { color:red; margin-top:20px; }
+    .media { margin-top:15px; }
+    img { max-width:300px; display:block; margin-top:10px; }
+    audio { margin-top:10px; }
   </style>
 </head>
 <body>
   <div class="card">
     <h2>Dettagli Consenso</h2>
-    <div id="details">Caricamento...</div>
-  </div>
-
-  <div class="card" id="media" style="display:none;">
-    <h2>File Multimediali</h2>
-    <div id="signature"></div>
-    <div id="selfie"></div>
-    <div id="audio"></div>
+    <div id="content">Caricamento...</div>
   </div>
 
   <script>
-    // Config Firebase
+    // Configurazione Firebase
     const firebaseConfig = {
-      apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
+      apiKey: "AIzaSyCz6FvQwCUrI2Q9YJf5UjxDhmG7us1sCwY",
       authDomain: "trueconsent-cab73.firebaseapp.com",
       projectId: "trueconsent-cab73",
-      storageBucket: "trueconsent-cab73.appspot.com",
-      messagingSenderId: "298691251398",
-      appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
+      storageBucket: "trueconsent-cab73.appspot.com"
     };
-    firebase.initializeApp(firebaseConfig);
+
+    const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const storage = firebase.storage();
 
-    // Leggi parametri URL
-    const params = new URLSearchParams(window.location.search);
-    const userId = params.get("userId");
-    const sessionId = params.get("sessionId");
+    // Recupera sessionId dall'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get("sessionId");
 
-    async function loadSession() {
-      if (!userId || !sessionId) {
-        document.getElementById("details").innerHTML = "<p class='error'>Parametri mancanti.</p>";
-        return;
-      }
+    const contentDiv = document.getElementById("content");
 
-      try {
-        const doc = await db.collection("users").doc(userId)
-                            .collection("sessions").doc(sessionId).get();
-        if (!doc.exists) {
-          document.getElementById("details").innerHTML = "<p class='error'>Consenso non trovato.</p>";
-          return;
-        }
+    if (!sessionId) {
+      contentDiv.innerHTML = "<p class='error'>❌ sessionId mancante nell'URL</p>";
+    } else {
+      db.collection("sessions").doc(sessionId).get()
+        .then(async (doc) => {
+          if (!doc.exists) {
+            contentDiv.innerHTML = "<p class='error'>❌ Consenso non trovato</p>";
+            return;
+          }
 
-        const data = doc.data();
-        const startAt = data.startAt?.toDate ? data.startAt.toDate().toLocaleString() : "";
-        const endAt   = data.endAt?.toDate ? data.endAt.toDate().toLocaleString() : "";
+          const data = doc.data();
+          let html = `
+            <div class="field"><span class="label">ID Consenso:</span> ${doc.id}</div>
+            <div class="field"><span class="label">Tipo:</span> ${data.type || "-"}</div>
+            <div class="field"><span class="label">Controparte:</span> ${data.counterpartName || "-"} (${data.counterpartEmail || "-"})</div>
+            <div class="field"><span class="label">Telefono:</span> ${data.counterpartPhone || "-"}</div>
+            <div class="field"><span class="label">Creato:</span> ${data.startAt?.toDate ? data.startAt.toDate() : "-"}</div>
+            <div class="field"><span class="label">Scadenza:</span> ${data.endAt?.toDate ? data.endAt.toDate() : "-"}</div>
+            <div class="field"><span class="label">Stato:</span> ${data.status || "-"}</div>
+          `;
 
-        document.getElementById("details").innerHTML = `
-          <p><b>ID Consenso:</b> ${sessionId}</p>
-          <p><b>Tipo:</b> ${data.type}</p>
-          <p><b>Controparte:</b> ${data.counterpartName} (${data.counterpartEmail}, ${data.counterpartPhone})</p>
-          <p><b>Inizio:</b> ${startAt}</p>
-          <p><b>Fine:</b> ${endAt}</p>
-          <p><b>Stato:</b> ${data.status}</p>
-        `;
+          // Firma
+          if (data.signaturePath) {
+            const url = await storage.ref(data.signaturePath).getDownloadURL();
+            html += `<div class="media"><span class="label">Firma:</span><br><img src="${url}" alt="Firma"></div>`;
+          }
 
-        // Media
-        let mediaVisible = false;
+          // Selfie
+          if (data.selfiePath) {
+            const url = await storage.ref(data.selfiePath).getDownloadURL();
+            html += `<div class="media"><span class="label">Selfie:</span><br><img src="${url}" alt="Selfie"></div>`;
+          }
 
-        if (data.signaturePath) {
-          const url = await storage.ref(data.signaturePath).getDownloadURL();
-          document.getElementById("signature").innerHTML = `<p><b>Firma:</b></p><img src="${url}" alt="Firma">`;
-          mediaVisible = true;
-        }
-        if (data.selfiePath) {
-          const url = await storage.ref(data.selfiePath).getDownloadURL();
-          document.getElementById("selfie").innerHTML = `<p><b>Selfie:</b></p><img src="${url}" alt="Selfie">`;
-          mediaVisible = true;
-        }
-        if (data.audioPath) {
-          const url = await storage.ref(data.audioPath).getDownloadURL();
-          document.getElementById("audio").innerHTML = `<p><b>Audio:</b></p><audio controls src="${url}"></audio>`;
-          mediaVisible = true;
-        }
+          // Audio
+          if (data.audioPath) {
+            const url = await storage.ref(data.audioPath).getDownloadURL();
+            html += `<div class="media"><span class="label">Audio:</span><br><audio controls src="${url}"></audio></div>`;
+          }
 
-        if (mediaVisible) {
-          document.getElementById("media").style.display = "block";
-        }
-      } catch (err) {
-        document.getElementById("details").innerHTML = `<p class='error'>Errore: ${err.message}</p>`;
-      }
+          contentDiv.innerHTML = html;
+        })
+        .catch((err) => {
+          console.error(err);
+          contentDiv.innerHTML = "<p class='error'>❌ Errore caricamento consenso</p>";
+        });
     }
-
-    loadSession();
   </script>
 </body>
 </html>
