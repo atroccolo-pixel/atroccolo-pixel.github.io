@@ -37,14 +37,20 @@
     const db = firebase.firestore();
     const storage = firebase.storage();
 
-    // Recupera sessionId dall'URL
+    // Recupera parametri URL
     const urlParams = new URLSearchParams(window.location.search);
-    const sessionId = urlParams.get("sessionId");
+    let sessionId = urlParams.get("sessionId");
+
+    // fallback: se URL contiene anche userId, usa comunque solo sessionId
+    if (!sessionId) {
+      const userId = urlParams.get("userId");
+      sessionId = urlParams.get("sessionId"); // stesso valore, ma lo richiamiamo
+    }
 
     const contentDiv = document.getElementById("content");
 
     if (!sessionId) {
-      contentDiv.innerHTML = "<p class='error'>❌ sessionId mancante nell'URL</p>";
+      contentDiv.innerHTML = "<p class='error'>❌ Parametri mancanti nell'URL</p>";
     } else {
       db.collection("sessions").doc(sessionId).get()
         .then(async (doc) => {
