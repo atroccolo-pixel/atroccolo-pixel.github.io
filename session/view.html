@@ -24,10 +24,10 @@
     <div class="field"><b>Data fine:</b> <span id="endAt"></span></div>
 
     <h3>✍️ Firma:</h3>
-    <img id="signature" alt="Firma" />
+    <div id="signature"></div>
 
     <h3>📸 Selfie:</h3>
-    <img id="selfie" alt="Selfie" />
+    <div id="selfie"></div>
 
     <h3>🎤 Audio:</h3>
     <div id="audio"></div>
@@ -73,23 +73,24 @@
         // Firma
         if (data.signaturePath) {
           const sigRef = ref(storage, data.signaturePath);
-          document.getElementById("signature").src = await getDownloadURL(sigRef);
+          const sigUrl = await getDownloadURL(sigRef);
+          document.getElementById("signature").innerHTML = `<img src="${sigUrl}" alt="Firma"/>`;
         }
 
         // Selfie
         if (data.selfiePath) {
           const selfieRef = ref(storage, data.selfiePath);
-          document.getElementById("selfie").src = await getDownloadURL(selfieRef);
+          const selfieUrl = await getDownloadURL(selfieRef);
+          document.getElementById("selfie").innerHTML = `<img src="${selfieUrl}" alt="Selfie"/>`;
         }
 
-        // AUDIO con fallback multiplo
+        // Audio
         if (data.audioPath) {
           const audioRef = ref(storage, data.audioPath);
           const audioUrl = await getDownloadURL(audioRef);
           document.getElementById("audio").innerHTML = `
             <audio controls>
               <source src="${audioUrl}" type="audio/mpeg">
-              <source src="${audioUrl}" type="audio/wav">
               <source src="${audioUrl}" type="audio/3gpp">
               Il tuo browser non supporta l'audio.
             </audio>
