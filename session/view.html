@@ -4,10 +4,61 @@
   <meta charset="UTF-8">
   <title>Visualizza Consenso</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    .section { margin-bottom: 20px; }
-    img { max-width: 300px; border: 1px solid #ddd; padding: 4px; border-radius: 6px; }
-    audio { margin-top: 10px; display: block; width: 100%; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+
+    .section {
+      margin-bottom: 18px;
+    }
+
+    b {
+      color: #34495e;
+    }
+
+    img {
+      max-width: 250px;
+      border: 1px solid #ddd;
+      padding: 4px;
+      border-radius: 6px;
+      display: block;
+      margin-top: 6px;
+    }
+
+    audio {
+      display: block;
+      width: 100%;
+      max-width: 500px;   /* non troppo largo su PC */
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+
+    /* Responsive su mobile */
+    @media (max-width: 600px) {
+      body {
+        font-size: 15px;
+        padding: 12px;
+      }
+      h2 {
+        font-size: 18px;
+      }
+      img {
+        max-width: 200px;
+      }
+      audio {
+        max-width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -25,7 +76,7 @@
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
       projectId: "trueconsent-cab73",
-      storageBucket: "trueconsent-cab73.firebasestorage.app", // ✅ fixato
+      storageBucket: "trueconsent-cab73.appspot.com",
       messagingSenderId: "298691251398",
       appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
     };
@@ -80,10 +131,7 @@
           const url = await getDownloadURL(ref(storage, data.audioPath));
           mediaHtml += `<div class="section"><b>Audio:</b><br>
             <audio controls>
-              <source src="${url}" type="audio/m4a">
               <source src="${url}" type="audio/mp4">
-              <source src="${url}" type="audio/x-m4a">
-              <source src="${url}" type="audio/aac">
               <source src="${url}" type="audio/mpeg">
               Il tuo browser non supporta l’audio.
             </audio>
