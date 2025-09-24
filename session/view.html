@@ -2,90 +2,79 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Dettagli Consenso</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js"></script>
+  <title>Visualizza Consenso</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
-    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    h2 { margin-top: 0; }
-    .error { color: red; }
-    .file-link { margin: 8px 0; display: block; }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h2 { color: #3498db; }
+    .file-link { margin: 8px 0; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>Dettagli Consenso</h2>
-    <div id="content">Caricamento...</div>
-  </div>
+  <h2>📄 Dettagli Consenso</h2>
+  <div id="result">⏳ Caricamento...</div>
 
-  <script>
-    // Configurazione Firebase
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
     const firebaseConfig = {
-      apiKey: "AIzaSyBk3fXxVYDWZs3PBf8DbU9hfKuyup8zT4c",
+      apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
       projectId: "trueconsent-cab73",
-      storageBucket: "trueconsent-cab73.appspot.com"
+      storageBucket: "trueconsent-cab73.appspot.com",
+      messagingSenderId: "298691251398",
+      appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
     };
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const storage = firebase.storage();
 
-    // Recupera parametri URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const sessionId = urlParams.get("sessionId");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    async function loadConsent() {
-      const content = document.getElementById("content");
-      if (!sessionId) {
-        content.innerHTML = "<p class='error'>Parametro sessionId mancante</p>";
-        return;
-      }
+    const url = new URL(window.location.href);
+    const userId = url.searchParams.get("userId");
+    const sessionId = url.searchParams.get("sessionId");
 
+    async function loadSession() {
       try {
-        const docRef = db.collection("sessions").doc(sessionId);
-        const docSnap = await docRef.get();
+        if (!userId || !sessionId) throw new Error("Parametri mancanti");
+        const ref = doc(db, "users", userId, "sessions", sessionId);
+        const snap = await getDoc(ref);
 
-        if (!docSnap.exists) {
-          content.innerHTML = "<p class='error'>Consenso non trovato</p>";
+        if (!snap.exists()) {
+          document.getElementById("result").innerHTML = "❌ Consenso non trovato.";
           return;
         }
 
-        const data = docSnap.data();
-
+        const data = snap.data();
         let html = `
+          <p><b>ID:</b> ${sessionId}</p>
+          <p><b>Proprietario:</b> ${data.ownerName || ""}</p>
+          <p><b>Controparte:</b> ${data.counterpartName || ""}</p>
           <p><b>Tipo:</b> ${data.type}</p>
-          <p><b>Controparte:</b> ${data.counterpartName} (${data.counterpartEmail})</p>
-          <p><b>Telefono:</b> ${data.counterpartPhone}</p>
-          <p><b>Inizio:</b> ${data.startAt?.toDate?.() || data.startAt}</p>
-          <p><b>Fine:</b> ${data.endAt?.toDate?.() || data.endAt}</p>
           <p><b>Stato:</b> ${data.status}</p>
         `;
 
-        // Link ai file in storage
-        async function makeLink(path, label) {
-          if (!path) return "";
-          try {
-            const url = await storage.ref(path).getDownloadURL();
-            return `<a class="file-link" href="${url}" target="_blank">📎 ${label}</a>`;
-          } catch (e) {
-            return `<p class="error">Errore caricamento ${label}</p>`;
-          }
+        if (data.endAt?._seconds) {
+          html += `<p><b>Scadenza:</b> ${new Date(data.endAt._seconds * 1000).toLocaleString()}</p>`;
         }
 
-        html += await makeLink(data.signaturePath, "Firma");
-        html += await makeLink(data.selfiePath, "Selfie");
-        html += await makeLink(data.audioPath, "Audio");
+        // File collegati
+        if (data.signatureUrl) {
+          html += `<div class="file-link">✍️ <a href="${data.signatureUrl}" target="_blank">Firma</a></div>`;
+        }
+        if (data.selfieUrl) {
+          html += `<div class="file-link">🤳 <a href="${data.selfieUrl}" target="_blank">Selfie</a></div>`;
+        }
+        if (data.audioUrl) {
+          html += `<div class="file-link">🎤 <a href="${data.audioUrl}" target="_blank">Audio</a></div>`;
+        }
 
-        content.innerHTML = html;
-
+        document.getElementById("result").innerHTML = html;
       } catch (err) {
-        content.innerHTML = `<p class='error'>Errore: ${err.message}</p>`;
+        document.getElementById("result").innerHTML = "❌ Errore caricamento dati.";
+        console.error(err);
       }
     }
-
-    loadConsent();
+    loadSession();
   </script>
 </body>
 </html>
