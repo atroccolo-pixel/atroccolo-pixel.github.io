@@ -2,97 +2,63 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Dettagli Consenso</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .card { padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
-    h2 { margin-top: 0; }
-    .file-link { margin: 5px 0; display: block; }
-  </style>
+  <title>Dettagli Consenso (DEBUG)</title>
 </head>
-<body>
-  <div class="card">
-    <h2>📄 Dettagli Consenso</h2>
-    <div id="content">⏳ Caricamento...</div>
-  </div>
+<body style="font-family: Arial, sans-serif; padding: 20px;">
+  <h2>📄 Dettagli Consenso</h2>
+  <div id="output">⏳ Caricamento...</div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    // 🔑 Config Firebase (la tua)
+    // Config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
       projectId: "trueconsent-cab73",
-      storageBucket: "trueconsent-cab73.appspot.com",
+      storageBucket: "trueconsent-cab73.firebasestorage.app",
       messagingSenderId: "298691251398",
       appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
     };
-
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const storage = getStorage(app);
 
-    // 🔗 Parametri da URL
+    // Prendi parametri URL
     const url = new URL(window.location.href);
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
 
-    async function loadSession() {
-      try {
-        if (!userId || !sessionId) throw new Error("Parametri mancanti");
+    const output = document.getElementById("output");
+    output.innerHTML = `📌 userId = ${userId}<br>📌 sessionId = ${sessionId}<br>⏳ Caricamento dati...`;
 
-        const refDoc = doc(db, "users", userId, "sessions", sessionId);
-        const snap = await getDoc(refDoc);
+    async function loadData() {
+      try {
+        if (!userId || !sessionId) throw new Error("❌ Parametri mancanti nell'URL");
+
+        const ref = doc(db, "users", userId, "sessions", sessionId);
+        const snap = await getDoc(ref);
 
         if (!snap.exists()) {
-          document.getElementById("content").innerHTML = "❌ Consenso non trovato.";
-          return;
+          throw new Error("❌ Documento non trovato in Firestore!");
         }
 
         const data = snap.data();
-        let html = `
+        output.innerHTML = `
           <p><b>ID:</b> ${sessionId}</p>
-          <p><b>Proprietario:</b> ${data.ownerEmail || "-"}</p>
-          <p><b>Controparte:</b> ${data.counterpartName || "-"} (${data.counterpartEmail || "-"})</p>
+          <p><b>Proprietario:</b> ${data.ownerName || "-"}</p>
+          <p><b>Controparte:</b> ${data.counterpartName || "-"}</p>
           <p><b>Tipo:</b> ${data.type || "-"}</p>
           <p><b>Stato:</b> ${data.status || "-"}</p>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
         `;
-
-        // 👤 Selfie
-        if (data.selfiePath) {
-          try {
-            const url = await getDownloadURL(ref(storage, data.selfiePath));
-            html += `<p><b>Selfie:</b> <a href="${url}" target="_blank" class="file-link">📷 Visualizza</a></p>`;
-          } catch (err) { html += "<p><b>Selfie:</b> errore caricamento</p>"; }
-        }
-
-        // ✍️ Firma
-        if (data.signaturePath) {
-          try {
-            const url = await getDownloadURL(ref(storage, data.signaturePath));
-            html += `<p><b>Firma:</b> <a href="${url}" target="_blank" class="file-link">🖊️ Visualizza</a></p>`;
-          } catch (err) { html += "<p><b>Firma:</b> errore caricamento</p>"; }
-        }
-
-        // 🎤 Audio
-        if (data.audioPath) {
-          try {
-            const url = await getDownloadURL(ref(storage, data.audioPath));
-            html += `<p><b>Audio:</b><br><audio controls src="${url}"></audio></p>`;
-          } catch (err) { html += "<p><b>Audio:</b> errore caricamento</p>"; }
-        }
-
-        document.getElementById("content").innerHTML = html;
       } catch (err) {
-        console.error(err);
-        document.getElementById("content").innerHTML = "❌ Errore caricamento dati.";
+        console.error("Errore caricamento:", err);
+        output.innerHTML += `<br><br>❌ ERRORE: ${err.message}`;
       }
     }
 
-    loadSession();
+    loadData();
   </script>
 </body>
 </html>
