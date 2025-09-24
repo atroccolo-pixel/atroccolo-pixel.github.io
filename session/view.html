@@ -18,7 +18,7 @@
     <div class="field"><b>ID Consenso:</b> <span id="sessionId"></span></div>
     <div class="field"><b>Tipo:</b> <span id="type"></span></div>
     <div class="field"><b>Stato:</b> <span id="status"></span></div>
-    <div class="field"><b>Proprietario:</b> <span id="ownerName"></span></div>
+    <div class="field"><b>Proprietario:</b> <span id="ownerEmail"></span></div>
     <div class="field"><b>Controparte:</b> <span id="counterpartName"></span></div>
     <div class="field"><b>Data inizio:</b> <span id="startAt"></span></div>
     <div class="field"><b>Data fine:</b> <span id="endAt"></span></div>
@@ -55,13 +55,6 @@
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
 
-    function formatDate(ts) {
-      if (!ts) return "-";
-      if (ts.toDate) return ts.toDate().toLocaleString();
-      if (ts.seconds) return new Date(ts.seconds * 1000).toLocaleString();
-      return "-";
-    }
-
     async function loadSession() {
       try {
         const refDoc = doc(db, "users", userId, "sessions", sessionId);
@@ -72,29 +65,32 @@
         document.getElementById("sessionId").innerText = sessionId;
         document.getElementById("type").innerText = data.type || "-";
         document.getElementById("status").innerText = data.status || "-";
-        document.getElementById("ownerName").innerText = data.ownerName || "-";
+        document.getElementById("ownerEmail").innerText = data.ownerEmail || "-";
         document.getElementById("counterpartName").innerText = data.counterpartName || "-";
-        document.getElementById("startAt").innerText = formatDate(data.startAt);
-        document.getElementById("endAt").innerText = formatDate(data.endAt);
+        document.getElementById("startAt").innerText = data.startAt?.toDate ? data.startAt.toDate() : "-";
+        document.getElementById("endAt").innerText = data.endAt?.toDate ? data.endAt.toDate() : "-";
 
         // Firma
         if (data.signaturePath) {
-          const sigUrl = await getDownloadURL(ref(storage, data.signaturePath));
+          const sigRef = ref(storage, data.signaturePath);
+          const sigUrl = await getDownloadURL(sigRef);
           document.getElementById("signature").innerHTML = `<img src="${sigUrl}" alt="Firma"/>`;
         }
 
         // Selfie
         if (data.selfiePath) {
-          const selfieUrl = await getDownloadURL(ref(storage, data.selfiePath));
+          const selfieRef = ref(storage, data.selfiePath);
+          const selfieUrl = await getDownloadURL(selfieRef);
           document.getElementById("selfie").innerHTML = `<img src="${selfieUrl}" alt="Selfie"/>`;
         }
 
         // Audio
         if (data.audioPath) {
-          const audioUrl = await getDownloadURL(ref(storage, data.audioPath));
+          const audioRef = ref(storage, data.audioPath);
+          const audioUrl = await getDownloadURL(audioRef);
           document.getElementById("audio").innerHTML = `
             <audio controls>
-              <source src="${audioUrl}" type="audio/mp4">
+              <source src="${audioUrl}" type="audio/mpeg">
               <source src="${audioUrl}" type="audio/3gpp">
               Il tuo browser non supporta l'audio.
             </audio>
