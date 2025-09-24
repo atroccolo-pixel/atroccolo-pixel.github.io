@@ -2,42 +2,25 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Dettagli Consenso</title>
+  <title>Visualizza Consenso</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h2 { color: #2c3e50; }
-    .card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; max-width: 700px; }
-    .field { margin-bottom: 10px; }
-    img { max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px; margin-top: 6px; }
-    audio { margin-top: 10px; width: 100%; }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .section { margin-bottom: 20px; }
+    img { max-width: 300px; border: 1px solid #ddd; padding: 4px; border-radius: 6px; }
+    audio { margin-top: 10px; display: block; width: 100%; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>📄 Dettagli Consenso</h2>
-    <div class="field"><b>ID Consenso:</b> <span id="sessionId"></span></div>
-    <div class="field"><b>Tipo:</b> <span id="type"></span></div>
-    <div class="field"><b>Stato:</b> <span id="status"></span></div>
-    <div class="field"><b>Proprietario:</b> <span id="ownerEmail"></span></div>
-    <div class="field"><b>Controparte:</b> <span id="counterpartName"></span></div>
-    <div class="field"><b>Data inizio:</b> <span id="startAt"></span></div>
-    <div class="field"><b>Data fine:</b> <span id="endAt"></span></div>
-
-    <h3>✍️ Firma:</h3>
-    <div id="signature"></div>
-
-    <h3>📸 Selfie:</h3>
-    <div id="selfie"></div>
-
-    <h3>🎤 Audio:</h3>
-    <div id="audio"></div>
-  </div>
+  <h2>📄 Dettagli Consenso</h2>
+  <div id="details">⏳ Caricamento...</div>
+  <div id="media"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
+    // 🔥 Config tua
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
@@ -55,57 +38,66 @@
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
 
-    async function loadSession() {
+    async function loadConsent() {
+      if (!userId || !sessionId) {
+        document.getElementById("details").innerText = "❌ Parametri mancanti.";
+        return;
+      }
+
       try {
         const refDoc = doc(db, "users", userId, "sessions", sessionId);
         const snap = await getDoc(refDoc);
-        if (!snap.exists()) throw new Error("Sessione non trovata");
+
+        if (!snap.exists()) {
+          document.getElementById("details").innerText = "❌ Consenso non trovato.";
+          return;
+        }
+
         const data = snap.data();
+        let html = `
+          <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
+          <div class="section"><b>Tipo:</b> ${data.type || "-"}</div>
+          <div class="section"><b>Stato:</b> ${data.status || "-"}</div>
+          <div class="section"><b>Proprietario:</b> ${data.ownerName || "-"}</div>
+          <div class="section"><b>Controparte:</b> ${data.counterpartName || "-"}</div>
+          <div class="section"><b>Data inizio:</b> ${data.startAt?.toDate ? data.startAt.toDate() : "-"}</div>
+          <div class="section"><b>Data fine:</b> ${data.endAt?.toDate ? data.endAt.toDate() : "-"}</div>
+        `;
+        document.getElementById("details").innerHTML = html;
 
-        document.getElementById("sessionId").innerText = sessionId;
-        document.getElementById("type").innerText = data.type || "-";
-        document.getElementById("status").innerText = data.status || "-";
-        document.getElementById("ownerEmail").innerText = data.ownerEmail || "-";
-        document.getElementById("counterpartName").innerText = data.counterpartName || "-";
-        document.getElementById("startAt").innerText = data.startAt?.toDate ? data.startAt.toDate() : "-";
-        document.getElementById("endAt").innerText = data.endAt?.toDate ? data.endAt.toDate() : "-";
+        // Media (firma, selfie, audio)
+        let mediaHtml = "";
 
-        // Firma
         if (data.signaturePath) {
-          const sigRef = ref(storage, data.signaturePath);
-          const sigUrl = await getDownloadURL(sigRef);
-          document.getElementById("signature").innerHTML = `<img src="${sigUrl}" alt="Firma"/>`;
+          const url = await getDownloadURL(ref(storage, data.signaturePath));
+          mediaHtml += `<div class="section"><b>Firma:</b><br><img src="${url}" alt="Firma"></div>`;
         }
-
-        // Selfie
         if (data.selfiePath) {
-          const selfieRef = ref(storage, data.selfiePath);
-          const selfieUrl = await getDownloadURL(selfieRef);
-          document.getElementById("selfie").innerHTML = `<img src="${selfieUrl}" alt="Selfie"/>`;
+          const url = await getDownloadURL(ref(storage, data.selfiePath));
+          mediaHtml += `<div class="section"><b>Selfie:</b><br><img src="${url}" alt="Selfie"></div>`;
+        }
+        if (data.audioPath) {
+          const url = await getDownloadURL(ref(storage, data.audioPath));
+          mediaHtml += `
+            <div class="section"><b>Audio:</b><br>
+              <audio controls>
+                <source src="${url}" type="audio/mpeg">
+                <source src="${url}" type="audio/3gpp">
+                <source src="${url}" type="audio/mp4">
+                Il tuo browser non supporta l'audio.
+              </audio>
+            </div>`;
         }
 
-        // Audio
-        if (data.audioPath) {
-          const audioRef = ref(storage, data.audioPath);
-          const audioUrl = await getDownloadURL(audioRef);
-          document.getElementById("audio").innerHTML = `
-            <audio controls>
-              <source src="${audioUrl}" type="audio/mpeg">
-              <source src="${audioUrl}" type="audio/3gpp">
-              Il tuo browser non supporta l'audio.
-            </audio>
-          `;
-        } else {
-          document.getElementById("audio").innerText = "Nessun audio disponibile.";
-        }
+        document.getElementById("media").innerHTML = mediaHtml || "<i>Nessun file multimediale disponibile</i>";
 
       } catch (err) {
-        console.error(err);
-        document.querySelector(".card").innerHTML = `<p>❌ Errore caricamento dati.</p>`;
+        console.error("Errore caricamento consenso:", err);
+        document.getElementById("details").innerText = "❌ Errore durante il caricamento dei dati.";
       }
     }
 
-    loadSession();
+    loadConsent();
   </script>
 </body>
 </html>
