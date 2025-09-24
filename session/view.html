@@ -3,11 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <title>Dettagli Consenso</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .card { padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+    h2 { margin-top: 0; }
+    .file-link { margin: 5px 0; display: block; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>📄 Dettagli Consenso</h2>
+    <div id="content">⏳ Caricamento...</div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
+    // 🔑 Config Firebase (la tua)
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
@@ -21,66 +35,64 @@
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    async function loadConsent() {
-      const url = new URL(window.location.href);
-      const userId = url.searchParams.get("userId");
-      const sessionId = url.searchParams.get("sessionId");
+    // 🔗 Parametri da URL
+    const url = new URL(window.location.href);
+    const userId = url.searchParams.get("userId");
+    const sessionId = url.searchParams.get("sessionId");
 
-      if (!userId || !sessionId) {
-        document.getElementById("content").innerHTML = "<p style='color:red'>❌ Parametri mancanti</p>";
-        return;
-      }
-
+    async function loadSession() {
       try {
+        if (!userId || !sessionId) throw new Error("Parametri mancanti");
+
         const refDoc = doc(db, "users", userId, "sessions", sessionId);
         const snap = await getDoc(refDoc);
 
         if (!snap.exists()) {
-          document.getElementById("content").innerHTML = "<p style='color:red'>❌ Consenso non trovato</p>";
+          document.getElementById("content").innerHTML = "❌ Consenso non trovato.";
           return;
         }
 
         const data = snap.data();
-
         let html = `
-          <h2>📄 Dettagli Consenso</h2>
           <p><b>ID:</b> ${sessionId}</p>
-          <p><b>Proprietario:</b> ${data.ownerName || "-"}</p>
-          <p><b>Controparte:</b> ${data.counterpartName || "-"}</p>
+          <p><b>Proprietario:</b> ${data.ownerEmail || "-"}</p>
+          <p><b>Controparte:</b> ${data.counterpartName || "-"} (${data.counterpartEmail || "-"})</p>
           <p><b>Tipo:</b> ${data.type || "-"}</p>
           <p><b>Stato:</b> ${data.status || "-"}</p>
         `;
 
-        // Firma
-        if (data.signaturePath) {
-          const url = await getDownloadURL(ref(storage, data.signaturePath));
-          html += `<p><b>Firma:</b><br><img src="${url}" alt="Firma" style="max-width:300px;border:1px solid #ccc"></p>`;
-        }
-
-        // Selfie
+        // 👤 Selfie
         if (data.selfiePath) {
-          const url = await getDownloadURL(ref(storage, data.selfiePath));
-          html += `<p><b>Selfie:</b><br><img src="${url}" alt="Selfie" style="max-width:300px;border:1px solid #ccc"></p>`;
+          try {
+            const url = await getDownloadURL(ref(storage, data.selfiePath));
+            html += `<p><b>Selfie:</b> <a href="${url}" target="_blank" class="file-link">📷 Visualizza</a></p>`;
+          } catch (err) { html += "<p><b>Selfie:</b> errore caricamento</p>"; }
         }
 
-        // Audio
+        // ✍️ Firma
+        if (data.signaturePath) {
+          try {
+            const url = await getDownloadURL(ref(storage, data.signaturePath));
+            html += `<p><b>Firma:</b> <a href="${url}" target="_blank" class="file-link">🖊️ Visualizza</a></p>`;
+          } catch (err) { html += "<p><b>Firma:</b> errore caricamento</p>"; }
+        }
+
+        // 🎤 Audio
         if (data.audioPath) {
-          const url = await getDownloadURL(ref(storage, data.audioPath));
-          html += `<p><b>Audio:</b><br><audio controls src="${url}"></audio></p>`;
+          try {
+            const url = await getDownloadURL(ref(storage, data.audioPath));
+            html += `<p><b>Audio:</b><br><audio controls src="${url}"></audio></p>`;
+          } catch (err) { html += "<p><b>Audio:</b> errore caricamento</p>"; }
         }
 
         document.getElementById("content").innerHTML = html;
-
       } catch (err) {
-        console.error("Errore caricamento consenso:", err);
-        document.getElementById("content").innerHTML = "<p style='color:red'>❌ Errore caricamento dati</p>";
+        console.error(err);
+        document.getElementById("content").innerHTML = "❌ Errore caricamento dati.";
       }
     }
 
-    loadConsent();
+    loadSession();
   </script>
-</head>
-<body style="font-family: Arial, sans-serif; padding: 20px;">
-  <div id="content">⏳ Caricamento...</div>
 </body>
 </html>
