@@ -4,38 +4,38 @@
   <meta charset="UTF-8">
   <title>Visualizza Consenso</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    .section { margin-bottom: 18px; }
-
-    /* Titolo */
-    h2 { font-size: 20px; margin-bottom: 15px; color: #2c3e50; }
-
-    /* Testi generali */
-    .section b { color: #34495e; }
-
-    /* Date più piccole */
-    .dates { font-size: 13px; color: #333; }
-
-    /* Firma e Selfie più piccoli */
-    img { max-width: 220px; border: 1px solid #ddd; padding: 4px; border-radius: 6px; }
-
-    /* Barra audio uniforme */
-    audio { 
-      display: block; 
-      width: 100%; 
-      max-width: 600px; 
-      min-height: 46px;
-      margin: 16px 0;
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    img {
+      max-width: 260px; /* leggermente più piccole firma e selfie */
+      border: 1px solid #ddd;
+      padding: 4px;
+      border-radius: 6px;
+    }
+    audio {
+      margin-top: 10px;
+      display: block;
+      width: 100%;
     }
 
-    /* Responsive mobile */
-    @media (max-width: 600px) {
-      h2 { font-size: 19px; }
-      .dates { font-size: 14px; }
-      img { max-width: 160px; }
-      audio { 
-        min-height: 58px;  /* più alta su iPhone/Android */
-        margin-top: 12px;
+    /* --- Fix iOS Safari (barra più alta) --- */
+    @supports (-webkit-touch-callout: none) {
+      audio {
+        min-height: 60px !important; /* forza altezza su iPhone */
+      }
+    }
+
+    /* --- Fix Android (font più grande + barra leggibile) --- */
+    @media (max-width: 768px) {
+      body { font-size: 17px; } /* leggermente più grande */
+      audio {
+        font-size: 16px;
+        min-height: 48px;
       }
     }
   </style>
@@ -43,11 +43,6 @@
 <body>
   <h2>📄 Dettagli Consenso</h2>
   <div id="details">⏳ Caricamento...</div>
-
-  <!-- 🔊 Audio messo subito sotto i dettagli -->
-  <div id="audioSection"></div>
-
-  <!-- 🖼️ Media visivi -->
   <div id="media"></div>
 
   <script type="module">
@@ -95,29 +90,14 @@
           <div class="section"><b>Stato:</b> ${data.status || "-"}</div>
           <div class="section"><b>Proprietario:</b> ${data.ownerName || "-"}</div>
           <div class="section"><b>Controparte:</b> ${data.counterpartName || "-"}</div>
-          <div class="section dates"><b>Data inizio:</b> ${data.startAt?.toDate ? data.startAt.toDate() : "-"}</div>
-          <div class="section dates"><b>Data fine:</b> ${data.endAt?.toDate ? data.endAt.toDate() : "-"}</div>
+          <div class="section"><b>Data inizio:</b> ${data.startAt?.toDate ? data.startAt.toDate() : "-"}</div>
+          <div class="section"><b>Data fine:</b> ${data.endAt?.toDate ? data.endAt.toDate() : "-"}</div>
         `;
         document.getElementById("details").innerHTML = html;
 
-        // 🎵 Audio subito dopo i dettagli
-        if (data.audioPath) {
-          const url = await getDownloadURL(ref(storage, data.audioPath));
-          document.getElementById("audioSection").innerHTML = `
-            <div class="section"><b>Audio:</b><br>
-              <audio controls>
-                <source src="${url}" type="audio/m4a">
-                <source src="${url}" type="audio/mp4">
-                <source src="${url}" type="audio/x-m4a">
-                <source src="${url}" type="audio/aac">
-                <source src="${url}" type="audio/mpeg">
-                Il tuo browser non supporta l’audio.
-              </audio>
-            </div>`;
-        }
-
-        // 🖼️ Firma e Selfie
+        // Media (firma, selfie, audio)
         let mediaHtml = "";
+
         if (data.signaturePath) {
           const url = await getDownloadURL(ref(storage, data.signaturePath));
           mediaHtml += `<div class="section"><b>Firma:</b><br><img src="${url}" alt="Firma"></div>`;
@@ -125,6 +105,19 @@
         if (data.selfiePath) {
           const url = await getDownloadURL(ref(storage, data.selfiePath));
           mediaHtml += `<div class="section"><b>Selfie:</b><br><img src="${url}" alt="Selfie"></div>`;
+        }
+        if (data.audioPath) {
+          const url = await getDownloadURL(ref(storage, data.audioPath));
+          mediaHtml += `<div class="section"><b>Audio:</b><br>
+            <audio controls>
+              <source src="${url}" type="audio/m4a">
+              <source src="${url}" type="audio/mp4">
+              <source src="${url}" type="audio/x-m4a">
+              <source src="${url}" type="audio/aac">
+              <source src="${url}" type="audio/mpeg">
+              Il tuo browser non supporta l’audio.
+            </audio>
+          </div>`;
         }
 
         document.getElementById("media").innerHTML = mediaHtml || "<i>Nessun file multimediale disponibile</i>";
