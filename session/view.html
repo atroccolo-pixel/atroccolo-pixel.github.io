@@ -2,9 +2,9 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Dettagli Consenso (DEBUG)</title>
+  <title>Dettagli Consenso</title>
 </head>
-<body style="font-family: Arial, sans-serif; padding: 20px;">
+<body style="font-family: Arial, sans-serif; padding: 20px; line-height: 1.6;">
   <h2>📄 Dettagli Consenso</h2>
   <div id="output">⏳ Caricamento...</div>
 
@@ -12,7 +12,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // Config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
@@ -24,37 +23,43 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Prendi parametri URL
     const url = new URL(window.location.href);
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
 
     const output = document.getElementById("output");
-    output.innerHTML = `📌 userId = ${userId}<br>📌 sessionId = ${sessionId}<br>⏳ Caricamento dati...`;
 
     async function loadData() {
       try {
-        if (!userId || !sessionId) throw new Error("❌ Parametri mancanti nell'URL");
-
         const ref = doc(db, "users", userId, "sessions", sessionId);
         const snap = await getDoc(ref);
 
         if (!snap.exists()) {
-          throw new Error("❌ Documento non trovato in Firestore!");
+          output.innerHTML = "❌ Documento non trovato.";
+          return;
         }
 
-        const data = snap.data();
+        const d = snap.data();
+
         output.innerHTML = `
           <p><b>ID:</b> ${sessionId}</p>
-          <p><b>Proprietario:</b> ${data.ownerName || "-"}</p>
-          <p><b>Controparte:</b> ${data.counterpartName || "-"}</p>
-          <p><b>Tipo:</b> ${data.type || "-"}</p>
-          <p><b>Stato:</b> ${data.status || "-"}</p>
-          <pre>${JSON.stringify(data, null, 2)}</pre>
+          <p><b>Proprietario:</b> ${d.ownerName || "-"}</p>
+          <p><b>Controparte:</b> ${d.counterpartName || "-"}</p>
+          <p><b>Tipo:</b> ${d.type || "-"}</p>
+          <p><b>Stato:</b> ${d.status || "-"}</p>
+
+          <h3>📸 Selfie</h3>
+          ${d.selfiePath ? `<img src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${encodeURIComponent(d.selfiePath)}?alt=media" width="200">` : "Nessun file"}
+
+          <h3>📝 Firma</h3>
+          ${d.signaturePath ? `<img src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${encodeURIComponent(d.signaturePath)}?alt=media" width="200">` : "Nessun file"}
+
+          <h3>🎤 Audio</h3>
+          ${d.audioPath ? `<audio controls src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${encodeURIComponent(d.audioPath)}?alt=media"></audio>` : "Nessun file"}
         `;
       } catch (err) {
-        console.error("Errore caricamento:", err);
-        output.innerHTML += `<br><br>❌ ERRORE: ${err.message}`;
+        output.innerHTML = "❌ Errore caricamento dati: " + err.message;
+        console.error(err);
       }
     }
 
