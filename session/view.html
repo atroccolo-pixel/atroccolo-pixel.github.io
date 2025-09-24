@@ -2,32 +2,30 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Dettagli Consenso</title>
+  <title>Visualizza Consenso</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h2 { color: #2c3e50; }
-    .section { margin-top: 20px; }
-    img { max-width: 250px; display: block; margin-top: 8px; }
-    audio { margin-top: 8px; }
-    .label { font-weight: bold; }
-    pre { background: #f4f4f4; padding: 10px; border-radius: 6px; }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .section { margin-bottom: 20px; }
+    img { max-width: 300px; border: 1px solid #ddd; padding: 4px; border-radius: 6px; }
+    audio { margin-top: 10px; display: block; }
   </style>
 </head>
 <body>
   <h2>📄 Dettagli Consenso</h2>
-  <div id="content">⏳ Caricamento...</div>
+  <div id="details">⏳ Caricamento...</div>
+  <div id="media"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    // ✅ Config tua
+    // 🔥 Config tua
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
       projectId: "trueconsent-cab73",
-      storageBucket: "trueconsent-cab73.appspot.com",
+      storageBucket: "trueconsent-cab73.firebasestorage.app",
       messagingSenderId: "298691251398",
       appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
     };
@@ -40,56 +38,58 @@
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
 
-    async function loadSession() {
-      try {
-        if (!userId || !sessionId) throw new Error("Parametri mancanti");
+    async function loadConsent() {
+      if (!userId || !sessionId) {
+        document.getElementById("details").innerText = "❌ Parametri mancanti.";
+        return;
+      }
 
+      try {
         const refDoc = doc(db, "users", userId, "sessions", sessionId);
         const snap = await getDoc(refDoc);
 
         if (!snap.exists()) {
-          document.getElementById("content").innerHTML = "❌ Consenso non trovato.";
+          document.getElementById("details").innerText = "❌ Consenso non trovato.";
           return;
         }
 
         const data = snap.data();
         let html = `
-          <p><span class="label">ID:</span> ${sessionId}</p>
-          <p><span class="label">Proprietario:</span> ${data.ownerName || "-"}</p>
-          <p><span class="label">Controparte:</span> ${data.counterpartName || "-"}</p>
-          <p><span class="label">Tipo:</span> ${data.type || "-"}</p>
-          <p><span class="label">Stato:</span> ${data.status || "-"}</p>
+          <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
+          <div class="section"><b>Tipo:</b> ${data.type || "-"}</div>
+          <div class="section"><b>Stato:</b> ${data.status || "-"}</div>
+          <div class="section"><b>Proprietario:</b> ${data.ownerName || "-"}</div>
+          <div class="section"><b>Controparte:</b> ${data.counterpartName || "-"}</div>
+          <div class="section"><b>Data inizio:</b> ${data.startAt?.toDate ? data.startAt.toDate() : "-"}</div>
+          <div class="section"><b>Data fine:</b> ${data.endAt?.toDate ? data.endAt.toDate() : "-"}</div>
         `;
+        document.getElementById("details").innerHTML = html;
 
-        // 📸 Selfie
-        if (data.selfiePath) {
-          const selfieRef = ref(storage, data.selfiePath.replace(/^\//, ""));
-          const selfieUrl = await getDownloadURL(selfieRef);
-          html += `<div class="section"><span class="label">📸 Selfie</span><br><img src="${selfieUrl}" alt="Selfie"></div>`;
-        }
+        // Media (firma, selfie, audio)
+        let mediaHtml = "";
 
-        // ✍️ Firma
         if (data.signaturePath) {
-          const sigRef = ref(storage, data.signaturePath.replace(/^\//, ""));
-          const sigUrl = await getDownloadURL(sigRef);
-          html += `<div class="section"><span class="label">✍️ Firma</span><br><img src="${sigUrl}" alt="Firma"></div>`;
+          const url = await getDownloadURL(ref(storage, data.signaturePath));
+          mediaHtml += `<div class="section"><b>Firma:</b><br><img src="${url}" alt="Firma"></div>`;
         }
-
-        // 🎤 Audio
+        if (data.selfiePath) {
+          const url = await getDownloadURL(ref(storage, data.selfiePath));
+          mediaHtml += `<div class="section"><b>Selfie:</b><br><img src="${url}" alt="Selfie"></div>`;
+        }
         if (data.audioPath) {
-          const audioRef = ref(storage, data.audioPath.replace(/^\//, ""));
-          const audioUrl = await getDownloadURL(audioRef);
-          html += `<div class="section"><span class="label">🎤 Audio</span><br><audio controls src="${audioUrl}"></audio></div>`;
+          const url = await getDownloadURL(ref(storage, data.audioPath));
+          mediaHtml += `<div class="section"><b>Audio:</b><br><audio controls src="${url}"></audio></div>`;
         }
 
-        document.getElementById("content").innerHTML = html;
+        document.getElementById("media").innerHTML = mediaHtml || "<i>Nessun file multimediale disponibile</i>";
+
       } catch (err) {
-        console.error(err);
-        document.getElementById("content").innerHTML = "❌ Errore caricamento dati.";
+        console.error("Errore caricamento consenso:", err);
+        document.getElementById("details").innerText = "❌ Errore durante il caricamento dei dati.";
       }
     }
 
-    loadSession();
+    loadConsent();
   </script>
 </body>
 </html>
