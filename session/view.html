@@ -55,6 +55,13 @@
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
 
+    function formatDate(ts) {
+      if (!ts) return "-";
+      if (ts.toDate) return ts.toDate().toLocaleString();
+      if (ts.seconds) return new Date(ts.seconds * 1000).toLocaleString();
+      return "-";
+    }
+
     async function loadSession() {
       try {
         const refDoc = doc(db, "users", userId, "sessions", sessionId);
@@ -67,30 +74,27 @@
         document.getElementById("status").innerText = data.status || "-";
         document.getElementById("ownerName").innerText = data.ownerName || "-";
         document.getElementById("counterpartName").innerText = data.counterpartName || "-";
-        document.getElementById("startAt").innerText = data.startAt?.toDate ? data.startAt.toDate() : "-";
-        document.getElementById("endAt").innerText = data.endAt?.toDate ? data.endAt.toDate() : "-";
+        document.getElementById("startAt").innerText = formatDate(data.startAt);
+        document.getElementById("endAt").innerText = formatDate(data.endAt);
 
         // Firma
         if (data.signaturePath) {
-          const sigRef = ref(storage, data.signaturePath);
-          const sigUrl = await getDownloadURL(sigRef);
+          const sigUrl = await getDownloadURL(ref(storage, data.signaturePath));
           document.getElementById("signature").innerHTML = `<img src="${sigUrl}" alt="Firma"/>`;
         }
 
         // Selfie
         if (data.selfiePath) {
-          const selfieRef = ref(storage, data.selfiePath);
-          const selfieUrl = await getDownloadURL(selfieRef);
+          const selfieUrl = await getDownloadURL(ref(storage, data.selfiePath));
           document.getElementById("selfie").innerHTML = `<img src="${selfieUrl}" alt="Selfie"/>`;
         }
 
         // Audio
         if (data.audioPath) {
-          const audioRef = ref(storage, data.audioPath);
-          const audioUrl = await getDownloadURL(audioRef);
+          const audioUrl = await getDownloadURL(ref(storage, data.audioPath));
           document.getElementById("audio").innerHTML = `
             <audio controls>
-              <source src="${audioUrl}" type="audio/mpeg">
+              <source src="${audioUrl}" type="audio/mp4">
               <source src="${audioUrl}" type="audio/3gpp">
               Il tuo browser non supporta l'audio.
             </audio>
