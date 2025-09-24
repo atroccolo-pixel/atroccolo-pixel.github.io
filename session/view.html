@@ -13,7 +13,6 @@
     .row { margin: 10px 0; }
     .label { font-weight: bold; }
     .error { color: red; }
-    a.file-link { display: inline-block; margin-top: 5px; }
   </style>
 </head>
 <body>
@@ -23,7 +22,7 @@
   </div>
 
   <script>
-    // ✅ Configurazione Firebase (la stessa usata nell'app)
+    // ✅ Configurazione Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyB6Hhv8uYHdhu3PE0u28eRkPyb90dLWZRI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
@@ -36,36 +35,39 @@
     const db = firebase.firestore();
     const storage = firebase.storage();
 
-    // 🔗 Prende i parametri dall'URL
+    // 🔗 Parametri da URL (supporta entrambi i formati)
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get("sessionId");
+    const userId = params.get("userId");
 
     if (!sessionId) {
       document.getElementById("content").innerHTML = "<p class='error'>❌ Parametri mancanti</p>";
     } else {
-      db.collection("sessions").doc(sessionId).get().then(async (doc) => {
+      // ✅ Se userId esiste → path vecchio
+      let docRef;
+      if (userId) {
+        docRef = db.collection("users").doc(userId).collection("sessions").doc(sessionId);
+      } else {
+        docRef = db.collection("sessions").doc(sessionId);
+      }
+
+      docRef.get().then(async (doc) => {
         if (!doc.exists) {
           document.getElementById("content").innerHTML = "<p class='error'>❌ Consenso non trovato</p>";
           return;
         }
         const data = doc.data();
 
-        // Prepara i link ai file (firma, selfie, audio)
         async function getFileUrl(path) {
           if (!path) return null;
-          try {
-            return await storage.ref(path).getDownloadURL();
-          } catch (e) {
-            console.error("Errore caricamento file:", e);
-            return null;
-          }
+          try { return await storage.ref(path).getDownloadURL(); }
+          catch (e) { return null; }
         }
 
         const selfieUrl = await getFileUrl(data.selfiePath);
         const signUrl   = await getFileUrl(data.signaturePath);
         const audioUrl  = await getFileUrl(data.audioPath);
 
-        // Costruzione HTML
         let html = `
           <div class="row"><span class="label">Tipo:</span> ${data.type || ''}</div>
           <div class="row"><span class="label">Controparte:</span> ${data.counterpartName || ''} (${data.counterpartEmail || ''})</div>
@@ -74,14 +76,12 @@
           <div class="row"><span class="label">Fine:</span> ${data.endAt || (data.indefinite ? "Indeterminato" : "")}</div>
           <div class="row"><span class="label">Stato:</span> ${data.status || ''}</div>
         `;
-
-        if (signUrl)   html += `<div class="row"><span class="label">Firma:</span><br><img src="${signUrl}" alt="Firma" style="max-width:200px;"/></div>`;
-        if (selfieUrl) html += `<div class="row"><span class="label">Selfie:</span><br><img src="${selfieUrl}" alt="Selfie" style="max-width:200px;"/></div>`;
+        if (signUrl)   html += `<div class="row"><span class="label">Firma:</span><br><img src="${signUrl}" style="max-width:200px;"/></div>`;
+        if (selfieUrl) html += `<div class="row"><span class="label">Selfie:</span><br><img src="${selfieUrl}" style="max-width:200px;"/></div>`;
         if (audioUrl)  html += `<div class="row"><span class="label">Audio:</span><br><audio controls src="${audioUrl}"></audio></div>`;
 
         document.getElementById("content").innerHTML = html;
       }).catch((err) => {
-        console.error(err);
         document.getElementById("content").innerHTML = "<p class='error'>❌ Errore caricamento dati</p>";
       });
     }
