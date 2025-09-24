@@ -2,20 +2,11 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Visualizza Consenso</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    h2 { color: #3498db; }
-    .file-link { margin: 8px 0; }
-  </style>
-</head>
-<body>
-  <h2>📄 Dettagli Consenso</h2>
-  <div id="result">⏳ Caricamento...</div>
-
+  <title>Dettagli Consenso</title>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
@@ -28,53 +19,68 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
-    const url = new URL(window.location.href);
-    const userId = url.searchParams.get("userId");
-    const sessionId = url.searchParams.get("sessionId");
+    async function loadConsent() {
+      const url = new URL(window.location.href);
+      const userId = url.searchParams.get("userId");
+      const sessionId = url.searchParams.get("sessionId");
 
-    async function loadSession() {
+      if (!userId || !sessionId) {
+        document.getElementById("content").innerHTML = "<p style='color:red'>❌ Parametri mancanti</p>";
+        return;
+      }
+
       try {
-        if (!userId || !sessionId) throw new Error("Parametri mancanti");
-        const ref = doc(db, "users", userId, "sessions", sessionId);
-        const snap = await getDoc(ref);
+        const refDoc = doc(db, "users", userId, "sessions", sessionId);
+        const snap = await getDoc(refDoc);
 
         if (!snap.exists()) {
-          document.getElementById("result").innerHTML = "❌ Consenso non trovato.";
+          document.getElementById("content").innerHTML = "<p style='color:red'>❌ Consenso non trovato</p>";
           return;
         }
 
         const data = snap.data();
+
         let html = `
+          <h2>📄 Dettagli Consenso</h2>
           <p><b>ID:</b> ${sessionId}</p>
-          <p><b>Proprietario:</b> ${data.ownerName || ""}</p>
-          <p><b>Controparte:</b> ${data.counterpartName || ""}</p>
-          <p><b>Tipo:</b> ${data.type}</p>
-          <p><b>Stato:</b> ${data.status}</p>
+          <p><b>Proprietario:</b> ${data.ownerName || "-"}</p>
+          <p><b>Controparte:</b> ${data.counterpartName || "-"}</p>
+          <p><b>Tipo:</b> ${data.type || "-"}</p>
+          <p><b>Stato:</b> ${data.status || "-"}</p>
         `;
 
-        if (data.endAt?._seconds) {
-          html += `<p><b>Scadenza:</b> ${new Date(data.endAt._seconds * 1000).toLocaleString()}</p>`;
+        // Firma
+        if (data.signaturePath) {
+          const url = await getDownloadURL(ref(storage, data.signaturePath));
+          html += `<p><b>Firma:</b><br><img src="${url}" alt="Firma" style="max-width:300px;border:1px solid #ccc"></p>`;
         }
 
-        // File collegati
-        if (data.signatureUrl) {
-          html += `<div class="file-link">✍️ <a href="${data.signatureUrl}" target="_blank">Firma</a></div>`;
-        }
-        if (data.selfieUrl) {
-          html += `<div class="file-link">🤳 <a href="${data.selfieUrl}" target="_blank">Selfie</a></div>`;
-        }
-        if (data.audioUrl) {
-          html += `<div class="file-link">🎤 <a href="${data.audioUrl}" target="_blank">Audio</a></div>`;
+        // Selfie
+        if (data.selfiePath) {
+          const url = await getDownloadURL(ref(storage, data.selfiePath));
+          html += `<p><b>Selfie:</b><br><img src="${url}" alt="Selfie" style="max-width:300px;border:1px solid #ccc"></p>`;
         }
 
-        document.getElementById("result").innerHTML = html;
+        // Audio
+        if (data.audioPath) {
+          const url = await getDownloadURL(ref(storage, data.audioPath));
+          html += `<p><b>Audio:</b><br><audio controls src="${url}"></audio></p>`;
+        }
+
+        document.getElementById("content").innerHTML = html;
+
       } catch (err) {
-        document.getElementById("result").innerHTML = "❌ Errore caricamento dati.";
-        console.error(err);
+        console.error("Errore caricamento consenso:", err);
+        document.getElementById("content").innerHTML = "<p style='color:red'>❌ Errore caricamento dati</p>";
       }
     }
-    loadSession();
+
+    loadConsent();
   </script>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px;">
+  <div id="content">⏳ Caricamento...</div>
 </body>
 </html>
