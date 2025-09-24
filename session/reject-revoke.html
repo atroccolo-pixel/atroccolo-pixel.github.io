@@ -2,63 +2,50 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Rifiuta Revoca</title>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <title>Rifiuto Revoca Consenso</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f7f7f7; padding: 20px; }
-    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 600px; margin: auto; }
-    h2 { margin-top: 0; color: #333; }
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    h2 { margin-top: 0; }
     .error { color: red; }
-    button { background: #e63946; color: white; border: none; padding: 10px 15px; margin-top: 10px; cursor: pointer; border-radius: 5px; }
+    .success { color: green; }
   </style>
 </head>
 <body>
   <div class="card">
-    <h2>Rifiuto Revoca</h2>
-    <div id="content">Caricamento...</div>
+    <h2>Rifiuto Revoca Consenso</h2>
+    <div id="content">Invio in corso...</div>
   </div>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyB6Hhv8uYHdhu3PE0u28eRkPyb90dLWZRI",
-      authDomain: "trueconsent-cab73.firebaseapp.com",
-      projectId: "trueconsent-cab73",
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    // Parametri da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get("userId");
+    const sessionId = urlParams.get("sessionId");
 
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("sessionId");
-    const userId = params.get("userId");
-
-    if (!sessionId) {
-      document.getElementById("content").innerHTML = "<p class='error'>❌ Parametri mancanti</p>";
-    } else {
-      let docRef;
-      if (userId) {
-        docRef = db.collection("users").doc(userId).collection("sessions").doc(sessionId);
-      } else {
-        docRef = db.collection("sessions").doc(sessionId);
+    async function rejectRevoke() {
+      const content = document.getElementById("content");
+      if (!userId || !sessionId) {
+        content.innerHTML = "<p class='error'>Parametri mancanti</p>";
+        return;
       }
 
-      docRef.get().then((doc) => {
-        if (!doc.exists) {
-          document.getElementById("content").innerHTML = "<p class='error'>❌ Consenso non trovato</p>";
-          return;
-        }
-        document.getElementById("content").innerHTML = `
-          <p>Vuoi rifiutare la revoca di questo consenso?</p>
-          <button onclick="rifiutaRevoca()">Rifiuta Revoca</button>
-        `;
-      });
+      try {
+        const res = await fetch("https://us-central1-trueconsent-cab73.cloudfunctions.net/rejectRevoke", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, sessionId })
+        });
 
-      function rifiutaRevoca() {
-        docRef.update({ status: "valid" })
-          .then(() => document.getElementById("content").innerHTML = "<p>✅ Revoca rifiutata, consenso resta valido</p>")
-          .catch(() => document.getElementById("content").innerHTML = "<p class='error'>❌ Errore durante l'operazione</p>");
+        if (!res.ok) throw new Error("Errore HTTP " + res.status);
+
+        content.innerHTML = "<p class='success'>✅ Revoca rifiutata correttamente</p>";
+      } catch (err) {
+        content.innerHTML = `<p class='error'>❌ Errore durante il rifiuto: ${err.message}</p>`;
       }
     }
+
+    rejectRevoke();
   </script>
 </body>
 </html>
