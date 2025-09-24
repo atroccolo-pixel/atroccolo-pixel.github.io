@@ -4,59 +4,36 @@
   <meta charset="UTF-8">
   <title>Visualizza Consenso</title>
   <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      padding: 16px; 
-      max-width: 900px; 
-      margin: auto; 
-      line-height: 1.4; 
-      color: #2c3e50;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .section { margin-bottom: 18px; }
 
-    h2 { 
-      font-size: 20px; 
-      margin-bottom: 16px; 
-      color: #1a252f;
-    }
+    /* Titolo */
+    h2 { font-size: 20px; margin-bottom: 15px; color: #2c3e50; }
 
-    .section { 
-      margin-bottom: 14px; 
-      font-size: 14px;  /* testi secondari più piccoli */
-    }
+    /* Testi generali */
+    .section b { color: #34495e; }
 
-    b { 
-      color: #34495e; 
-      font-size: 15px; /* etichette leggermente più compatte */
-    }
+    /* Date più piccole */
+    .dates { font-size: 13px; color: #333; }
 
-    img { 
-      max-width: 220px; /* più piccole rispetto a prima */
-      border: 1px solid #ddd; 
-      padding: 3px; 
-      border-radius: 6px; 
-      display: block; 
-      margin-top: 6px;
-    }
+    /* Firma e Selfie più piccoli */
+    img { max-width: 220px; border: 1px solid #ddd; padding: 4px; border-radius: 6px; }
 
     /* Barra audio uniforme */
     audio { 
       display: block; 
       width: 100%; 
       max-width: 600px; 
-      min-height: 46px;   /* più alta e visibile su iPhone/Android */
-      margin: 12px 0; 
-      border: 1px solid #ccc; 
-      border-radius: 6px; 
-      background: #fafafa; 
-      padding: 4px;
+      min-height: 40px;   /* più alta per iPhone */
+      margin-top: 10px; 
     }
 
-    /* Responsive mobile */
+    /* Responsive per mobile */
     @media (max-width: 600px) {
-      body { font-size: 14px; padding: 12px; }
       h2 { font-size: 18px; }
-      img { max-width: 160px; } /* ancora più compatte su mobile */
-      audio { max-width: 100%; min-height: 50px; } /* barra ben visibile su iPhone */
+      .dates { font-size: 12px; }
+      img { max-width: 160px; }
+      audio { min-height: 48px; } /* un filo più alta su iPhone/Android */
     }
   </style>
 </head>
@@ -110,8 +87,8 @@
           <div class="section"><b>Stato:</b> ${data.status || "-"}</div>
           <div class="section"><b>Proprietario:</b> ${data.ownerName || "-"}</div>
           <div class="section"><b>Controparte:</b> ${data.counterpartName || "-"}</div>
-          <div class="section"><b>Data inizio:</b> ${data.startAt?.toDate ? data.startAt.toDate() : "-"}</div>
-          <div class="section"><b>Data fine:</b> ${data.endAt?.toDate ? data.endAt.toDate() : "-"}</div>
+          <div class="section dates"><b>Data inizio:</b> ${data.startAt?.toDate ? data.startAt.toDate() : "-"}</div>
+          <div class="section dates"><b>Data fine:</b> ${data.endAt?.toDate ? data.endAt.toDate() : "-"}</div>
         `;
         document.getElementById("details").innerHTML = html;
 
