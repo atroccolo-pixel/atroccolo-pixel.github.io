@@ -2,49 +2,30 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Accettazione Revoca Consenso</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
-    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    h2 { margin-top: 0; }
-    .error { color: red; }
-    .success { color: green; }
-  </style>
+  <title>Accetta Revoca</title>
 </head>
-<body>
-  <div class="card">
-    <h2>Accettazione Revoca Consenso</h2>
-    <div id="content">Invio in corso...</div>
-  </div>
+<body style="font-family: Arial, sans-serif; padding: 20px;">
+  <h2>✅ Accettazione Revoca</h2>
+  <div id="result">⏳ Invio conferma...</div>
 
   <script>
-    // Parametri da URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get("userId");
-    const sessionId = urlParams.get("sessionId");
+    const url = new URL(window.location.href);
+    const userId = url.searchParams.get("userId");
+    const sessionId = url.searchParams.get("sessionId");
 
     async function acceptRevoke() {
-      const content = document.getElementById("content");
-      if (!userId || !sessionId) {
-        content.innerHTML = "<p class='error'>Parametri mancanti</p>";
-        return;
-      }
-
       try {
-        const res = await fetch("https://us-central1-trueconsent-cab73.cloudfunctions.net/acceptRevoke", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId, sessionId })
-        });
-
-        if (!res.ok) throw new Error("Errore HTTP " + res.status);
-
-        content.innerHTML = "<p class='success'>✅ Revoca accettata correttamente</p>";
+        if (!userId || !sessionId) throw new Error("Parametri mancanti");
+        const res = await fetch(
+          `https://us-central1-trueconsent-cab73.cloudfunctions.net/acceptRevokeEmail?userId=${userId}&sessionId=${sessionId}`
+        );
+        if (!res.ok) throw new Error("Errore funzione");
+        document.getElementById("result").innerHTML = "✅ Revoca accettata, consenso terminato.";
       } catch (err) {
-        content.innerHTML = `<p class='error'>❌ Errore durante l'accettazione: ${err.message}</p>`;
+        document.getElementById("result").innerHTML = "❌ Errore durante l'accettazione.";
+        console.error(err);
       }
     }
-
     acceptRevoke();
   </script>
 </body>
