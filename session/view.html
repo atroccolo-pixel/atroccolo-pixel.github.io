@@ -25,7 +25,7 @@
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
       projectId: "trueconsent-cab73",
-      storageBucket: "trueconsent-cab73.appspot.com",
+      storageBucket: "trueconsent-cab73.firebasestorage.app",
       messagingSenderId: "298691251398",
       appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
     };
@@ -81,9 +81,9 @@
           mediaHtml += `
             <div class="section"><b>Audio:</b><br>
               <audio controls>
-                <source src="${url}" type="audio/mpeg">
                 <source src="${url}" type="audio/3gpp">
-                <source src="${url}" type="audio/mp4">
+                <source src="${url}" type="audio/mpeg">
+                <source src="${url}" type="video/3gpp">
                 Il tuo browser non supporta l'audio.
               </audio>
             </div>`;
@@ -101,3 +101,4 @@
   </script>
 </body>
 </html>
+
