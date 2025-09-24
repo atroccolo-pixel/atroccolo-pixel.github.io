@@ -3,63 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <title>Dettagli Consenso</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h2 { color: #2c3e50; }
+    .card { border: 1px solid #ccc; padding: 15px; border-radius: 6px; max-width: 600px; }
+    img { max-width: 300px; display: block; margin-top: 8px; }
+    audio { margin-top: 8px; }
+    .field { margin-bottom: 10px; }
+    .label { font-weight: bold; }
+  </style>
 </head>
-<body style="font-family: Arial, sans-serif; padding: 20px; line-height: 1.6;">
-  <h2>📄 Dettagli Consenso</h2>
-  <div id="output">⏳ Caricamento...</div>
+<body>
+  <div class="card">
+    <h2>Dettagli Consenso</h2>
+    <div id="details">Caricamento...</div>
+  </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
+    // 🔑 CONFIG FIREBASE (uguale alla tua app)
     const firebaseConfig = {
-      apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
-      authDomain: "trueconsent-cab73.firebaseapp.com",
-      projectId: "trueconsent-cab73",
-      storageBucket: "trueconsent-cab73.firebasestorage.app",
-      messagingSenderId: "298691251398",
-      appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
+      apiKey: "AIzaSyD-XXXXX",   // <-- la tua API KEY
+      authDomain: "trueconsent.firebaseapp.com",
+      projectId: "trueconsent",
+      storageBucket: "trueconsent.appspot.com",
     };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
-    const url = new URL(window.location.href);
-    const userId = url.searchParams.get("userId");
-    const sessionId = url.searchParams.get("sessionId");
-
-    const output = document.getElementById("output");
+    // 🔗 Legge parametri dall'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get("userId");
+    const sessionId = urlParams.get("sessionId");
 
     async function loadData() {
+      const detailsEl = document.getElementById("details");
       try {
-        const ref = doc(db, "users", userId, "sessions", sessionId);
-        const snap = await getDoc(ref);
+        const docRef = doc(db, "users", userId, "sessions", sessionId);
+        const snap = await getDoc(docRef);
 
         if (!snap.exists()) {
-          output.innerHTML = "❌ Documento non trovato.";
+          detailsEl.innerHTML = "<p>❌ Nessun consenso trovato</p>";
           return;
         }
 
-        const d = snap.data();
+        const data = snap.data();
 
-        output.innerHTML = `
-          <p><b>ID:</b> ${sessionId}</p>
-          <p><b>Proprietario:</b> ${d.ownerName || "-"}</p>
-          <p><b>Controparte:</b> ${d.counterpartName || "-"}</p>
-          <p><b>Tipo:</b> ${d.type || "-"}</p>
-          <p><b>Stato:</b> ${d.status || "-"}</p>
-
-          <h3>📸 Selfie</h3>
-          ${d.selfiePath ? `<img src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${encodeURIComponent(d.selfiePath)}?alt=media" width="200">` : "Nessun file"}
-
-          <h3>📝 Firma</h3>
-          ${d.signaturePath ? `<img src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${encodeURIComponent(d.signaturePath)}?alt=media" width="200">` : "Nessun file"}
-
-          <h3>🎤 Audio</h3>
-          ${d.audioPath ? `<audio controls src="https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${encodeURIComponent(d.audioPath)}?alt=media"></audio>` : "Nessun file"}
+        // 📋 Mostra dati principali
+        let html = `
+          <div class="field"><span class="label">ID:</span> ${sessionId}</div>
+          <div class="field"><span class="label">Proprietario:</span> ${data.ownerName || "-"}</div>
+          <div class="field"><span class="label">Controparte:</span> ${data.counterpartName || "-"}</div>
+          <div class="field"><span class="label">Email:</span> ${data.counterpartEmail || "-"}</div>
+          <div class="field"><span class="label">Telefono:</span> ${data.counterpartPhone || "-"}</div>
+          <div class="field"><span class="label">Tipo:</span> ${data.type}</div>
+          <div class="field"><span class="label">Stato:</span> ${data.status}</div>
+          <div class="field"><span class="label">Inizio consenso:</span> ${data.startAt?.toDate ? data.startAt.toDate() : "-"}</div>
+          <div class="field"><span class="label">Fine consenso:</span> ${data.endAt?.toDate ? data.endAt.toDate() : "-"}</div>
         `;
+
+        // 🖼️ Selfie
+        if (data.selfiePath) {
+          const selfieUrl = await getDownloadURL(ref(storage, data.selfiePath));
+          html += `<div class="field"><span class="label">📸 Selfie:</span><br><img src="${selfieUrl}" alt="Selfie"></div>`;
+        }
+
+        // ✍️ Firma
+        if (data.signaturePath) {
+          const signUrl = await getDownloadURL(ref(storage, data.signaturePath));
+          html += `<div class="field"><span class="label">✍️ Firma:</span><br><img src="${signUrl}" alt="Firma"></div>`;
+        }
+
+        // 🎤 Audio
+        if (data.audioPath) {
+          const audioUrl = await getDownloadURL(ref(storage, data.audioPath));
+          html += `<div class="field"><span class="label">🎤 Audio:</span><br><audio controls src="${audioUrl}"></audio></div>`;
+        }
+
+        detailsEl.innerHTML = html;
       } catch (err) {
-        output.innerHTML = "❌ Errore caricamento dati: " + err.message;
         console.error(err);
+        detailsEl.innerHTML = "<p>❌ Errore caricamento dati</p>";
       }
     }
 
