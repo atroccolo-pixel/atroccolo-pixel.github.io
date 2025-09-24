@@ -3,16 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>Dettagli Consenso</title>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; background: #f7f7f7; padding: 20px; }
-    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 700px; margin: auto; }
-    h2 { margin-top: 0; color: #333; }
-    .row { margin: 10px 0; }
-    .label { font-weight: bold; }
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    h2 { margin-top: 0; }
     .error { color: red; }
+    .file-link { margin: 8px 0; display: block; }
   </style>
 </head>
 <body>
@@ -22,69 +21,71 @@
   </div>
 
   <script>
-    // ✅ Configurazione Firebase
+    // Configurazione Firebase
     const firebaseConfig = {
-      apiKey: "AIzaSyB6Hhv8uYHdhu3PE0u28eRkPyb90dLWZRI",
+      apiKey: "AIzaSyBk3fXxVYDWZs3PBf8DbU9hfKuyup8zT4c",
       authDomain: "trueconsent-cab73.firebaseapp.com",
       projectId: "trueconsent-cab73",
-      storageBucket: "trueconsent-cab73.appspot.com",
-      messagingSenderId: "991674652536",
-      appId: "1:991674652536:web:3e0cbad7d5d64b6145720a"
+      storageBucket: "trueconsent-cab73.appspot.com"
     };
-    firebase.initializeApp(firebaseConfig);
+    const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const storage = firebase.storage();
 
-    // 🔗 Parametri da URL (supporta entrambi i formati)
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("sessionId");
-    const userId = params.get("userId");
+    // Recupera parametri URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get("sessionId");
 
-    if (!sessionId) {
-      document.getElementById("content").innerHTML = "<p class='error'>❌ Parametri mancanti</p>";
-    } else {
-      // ✅ Se userId esiste → path vecchio
-      let docRef;
-      if (userId) {
-        docRef = db.collection("users").doc(userId).collection("sessions").doc(sessionId);
-      } else {
-        docRef = db.collection("sessions").doc(sessionId);
+    async function loadConsent() {
+      const content = document.getElementById("content");
+      if (!sessionId) {
+        content.innerHTML = "<p class='error'>Parametro sessionId mancante</p>";
+        return;
       }
 
-      docRef.get().then(async (doc) => {
-        if (!doc.exists) {
-          document.getElementById("content").innerHTML = "<p class='error'>❌ Consenso non trovato</p>";
+      try {
+        const docRef = db.collection("sessions").doc(sessionId);
+        const docSnap = await docRef.get();
+
+        if (!docSnap.exists) {
+          content.innerHTML = "<p class='error'>Consenso non trovato</p>";
           return;
         }
-        const data = doc.data();
 
-        async function getFileUrl(path) {
-          if (!path) return null;
-          try { return await storage.ref(path).getDownloadURL(); }
-          catch (e) { return null; }
-        }
-
-        const selfieUrl = await getFileUrl(data.selfiePath);
-        const signUrl   = await getFileUrl(data.signaturePath);
-        const audioUrl  = await getFileUrl(data.audioPath);
+        const data = docSnap.data();
 
         let html = `
-          <div class="row"><span class="label">Tipo:</span> ${data.type || ''}</div>
-          <div class="row"><span class="label">Controparte:</span> ${data.counterpartName || ''} (${data.counterpartEmail || ''})</div>
-          <div class="row"><span class="label">Telefono:</span> ${data.counterpartPhone || ''}</div>
-          <div class="row"><span class="label">Inizio:</span> ${data.startAt || ''}</div>
-          <div class="row"><span class="label">Fine:</span> ${data.endAt || (data.indefinite ? "Indeterminato" : "")}</div>
-          <div class="row"><span class="label">Stato:</span> ${data.status || ''}</div>
+          <p><b>Tipo:</b> ${data.type}</p>
+          <p><b>Controparte:</b> ${data.counterpartName} (${data.counterpartEmail})</p>
+          <p><b>Telefono:</b> ${data.counterpartPhone}</p>
+          <p><b>Inizio:</b> ${data.startAt?.toDate?.() || data.startAt}</p>
+          <p><b>Fine:</b> ${data.endAt?.toDate?.() || data.endAt}</p>
+          <p><b>Stato:</b> ${data.status}</p>
         `;
-        if (signUrl)   html += `<div class="row"><span class="label">Firma:</span><br><img src="${signUrl}" style="max-width:200px;"/></div>`;
-        if (selfieUrl) html += `<div class="row"><span class="label">Selfie:</span><br><img src="${selfieUrl}" style="max-width:200px;"/></div>`;
-        if (audioUrl)  html += `<div class="row"><span class="label">Audio:</span><br><audio controls src="${audioUrl}"></audio></div>`;
 
-        document.getElementById("content").innerHTML = html;
-      }).catch((err) => {
-        document.getElementById("content").innerHTML = "<p class='error'>❌ Errore caricamento dati</p>";
-      });
+        // Link ai file in storage
+        async function makeLink(path, label) {
+          if (!path) return "";
+          try {
+            const url = await storage.ref(path).getDownloadURL();
+            return `<a class="file-link" href="${url}" target="_blank">📎 ${label}</a>`;
+          } catch (e) {
+            return `<p class="error">Errore caricamento ${label}</p>`;
+          }
+        }
+
+        html += await makeLink(data.signaturePath, "Firma");
+        html += await makeLink(data.selfiePath, "Selfie");
+        html += await makeLink(data.audioPath, "Audio");
+
+        content.innerHTML = html;
+
+      } catch (err) {
+        content.innerHTML = `<p class='error'>Errore: ${err.message}</p>`;
+      }
     }
+
+    loadConsent();
   </script>
 </body>
 </html>
