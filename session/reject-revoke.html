@@ -2,13 +2,28 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Rifiuta Revoca</title>
+  <title>Rifiuto Revoca</title>
 </head>
 <body style="font-family: Arial, sans-serif; padding: 20px;">
   <h2>❌ Rifiuto Revoca</h2>
   <div id="result">⏳ Invio rifiuto...</div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
+      authDomain: "trueconsent-cab73.firebaseapp.com",
+      projectId: "trueconsent-cab73",
+      storageBucket: "trueconsent-cab73.appspot.com",
+      messagingSenderId: "298691251398",
+      appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     const url = new URL(window.location.href);
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
@@ -16,16 +31,22 @@
     async function rejectRevoke() {
       try {
         if (!userId || !sessionId) throw new Error("Parametri mancanti");
-        const res = await fetch(
-          `https://us-central1-trueconsent-cab73.cloudfunctions.net/rejectRevokeEmail?userId=${userId}&sessionId=${sessionId}`
-        );
-        if (!res.ok) throw new Error("Errore funzione");
+
+        const ref = doc(db, "users", userId, "sessions", sessionId);
+        await updateDoc(ref, {
+          status: "valid",
+          revokeRequesterUid: null,
+          revokeRequesterAt: null,
+          revokeCounterpartyAt: serverTimestamp()
+        });
+
         document.getElementById("result").innerHTML = "✅ Revoca rifiutata, consenso ancora valido.";
       } catch (err) {
-        document.getElementById("result").innerHTML = "❌ Errore durante il rifiuto.";
         console.error(err);
+        document.getElementById("result").innerHTML = "❌ Errore durante il rifiuto della revoca.";
       }
     }
+
     rejectRevoke();
   </script>
 </body>
