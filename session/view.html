@@ -2,30 +2,47 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Visualizza Consenso</title>
+  <title>Dettagli Consenso</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    .section { margin-bottom: 20px; }
-    img { max-width: 300px; border: 1px solid #ddd; padding: 4px; border-radius: 6px; }
-    audio { margin-top: 10px; display: block; }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h2 { color: #2c3e50; }
+    .card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; max-width: 700px; }
+    .field { margin-bottom: 10px; }
+    img { max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px; margin-top: 6px; }
+    audio { margin-top: 10px; width: 100%; }
   </style>
 </head>
 <body>
-  <h2>📄 Dettagli Consenso</h2>
-  <div id="details">⏳ Caricamento...</div>
-  <div id="media"></div>
+  <div class="card">
+    <h2>📄 Dettagli Consenso</h2>
+    <div class="field"><b>ID Consenso:</b> <span id="sessionId"></span></div>
+    <div class="field"><b>Tipo:</b> <span id="type"></span></div>
+    <div class="field"><b>Stato:</b> <span id="status"></span></div>
+    <div class="field"><b>Proprietario:</b> <span id="ownerName"></span></div>
+    <div class="field"><b>Controparte:</b> <span id="counterpartName"></span></div>
+    <div class="field"><b>Data inizio:</b> <span id="startAt"></span></div>
+    <div class="field"><b>Data fine:</b> <span id="endAt"></span></div>
+
+    <h3>✍️ Firma:</h3>
+    <img id="signature" alt="Firma" />
+
+    <h3>📸 Selfie:</h3>
+    <img id="selfie" alt="Selfie" />
+
+    <h3>🎤 Audio:</h3>
+    <div id="audio"></div>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    // 🔥 Config tua
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
       projectId: "trueconsent-cab73",
-      storageBucket: "trueconsent-cab73.firebasestorage.app",
+      storageBucket: "trueconsent-cab73.appspot.com",
       messagingSenderId: "298691251398",
       appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
     };
@@ -38,58 +55,56 @@
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
 
-    async function loadConsent() {
-      if (!userId || !sessionId) {
-        document.getElementById("details").innerText = "❌ Parametri mancanti.";
-        return;
-      }
-
+    async function loadSession() {
       try {
         const refDoc = doc(db, "users", userId, "sessions", sessionId);
         const snap = await getDoc(refDoc);
-
-        if (!snap.exists()) {
-          document.getElementById("details").innerText = "❌ Consenso non trovato.";
-          return;
-        }
-
+        if (!snap.exists()) throw new Error("Sessione non trovata");
         const data = snap.data();
-        let html = `
-          <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
-          <div class="section"><b>Tipo:</b> ${data.type || "-"}</div>
-          <div class="section"><b>Stato:</b> ${data.status || "-"}</div>
-          <div class="section"><b>Proprietario:</b> ${data.ownerName || "-"}</div>
-          <div class="section"><b>Controparte:</b> ${data.counterpartName || "-"}</div>
-          <div class="section"><b>Data inizio:</b> ${data.startAt?.toDate ? data.startAt.toDate() : "-"}</div>
-          <div class="section"><b>Data fine:</b> ${data.endAt?.toDate ? data.endAt.toDate() : "-"}</div>
-        `;
-        document.getElementById("details").innerHTML = html;
 
-        // Media (firma, selfie, audio)
-        let mediaHtml = "";
+        document.getElementById("sessionId").innerText = sessionId;
+        document.getElementById("type").innerText = data.type || "-";
+        document.getElementById("status").innerText = data.status || "-";
+        document.getElementById("ownerName").innerText = data.ownerName || "-";
+        document.getElementById("counterpartName").innerText = data.counterpartName || "-";
+        document.getElementById("startAt").innerText = data.startAt?.toDate ? data.startAt.toDate() : "-";
+        document.getElementById("endAt").innerText = data.endAt?.toDate ? data.endAt.toDate() : "-";
 
+        // Firma
         if (data.signaturePath) {
-          const url = await getDownloadURL(ref(storage, data.signaturePath));
-          mediaHtml += `<div class="section"><b>Firma:</b><br><img src="${url}" alt="Firma"></div>`;
-        }
-        if (data.selfiePath) {
-          const url = await getDownloadURL(ref(storage, data.selfiePath));
-          mediaHtml += `<div class="section"><b>Selfie:</b><br><img src="${url}" alt="Selfie"></div>`;
-        }
-        if (data.audioPath) {
-          const url = await getDownloadURL(ref(storage, data.audioPath));
-          mediaHtml += `<div class="section"><b>Audio:</b><br><audio controls src="${url}"></audio></div>`;
+          const sigRef = ref(storage, data.signaturePath);
+          document.getElementById("signature").src = await getDownloadURL(sigRef);
         }
 
-        document.getElementById("media").innerHTML = mediaHtml || "<i>Nessun file multimediale disponibile</i>";
+        // Selfie
+        if (data.selfiePath) {
+          const selfieRef = ref(storage, data.selfiePath);
+          document.getElementById("selfie").src = await getDownloadURL(selfieRef);
+        }
+
+        // AUDIO con fallback multiplo
+        if (data.audioPath) {
+          const audioRef = ref(storage, data.audioPath);
+          const audioUrl = await getDownloadURL(audioRef);
+          document.getElementById("audio").innerHTML = `
+            <audio controls>
+              <source src="${audioUrl}" type="audio/mpeg">
+              <source src="${audioUrl}" type="audio/wav">
+              <source src="${audioUrl}" type="audio/3gpp">
+              Il tuo browser non supporta l'audio.
+            </audio>
+          `;
+        } else {
+          document.getElementById("audio").innerText = "Nessun audio disponibile.";
+        }
 
       } catch (err) {
-        console.error("Errore caricamento consenso:", err);
-        document.getElementById("details").innerText = "❌ Errore durante il caricamento dei dati.";
+        console.error(err);
+        document.querySelector(".card").innerHTML = `<p>❌ Errore caricamento dati.</p>`;
       }
     }
 
-    loadConsent();
+    loadSession();
   </script>
 </body>
 </html>
