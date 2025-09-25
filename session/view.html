@@ -20,40 +20,37 @@
       margin-top: 10px;
       display: block;
       width: 100%;
-      min-height: 60px;
+      min-height: 65px;
       background: #f9f9f9;
       border: 1px solid #ccc;
       border-radius: 6px;
     }
 
-    /* --- Fix iPhone Safari (ingrandiamo testo e titoli multimediali) --- */
+    /* --- Fix iPhone Safari (titoli multimediali più grandi) --- */
     @supports (-webkit-touch-callout: none) {
-      body {
-        font-size: 16px;
-      }
       .section b {
-        font-size: 18px; /* titoli multimediali più grandi su iPhone */
+        font-size: 20px; /* ancora più grande per iPhone */
       }
       audio {
-        height: 70px !important;
-        min-height: 70px !important;
+        height: 75px !important;
+        min-height: 75px !important;
         -webkit-appearance: none;
         overflow: visible;
       }
     }
 
-    /* --- Android: barra più alta (80px) --- */
+    /* --- Android: barra più alta (90px) --- */
     @media (max-width: 768px) {
       audio {
-        min-height: 80px;
-        height: 80px;
+        min-height: 90px;
+        height: 90px;
       }
     }
 
-    /* --- PC/Large screen: barra max 500px --- */
+    /* --- PC/Large screen: barra max 550px --- */
     @media (min-width: 1024px) {
       audio {
-        max-width: 500px;
+        max-width: 550px;
       }
     }
   </style>
