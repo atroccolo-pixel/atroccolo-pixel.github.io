@@ -15,26 +15,35 @@
       border: 1px solid #ddd;
       padding: 4px;
       border-radius: 6px;
-      cursor: pointer;
+      cursor: pointer; /* cliccabili */
       transition: transform 0.2s;
     }
     img:hover { transform: scale(1.02); }
 
     audio {
-      margin-top: 14px;
+      margin-top: 10px;
       display: block;
       width: 100%;
-      min-height: 85px;     /* ✅ Android non microscopico */
-      max-width: 550px;     /* ✅ PC non enorme */
+      min-height: 60px;
       background: #f9f9f9;
       border: 1px solid #ccc;
       border-radius: 6px;
     }
 
-    /* ✅ Fix specifico solo per Safari/iOS */
+    /* --- Fix iPhone Safari --- */
     @supports (-webkit-touch-callout: none) {
       audio {
-        padding-bottom: 40px; /* spazio extra per barra iPhone */
+        height: 70px !important;
+        min-height: 70px !important;
+        -webkit-appearance: none;
+        overflow: visible;
+      }
+    }
+
+    /* --- Fix Android --- */
+    @media (max-width: 768px) {
+      audio {
+        min-height: 65px;
       }
     }
 
@@ -142,7 +151,7 @@
 
         document.getElementById("media").innerHTML = mediaHtml || "<i>Nessun file multimediale disponibile</i>";
 
-        // Lightbox per immagini
+        // Lightbox
         document.querySelectorAll(".zoomable").forEach(img => {
           img.addEventListener("click", () => {
             const lightbox = document.getElementById("lightbox");
