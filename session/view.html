@@ -15,7 +15,7 @@
       border: 1px solid #ddd;
       padding: 4px;
       border-radius: 6px;
-      cursor: pointer; /* cliccabili */
+      cursor: pointer;
       transition: transform 0.2s;
     }
     img:hover { transform: scale(1.02); }
@@ -30,8 +30,10 @@
       border-radius: 6px;
     }
 
-    /* --- Fix iPhone Safari --- */
+    /* --- iPhone Safari: ingrandisco scritte e immagini --- */
     @supports (-webkit-touch-callout: none) {
+      body { font-size: 17px; }
+      img { max-width: 260px; }
       audio {
         height: 70px !important;
         min-height: 70px !important;
@@ -40,10 +42,10 @@
       }
     }
 
-    /* --- Fix Android --- */
+    /* --- Android: barra più alta --- */
     @media (max-width: 768px) {
       audio {
-        min-height: 65px;
+        min-height: 110px;
       }
     }
 
