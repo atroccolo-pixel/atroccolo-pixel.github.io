@@ -7,12 +7,11 @@
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
+      font-size: 15px; /* ritorno a un font più sobrio */
     }
-    .section {
-      margin-bottom: 20px;
-    }
+    .section { margin-bottom: 18px; }
     img {
-      max-width: 260px; /* leggermente più piccole firma e selfie */
+      max-width: 240px; /* leggermente più piccole firma e selfie */
       border: 1px solid #ddd;
       padding: 4px;
       border-radius: 6px;
@@ -21,21 +20,21 @@
       margin-top: 10px;
       display: block;
       width: 100%;
+      min-height: 44px; /* più leggibile di default */
     }
 
-    /* --- Fix iOS Safari (barra più alta) --- */
+    /* --- Fix iPhone Safari (WebKit) --- */
     @supports (-webkit-touch-callout: none) {
       audio {
-        min-height: 60px !important; /* forza altezza su iPhone */
+        min-height: 60px !important; /* forza barra visibile */
+        -webkit-transform: translateZ(0); /* forza il rendering corretto */
       }
     }
 
-    /* --- Fix Android (font più grande + barra leggibile) --- */
+    /* --- Fix Android (solo altezza barra, non font) --- */
     @media (max-width: 768px) {
-      body { font-size: 17px; } /* leggermente più grande */
       audio {
-        font-size: 16px;
-        min-height: 48px;
+        min-height: 50px;
       }
     }
   </style>
@@ -50,7 +49,6 @@
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    // 🔥 Config TrueConsent
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
@@ -95,7 +93,6 @@
         `;
         document.getElementById("details").innerHTML = html;
 
-        // Media (firma, selfie, audio)
         let mediaHtml = "";
 
         if (data.signaturePath) {
