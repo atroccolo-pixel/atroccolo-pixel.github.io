@@ -20,30 +20,30 @@
       margin-top: 10px;
       display: block;
       width: 100%;
-      min-height: 65px;
+      min-height: 70px;
       background: #f9f9f9;
       border: 1px solid #ccc;
       border-radius: 6px;
     }
 
-    /* --- Fix iPhone Safari (titoli multimediali più grandi) --- */
+    /* --- Fix iPhone Safari --- */
     @supports (-webkit-touch-callout: none) {
       .section b {
-        font-size: 20px; /* ancora più grande per iPhone */
+        font-size: 22px; /* scritte ancora più grandi su iPhone */
       }
       audio {
-        height: 75px !important;
-        min-height: 75px !important;
+        height: 80px !important;
+        min-height: 80px !important;
         -webkit-appearance: none;
         overflow: visible;
       }
     }
 
-    /* --- Android: barra più alta (90px) --- */
+    /* --- Android: barra più alta (110px) --- */
     @media (max-width: 768px) {
       audio {
-        min-height: 90px;
-        height: 90px;
+        min-height: 110px;
+        height: 110px;
       }
     }
 
