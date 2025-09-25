@@ -7,11 +7,11 @@
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      font-size: 15px; /* ritorno a un font più sobrio */
+      font-size: 15px;
     }
     .section { margin-bottom: 18px; }
     img {
-      max-width: 240px; /* leggermente più piccole firma e selfie */
+      max-width: 220px; /* più piccole firma e selfie */
       border: 1px solid #ddd;
       padding: 4px;
       border-radius: 6px;
@@ -20,21 +20,26 @@
       margin-top: 10px;
       display: block;
       width: 100%;
-      min-height: 44px; /* più leggibile di default */
+      min-height: 60px;  /* più alta di default */
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
 
-    /* --- Fix iPhone Safari (WebKit) --- */
+    /* --- Fix iPhone Safari --- */
     @supports (-webkit-touch-callout: none) {
       audio {
-        min-height: 60px !important; /* forza barra visibile */
-        -webkit-transform: translateZ(0); /* forza il rendering corretto */
+        height: 70px !important;  /* forza altezza visibile */
+        min-height: 70px !important;
+        -webkit-appearance: none;
+        overflow: visible;
       }
     }
 
-    /* --- Fix Android (solo altezza barra, non font) --- */
+    /* --- Fix Android (barra più visibile) --- */
     @media (max-width: 768px) {
       audio {
-        min-height: 50px;
+        min-height: 65px;
       }
     }
   </style>
