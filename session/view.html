@@ -22,14 +22,20 @@
 
     audio {
       margin-top: 14px;
-      margin-bottom: 20px; /* ✅ Spazio extra per iPhone */
       display: block;
       width: 100%;
-      min-height: 85px;     /* ✅ sufficiente per Android */
-      max-width: 550px;     /* ✅ non gigante su PC */
+      min-height: 85px;     /* ✅ Android non microscopico */
+      max-width: 550px;     /* ✅ PC non enorme */
       background: #f9f9f9;
       border: 1px solid #ccc;
       border-radius: 6px;
+    }
+
+    /* ✅ Fix specifico solo per Safari/iOS */
+    @supports (-webkit-touch-callout: none) {
+      audio {
+        padding-bottom: 40px; /* spazio extra per barra iPhone */
+      }
     }
 
     /* Lightbox overlay */
