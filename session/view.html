@@ -26,13 +26,13 @@
       border-radius: 6px;
     }
 
-    /* --- Fix iPhone Safari (ingrandiamo testo + barra stabile) --- */
+    /* --- Fix iPhone Safari (ingrandiamo testo e titoli multimediali) --- */
     @supports (-webkit-touch-callout: none) {
       body {
-        font-size: 16px; /* leggermente più grande su iPhone */
+        font-size: 16px;
       }
-      h2, b {
-        font-size: 17px;
+      .section b {
+        font-size: 18px; /* titoli multimediali più grandi su iPhone */
       }
       audio {
         height: 70px !important;
@@ -42,10 +42,11 @@
       }
     }
 
-    /* --- Android: barra un po' più alta --- */
+    /* --- Android: barra più alta (80px) --- */
     @media (max-width: 768px) {
       audio {
-        min-height: 70px;
+        min-height: 80px;
+        height: 80px;
       }
     }
 
