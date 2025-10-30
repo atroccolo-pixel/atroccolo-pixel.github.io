@@ -3,11 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Visualizza Consenso – TrueConsent</title>
-
-  <!-- Librerie necessarie -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -51,7 +46,6 @@
       border: 1px solid #ccc;
       border-radius: 6px;
     }
-
     #lightbox {
       display: none;
       position: fixed;
@@ -68,7 +62,6 @@
       border-radius: 10px;
       box-shadow: 0 0 15px rgba(0,0,0,0.6);
     }
-
     .footer {
       margin-top: 40px;
       font-size: 13px;
@@ -83,7 +76,6 @@
   <h2>📄 Dettagli Consenso</h2>
   <div id="details">⏳ Caricamento...</div>
   <div id="media"></div>
-
   <div id="actions" style="display:none;">
     <button id="btnPrint">📄 Stampa consenso</button>
     <button id="btnDownload">📦 Scarica consenso completo</button>
@@ -91,7 +83,7 @@
 
   <div id="lightbox"><img src="" alt="Preview"/></div>
 
-  <div class="footer" id="legal">
+  <div class="footer">
     <b>Informazioni legali e conservazione</b><br>
     Questo consenso digitale è stato generato tramite la piattaforma TrueConsent.<br>
     La sua validità è regolata esclusivamente dalla durata indicata al momento della creazione (a tempo determinato o indeterminato)
@@ -103,7 +95,11 @@
     © 2025 TrueConsent – Tutti i diritti riservati.
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
@@ -113,9 +109,9 @@
       appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
     };
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const storage = firebase.storage();
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
 
     const url = new URL(window.location.href);
     const userId = url.searchParams.get("userId");
@@ -130,9 +126,9 @@
       }
 
       try {
-        const refDoc = db.collection("users").doc(userId).collection("sessions").doc(sessionId);
-        const snap = await refDoc.get();
-        if (!snap.exists) {
+        const refDoc = doc(db, "users", userId, "sessions", sessionId);
+        const snap = await getDoc(refDoc);
+        if (!snap.exists()) {
           document.getElementById("details").innerText = "❌ Consenso non trovato.";
           return;
         }
@@ -152,15 +148,15 @@
         let mediaHtml = "";
 
         if (data.signaturePath) {
-          const url = await storage.ref(data.signaturePath).getDownloadURL();
+          const url = await getDownloadURL(ref(storage, data.signaturePath));
           mediaHtml += `<div class="section"><b>Firma:</b><br><img src="${url}" alt="Firma" class="zoomable"></div>`;
         }
         if (data.selfiePath) {
-          const url = await storage.ref(data.selfiePath).getDownloadURL();
+          const url = await getDownloadURL(ref(storage, data.selfiePath));
           mediaHtml += `<div class="section"><b>Selfie:</b><br><img src="${url}" alt="Selfie" class="zoomable"></div>`;
         }
         if (data.audioPath) {
-          audioURL = await storage.ref(data.audioPath).getDownloadURL();
+          audioURL = await getDownloadURL(ref(storage, data.audioPath));
           mediaHtml += `<div class="section"><b>Audio:</b><br>
             <audio controls>
               <source src="${audioURL}" type="audio/m4a">
@@ -188,7 +184,6 @@
       }
     }
 
-    // ✅ Nuova funzione con gestione CORS
     async function downloadAll() {
       try {
         const { jsPDF } = window.jspdf;
