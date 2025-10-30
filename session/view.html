@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <title>Visualizza Consenso – TrueConsent</title>
 
-  <!-- Librerie necessarie -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js"></script>
+  <!-- Librerie Firebase e utility -->
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -51,7 +51,6 @@
       border: 1px solid #ccc;
       border-radius: 6px;
     }
-
     #lightbox {
       display: none;
       position: fixed;
@@ -68,7 +67,6 @@
       border-radius: 10px;
       box-shadow: 0 0 15px rgba(0,0,0,0.6);
     }
-
     .footer {
       margin-top: 40px;
       font-size: 13px;
@@ -103,7 +101,11 @@
     © 2025 TrueConsent – Tutti i diritti riservati.
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
@@ -113,27 +115,27 @@
       appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
     };
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const storage = firebase.storage();
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
 
     const url = new URL(window.location.href);
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
-
     let audioURL = null;
 
     async function loadConsent() {
+      const details = document.getElementById("details");
       if (!userId || !sessionId) {
-        document.getElementById("details").innerText = "❌ Parametri mancanti.";
+        details.innerText = "❌ Parametri mancanti.";
         return;
       }
 
       try {
-        const refDoc = db.collection("users").doc(userId).collection("sessions").doc(sessionId);
-        const snap = await refDoc.get();
-        if (!snap.exists) {
-          document.getElementById("details").innerText = "❌ Consenso non trovato.";
+        const refDoc = doc(db, "users", userId, "sessions", sessionId);
+        const snap = await getDoc(refDoc);
+        if (!snap.exists()) {
+          details.innerText = "❌ Consenso non trovato.";
           return;
         }
 
@@ -144,28 +146,23 @@
           <div class="section"><b>Stato:</b> ${data.status || "-"}</div>
           <div class="section"><b>Proprietario:</b> ${data.ownerName || "-"}</div>
           <div class="section"><b>Controparte:</b> ${data.counterpartName || "-"}</div>
-          <div class="section"><b>Data inizio:</b> ${data.startAt?.toDate ? data.startAt.toDate() : "-"}</div>
-          <div class="section"><b>Data fine:</b> ${data.endAt?.toDate ? data.endAt.toDate() : "-"}</div>
-        `;
-        document.getElementById("details").innerHTML = html;
+          <div class="section"><b>Data inizio:</b> ${data.startAt? new Date(data.startAt.seconds*1000).toLocaleString() : "-"}</div>
+          <div class="section"><b>Data fine:</b> ${data.endAt? new Date(data.endAt.seconds*1000).toLocaleString() : "-"}</div>`;
+        details.innerHTML = html;
 
         let mediaHtml = "";
-
         if (data.signaturePath) {
-          const url = await storage.ref(data.signaturePath).getDownloadURL();
-          mediaHtml += `<div class="section"><b>Firma:</b><br><img src="${url}" alt="Firma" class="zoomable"></div>`;
+          const url = await getDownloadURL(ref(storage, data.signaturePath));
+          mediaHtml += `<div class="section"><b>Firma:</b><br><img src="${url}" class="zoomable"></div>`;
         }
         if (data.selfiePath) {
-          const url = await storage.ref(data.selfiePath).getDownloadURL();
-          mediaHtml += `<div class="section"><b>Selfie:</b><br><img src="${url}" alt="Selfie" class="zoomable"></div>`;
+          const url = await getDownloadURL(ref(storage, data.selfiePath));
+          mediaHtml += `<div class="section"><b>Selfie:</b><br><img src="${url}" class="zoomable"></div>`;
         }
         if (data.audioPath) {
-          audioURL = await storage.ref(data.audioPath).getDownloadURL();
+          audioURL = await getDownloadURL(ref(storage, data.audioPath));
           mediaHtml += `<div class="section"><b>Audio:</b><br>
-            <audio controls>
-              <source src="${audioURL}" type="audio/m4a">
-              Il tuo browser non supporta l’audio.
-            </audio></div>`;
+            <audio controls><source src="${audioURL}" type="audio/m4a"></audio></div>`;
         }
 
         document.getElementById("media").innerHTML = mediaHtml || "<i>Nessun file multimediale disponibile</i>";
@@ -181,24 +178,17 @@
         document.getElementById("lightbox").addEventListener("click", () => {
           document.getElementById("lightbox").style.display = "none";
         });
-
       } catch (err) {
         console.error("Errore caricamento consenso:", err);
-        document.getElementById("details").innerText = "❌ Errore durante il caricamento dei dati.";
+        details.innerText = "❌ Errore durante il caricamento dei dati.";
       }
     }
 
     async function downloadAll() {
       const { jsPDF } = window.jspdf;
-      const docEl = document.body.cloneNode(true);
-      docEl.querySelector("#actions").style.display = "none";
-      const footer = document.createElement("p");
-      footer.style.marginTop = "30px";
-      footer.style.fontSize = "12px";
-      footer.innerText = "Stampato il " + new Date().toLocaleString();
-      docEl.appendChild(footer);
-
-      const canvas = await html2canvas(docEl, { scale: 2 });
+      const page = document.body.cloneNode(true);
+      page.querySelector("#actions").remove();
+      const canvas = await html2canvas(page, { scale: 2 });
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
       const width = pdf.internal.pageSize.getWidth();
@@ -207,16 +197,15 @@
       const pdfBlob = pdf.output("blob");
 
       const zip = new JSZip();
-      zip.file(`consent_${sessionId}.pdf`, pdfBlob);
-
+      zip.file(`Consenso_${sessionId}.pdf`, pdfBlob);
       if (audioURL) {
         const res = await fetch(audioURL);
         const blob = await res.blob();
-        zip.file(`audio_${sessionId}.m4a`, blob);
+        zip.file(`Audio_${sessionId}.m4a`, blob);
       }
 
-      const zipBlob = await zip.generateAsync({ type: "blob" });
-      saveAs(zipBlob, `Consenso_${sessionId}.zip`);
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, `Consenso_${sessionId}.zip`);
     }
 
     document.getElementById("btnPrint").addEventListener("click", () => window.print());
