@@ -5,6 +5,9 @@
   <title>Visualizza Consenso – TrueConsent</title>
 
   <!-- Librerie necessarie -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -83,7 +86,7 @@
 
   <div id="actions" style="display:none;">
     <button id="btnPrint">📄 Stampa consenso</button>
-    <button id="btnDownload">⬇️ Scarica consenso completo</button>
+    <button id="btnDownload">📦 Scarica consenso completo</button>
   </div>
 
   <div id="lightbox"><img src="" alt="Preview"/></div>
@@ -100,11 +103,7 @@
     © 2025 TrueConsent – Tutti i diritti riservati.
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
@@ -114,15 +113,14 @@
       appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
 
     const url = new URL(window.location.href);
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
 
-    let filesToDownload = [];
     let audioURL = null;
 
     async function loadConsent() {
@@ -132,9 +130,9 @@
       }
 
       try {
-        const refDoc = doc(db, "users", userId, "sessions", sessionId);
-        const snap = await getDoc(refDoc);
-        if (!snap.exists()) {
+        const refDoc = db.collection("users").doc(userId).collection("sessions").doc(sessionId);
+        const snap = await refDoc.get();
+        if (!snap.exists) {
           document.getElementById("details").innerText = "❌ Consenso non trovato.";
           return;
         }
@@ -152,18 +150,17 @@
         document.getElementById("details").innerHTML = html;
 
         let mediaHtml = "";
-        filesToDownload = [];
 
         if (data.signaturePath) {
-          const url = await getDownloadURL(ref(storage, data.signaturePath));
+          const url = await storage.ref(data.signaturePath).getDownloadURL();
           mediaHtml += `<div class="section"><b>Firma:</b><br><img src="${url}" alt="Firma" class="zoomable"></div>`;
         }
         if (data.selfiePath) {
-          const url = await getDownloadURL(ref(storage, data.selfiePath));
+          const url = await storage.ref(data.selfiePath).getDownloadURL();
           mediaHtml += `<div class="section"><b>Selfie:</b><br><img src="${url}" alt="Selfie" class="zoomable"></div>`;
         }
         if (data.audioPath) {
-          audioURL = await getDownloadURL(ref(storage, data.audioPath));
+          audioURL = await storage.ref(data.audioPath).getDownloadURL();
           mediaHtml += `<div class="section"><b>Audio:</b><br>
             <audio controls>
               <source src="${audioURL}" type="audio/m4a">
@@ -195,7 +192,6 @@
       const { jsPDF } = window.jspdf;
       const docEl = document.body.cloneNode(true);
       docEl.querySelector("#actions").style.display = "none";
-
       const footer = document.createElement("p");
       footer.style.marginTop = "30px";
       footer.style.fontSize = "12px";
