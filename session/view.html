@@ -150,11 +150,11 @@
         let mediaHtml = "";
         if (data.signaturePath) {
           const url = await getDownloadURL(ref(storage, data.signaturePath));
-          mediaHtml += `<div class="section"><b>Firma:</b><br><img src="${url}" class="zoomable"></div>`;
+          mediaHtml += `<div class="section"><b>Firma:</b><br><img src="${url}" crossorigin="anonymous" class="zoomable"></div>`;
         }
         if (data.selfiePath) {
           const url = await getDownloadURL(ref(storage, data.selfiePath));
-          mediaHtml += `<div class="section"><b>Selfie:</b><br><img src="${url}" class="zoomable"></div>`;
+          mediaHtml += `<div class="section"><b>Selfie:</b><br><img src="${url}" crossorigin="anonymous" class="zoomable"></div>`;
         }
         if (data.audioPath) {
           audioURL = await getDownloadURL(ref(storage, data.audioPath));
@@ -184,13 +184,15 @@
     async function downloadAll() {
       try {
         const { jsPDF } = window.jspdf;
-        if (!jsPDF) {
-          alert("Errore: libreria PDF non caricata.");
-          return;
-        }
         const area = document.body.cloneNode(true);
         area.querySelector("#actions").remove();
-        const canvas = await html2canvas(area, { scale: 2 });
+
+        const canvas = await html2canvas(area, {
+          useCORS: true,
+          allowTaint: false,
+          scale: 2
+        });
+
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "mm", "a4");
         const width = pdf.internal.pageSize.getWidth();
@@ -205,16 +207,17 @@
           const blob = await res.blob();
           zip.file(`Audio_${sessionId}.m4a`, blob);
         }
+
         const content = await zip.generateAsync({ type: "blob" });
         saveAs(content, `Consenso_${sessionId}.zip`);
       } catch (err) {
         console.error("Errore download ZIP:", err);
-        alert("Errore durante il download del consenso. Riprova.");
+        alert("Errore durante il download del consenso. Verifica i permessi e riprova.");
       }
     }
 
     document.getElementById("btnPrint").addEventListener("click", () => window.print());
-    document.getElementById("btnDownload").addEventListener("click", () => downloadAll());
+    document.getElementById("btnDownload").addEventListener("click", downloadAll);
 
     loadConsent();
   </script>
