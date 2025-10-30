@@ -3,40 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <title>Visualizza Consenso – TrueConsent</title>
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
-    body { font-family: Arial, sans-serif; background:#fafafa; padding:20px; font-size:15px; }
-    h2 { color:#6c63ff; }
-    .section { margin-bottom:18px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #fafafa;
+      padding: 20px;
+      font-size: 15px;
+    }
+    h2 { color: #6c63ff; }
+    .section { margin-bottom: 18px; }
     button {
-      background:#6c63ff; color:#fff; border:none; border-radius:6px;
-      padding:10px 18px; cursor:pointer; margin:10px 8px 20px 0; font-size:15px;
+      background-color: #6c63ff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 18px;
+      cursor: pointer;
+      margin: 10px 8px 20px 0;
+      font-size: 15px;
     }
-    button:hover { background:#5548e2; }
+    button:hover { background-color: #5548e2; }
     img {
-      max-width:220px; border:1px solid #ddd; padding:4px; border-radius:6px;
-      cursor:pointer; transition:transform 0.2s;
+      max-width: 220px;
+      border: 1px solid #ddd;
+      padding: 4px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s;
     }
-    img:hover { transform:scale(1.02); }
+    img:hover { transform: scale(1.02); }
     audio {
-      margin-top:10px; display:block; width:100%; min-height:60px;
-      background:#f9f9f9; border:1px solid #ccc; border-radius:6px;
+      margin-top: 10px;
+      display: block;
+      width: 100%;
+      min-height: 60px;
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
     #lightbox {
-      display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.85); align-items:center; justify-content:center;
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      align-items: center;
+      justify-content: center;
     }
-    #lightbox img { max-width:90%; max-height:90%; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.6); }
+    #lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    }
     .footer {
-      margin-top:40px; font-size:13px; color:#555; border-top:1px solid #ddd;
-      padding-top:20px; line-height:1.6;
+      margin-top: 40px;
+      font-size: 13px;
+      color: #555;
+      border-top: 1px solid #ddd;
+      padding-top: 20px;
+      line-height: 1.6;
     }
   </style>
 </head>
+
 <body>
   <h2>📄 Dettagli Consenso</h2>
   <div id="details">⏳ Caricamento...</div>
@@ -45,15 +81,18 @@
     <button id="btnPrint">📄 Stampa consenso</button>
     <button id="btnDownload">📦 Scarica consenso completo</button>
   </div>
+
   <div id="lightbox"><img src="" alt="Preview"></div>
 
   <div class="footer">
     <b>Informazioni legali e conservazione</b><br>
     Questo consenso digitale è stato generato tramite la piattaforma TrueConsent.<br>
-    La sua validità è regolata esclusivamente dalla durata indicata al momento della creazione e dalle condizioni di revoca previste dai
+    La sua validità è regolata esclusivamente dalla durata indicata al momento della creazione
+    e dalle condizioni di revoca previste dai
     <a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Termini e Condizioni ufficiali</a>.<br>
-    Scaricare e conservare copia di questo consenso consente di dimostrare in futuro l’autorizzazione effettiva concessa in questa data,
-    anche se l’account o i file originali dovessero essere rimossi.<br>
+    Scaricare e conservare copia di questo consenso consente di dimostrare in futuro
+    l’autorizzazione effettiva concessa in questa data, anche se l’account o i file originali
+    dovessero essere rimossi.<br>
     TrueConsent è sistema di registrazione e notifica, non archivio permanente.<br>
     © 2025 TrueConsent – Tutti i diritti riservati.
   </div>
@@ -79,7 +118,6 @@
     const url = new URL(window.location.href);
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
-    let fileRefs = [];
 
     function formatDate(val) {
       try {
@@ -110,74 +148,59 @@
         `;
 
         let media = "";
-        async function safeURL(path,label){
-          try{
-            const u=await getDownloadURL(ref(storage,path));
-            fileRefs.push({label,url:u});
-            return u;
-          }catch{console.warn("File non accessibile:",path);return null;}
+        const safeURL = async (path, label) => {
+          try {
+            const u = await getDownloadURL(ref(storage, path));
+            return `<div class="section"><b>${label}:</b><br><img src="${u}" class="zoomable"></div>`;
+          } catch {
+            return `<div class="section"><b>${label}:</b> <i>non disponibile</i></div>`;
+          }
+        };
+
+        if (d.signaturePath) media += await safeURL(d.signaturePath, "Firma");
+        if (d.selfiePath) media += await safeURL(d.selfiePath, "Selfie");
+        if (d.audioPath) {
+          try {
+            const a = await getDownloadURL(ref(storage, d.audioPath));
+            media += `<div class="section"><b>Audio:</b><br><audio controls src="${a}"></audio></div>`;
+          } catch {
+            media += `<div class="section"><b>Audio:</b> <i>non disponibile</i></div>`;
+          }
         }
 
-        const sig= d.signaturePath?await safeURL(d.signaturePath,"firma"):null;
-        if(sig)media+=`<div class="section"><b>Firma:</b><br><img src="${sig}" class="zoomable"></div>`;
-
-        const self= d.selfiePath?await safeURL(d.selfiePath,"selfie"):null;
-        if(self)media+=`<div class="section"><b>Selfie:</b><br><img src="${self}" class="zoomable"></div>`;
-
-        const aud= d.audioPath?await safeURL(d.audioPath,"audio"):null;
-        if(aud)media+=`<div class="section"><b>Audio:</b><br><audio controls src="${aud}"></audio></div>`;
-
         document.getElementById("media").innerHTML = media || "<i>Nessun file disponibile</i>";
-        document.getElementById("actions").style.display="block";
+        document.getElementById("actions").style.display = "block";
 
-        document.querySelectorAll(".zoomable").forEach(img=>{
-          img.onclick=()=>{const lb=document.getElementById("lightbox");lb.style.display="flex";lb.querySelector("img").src=img.src;}
+        document.querySelectorAll(".zoomable").forEach(img => {
+          img.addEventListener("click", () => {
+            const lightbox = document.getElementById("lightbox");
+            lightbox.style.display = "flex";
+            lightbox.querySelector("img").src = img.src;
+          });
         });
-        document.getElementById("lightbox").onclick=()=>document.getElementById("lightbox").style.display="none";
+        document.getElementById("lightbox").addEventListener("click", () => {
+          document.getElementById("lightbox").style.display = "none";
+        });
 
       } catch (e) {
-        document.getElementById("details").innerText="❌ "+e.message;
+        document.getElementById("details").innerText = "❌ " + e.message;
         console.error(e);
       }
     }
 
-    async function downloadAll() {
-      try {
-        const { jsPDF } = window.jspdf;
-        const clone = document.body.cloneNode(true);
-        clone.querySelector("#actions").style.display="none";
-        const canvas=await html2canvas(clone,{scale:2});
-        const pdf=new jsPDF("p","mm","a4");
-        const w=pdf.internal.pageSize.getWidth();
-        const h=(canvas.height*w)/canvas.width;
-        pdf.addImage(canvas.toDataURL("image/png"),"PNG",0,0,w,h);
-        const pdfBlob=pdf.output("blob");
+    // ✅ Stampa PDF locale (solo per stampa browser)
+    document.getElementById("btnPrint").addEventListener("click", () => window.print());
 
-        const zip=new JSZip();
-        zip.file(`consenso_${sessionId}.pdf`,pdfBlob);
-
-        // ✅ FIX definitivo: no-cors per evitare blocco permessi
-        for (const f of fileRefs) {
-          try {
-            const response = await fetch(f.url, { mode: "no-cors" });
-            const blob = await response.blob();
-            let ext = f.label === "audio" ? "m4a" : "jpg";
-            zip.file(`${f.label}_${sessionId}.${ext}`, blob);
-          } catch (err) {
-            console.warn("Errore file:", f.label, err);
-          }
-        }
-
-        const out=await zip.generateAsync({type:"blob"});
-        saveAs(out,`Consenso_${sessionId}.zip`);
-      } catch (err) {
-        alert("Errore durante il download del consenso. Verifica i permessi e riprova.\n"+err.message);
-        console.error(err);
+    // ✅ Scarica ZIP tramite Cloud Function
+    document.getElementById("btnDownload").addEventListener("click", () => {
+      if (!userId || !sessionId) {
+        alert("Parametri mancanti nel link.");
+        return;
       }
-    }
+      const url = `https://us-central1-trueconsent-cab73.cloudfunctions.net/downloadConsentZip?userId=${userId}&sessionId=${sessionId}`;
+      window.open(url, "_blank");
+    });
 
-    document.getElementById("btnPrint").onclick=()=>window.print();
-    document.getElementById("btnDownload").onclick=downloadAll;
     loadConsent();
   </script>
 </body>
