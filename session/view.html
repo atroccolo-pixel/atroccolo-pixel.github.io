@@ -4,10 +4,7 @@
   <meta charset="UTF-8">
   <title>Visualizza Consenso – TrueConsent</title>
 
-  <!-- Librerie Firebase e utility -->
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js"></script>
+  <!-- Librerie -->
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -185,31 +182,39 @@
     }
 
     async function downloadAll() {
-      const { jsPDF } = window.jspdf;
-      const page = document.body.cloneNode(true);
-      page.querySelector("#actions").remove();
-      const canvas = await html2canvas(page, { scale: 2 });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const width = pdf.internal.pageSize.getWidth();
-      const height = (canvas.height * width) / canvas.width;
-      pdf.addImage(imgData, "PNG", 0, 0, width, height);
-      const pdfBlob = pdf.output("blob");
+      try {
+        const { jsPDF } = window.jspdf;
+        if (!jsPDF) {
+          alert("Errore: libreria PDF non caricata.");
+          return;
+        }
+        const area = document.body.cloneNode(true);
+        area.querySelector("#actions").remove();
+        const canvas = await html2canvas(area, { scale: 2 });
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const width = pdf.internal.pageSize.getWidth();
+        const height = (canvas.height * width) / canvas.width;
+        pdf.addImage(imgData, "PNG", 0, 0, width, height);
+        const pdfBlob = pdf.output("blob");
 
-      const zip = new JSZip();
-      zip.file(`Consenso_${sessionId}.pdf`, pdfBlob);
-      if (audioURL) {
-        const res = await fetch(audioURL);
-        const blob = await res.blob();
-        zip.file(`Audio_${sessionId}.m4a`, blob);
+        const zip = new JSZip();
+        zip.file(`Consenso_${sessionId}.pdf`, pdfBlob);
+        if (audioURL) {
+          const res = await fetch(audioURL);
+          const blob = await res.blob();
+          zip.file(`Audio_${sessionId}.m4a`, blob);
+        }
+        const content = await zip.generateAsync({ type: "blob" });
+        saveAs(content, `Consenso_${sessionId}.zip`);
+      } catch (err) {
+        console.error("Errore download ZIP:", err);
+        alert("Errore durante il download del consenso. Riprova.");
       }
-
-      const content = await zip.generateAsync({ type: "blob" });
-      saveAs(content, `Consenso_${sessionId}.zip`);
     }
 
     document.getElementById("btnPrint").addEventListener("click", () => window.print());
-    document.getElementById("btnDownload").addEventListener("click", downloadAll);
+    document.getElementById("btnDownload").addEventListener("click", () => downloadAll());
 
     loadConsent();
   </script>
