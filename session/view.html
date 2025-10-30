@@ -1,30 +1,18 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>Visualizza Consenso – TrueConsent</title>
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <meta charset="UTF-8" />
+  <title>Visualizza Consenso</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
       font-size: 15px;
-      background: #fafafa;
     }
-    h2 { color: #6c63ff; }
     .section { margin-bottom: 18px; }
-    button {
-      background-color: #6c63ff;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 10px 18px;
-      cursor: pointer;
-      margin: 10px 8px 20px 0;
-      font-size: 15px;
-    }
-    button:hover { background-color: #5548e2; }
     img {
       max-width: 220px;
       border: 1px solid #ddd;
@@ -43,8 +31,17 @@
       border: 1px solid #ccc;
       border-radius: 6px;
     }
-
-    /* Lightbox overlay */
+    button {
+      background-color: #6c63ff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 24px;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover { background-color: #5851d8; }
     #lightbox {
       display: none;
       position: fixed;
@@ -61,36 +58,18 @@
       border-radius: 10px;
       box-shadow: 0 0 15px rgba(0,0,0,0.6);
     }
-
-    .footer {
-      margin-top: 40px;
-      font-size: 13px;
-      color: #555;
-      border-top: 1px solid #ddd;
-      padding-top: 20px;
-      line-height: 1.6;
-    }
   </style>
 </head>
 <body>
   <h2>📄 Dettagli Consenso</h2>
   <div id="details">⏳ Caricamento...</div>
   <div id="media"></div>
-  <div id="actions" style="display:none;">
-    <button id="btnPrint">📄 Stampa consenso</button>
-    <button id="btnDownload">⬇️ Scarica consenso completo</button>
+  <div style="margin-top:25px;">
+    <button id="downloadZip">📦 Scarica consenso completo</button>
   </div>
 
   <div id="lightbox">
-    <img src="" alt="Preview"/>
-  </div>
-
-  <div class="footer">
-    <b>Informativa legale:</b><br>
-    I file e i dati visualizzati in questa pagina rappresentano una prova digitale del consenso espresso,
-    valida per la durata prevista nei <a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Termini e Condizioni</a>.
-    <br>Scarica e conserva il consenso come documentazione probatoria personale.
-    <br>© 2025 TrueConsent – Tutti i diritti riservati.
+    <img src="" alt="Preview" />
   </div>
 
   <script type="module">
@@ -115,7 +94,8 @@
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
 
-    let filesToDownload = [];
+    let consentData = null;
+    let audioURL = null;
 
     async function loadConsent() {
       if (!userId || !sessionId) {
@@ -126,12 +106,15 @@
       try {
         const refDoc = doc(db, "users", userId, "sessions", sessionId);
         const snap = await getDoc(refDoc);
+
         if (!snap.exists()) {
           document.getElementById("details").innerText = "❌ Consenso non trovato.";
           return;
         }
 
         const data = snap.data();
+        consentData = data;
+
         let html = `
           <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
           <div class="section"><b>Tipo:</b> ${data.type || "-"}</div>
@@ -144,32 +127,29 @@
         document.getElementById("details").innerHTML = html;
 
         let mediaHtml = "";
-        filesToDownload = [];
 
         if (data.signaturePath) {
           const url = await getDownloadURL(ref(storage, data.signaturePath));
           mediaHtml += `<div class="section"><b>Firma:</b><br><img src="${url}" alt="Firma" class="zoomable"></div>`;
-          filesToDownload.push({ url, name: "firma.png" });
         }
         if (data.selfiePath) {
           const url = await getDownloadURL(ref(storage, data.selfiePath));
           mediaHtml += `<div class="section"><b>Selfie:</b><br><img src="${url}" alt="Selfie" class="zoomable"></div>`;
-          filesToDownload.push({ url, name: "selfie.png" });
         }
         if (data.audioPath) {
-          const url = await getDownloadURL(ref(storage, data.audioPath));
+          audioURL = await getDownloadURL(ref(storage, data.audioPath));
           mediaHtml += `<div class="section"><b>Audio:</b><br>
             <audio controls>
-              <source src="${url}" type="audio/m4a">
+              <source src="${audioURL}" type="audio/m4a">
+              <source src="${audioURL}" type="audio/mp4">
+              <source src="${audioURL}" type="audio/3gp">
               Il tuo browser non supporta l’audio.
-            </audio></div>`;
-          filesToDownload.push({ url, name: "audio.m4a" });
+            </audio>
+          </div>`;
         }
 
         document.getElementById("media").innerHTML = mediaHtml || "<i>Nessun file multimediale disponibile</i>";
-        document.getElementById("actions").style.display = "block";
 
-        // Lightbox
         document.querySelectorAll(".zoomable").forEach(img => {
           img.addEventListener("click", () => {
             const lightbox = document.getElementById("lightbox");
@@ -180,31 +160,40 @@
         document.getElementById("lightbox").addEventListener("click", () => {
           document.getElementById("lightbox").style.display = "none";
         });
-
       } catch (err) {
         console.error("Errore caricamento consenso:", err);
         document.getElementById("details").innerText = "❌ Errore durante il caricamento dei dati.";
       }
     }
 
-    // Scarica tutti i file in ZIP
-    async function downloadAll() {
-      if (filesToDownload.length === 0) {
-        alert("Nessun file da scaricare.");
-        return;
-      }
-      const zip = new JSZip();
-      for (const f of filesToDownload) {
-        const res = await fetch(f.url);
-        const blob = await res.blob();
-        zip.file(f.name, blob);
-      }
-      const content = await zip.generateAsync({ type: "blob" });
-      saveAs(content, `Consenso_${sessionId}.zip`);
-    }
+    document.getElementById("downloadZip").addEventListener("click", async () => {
+      if (!consentData) return alert("Consenso non caricato.");
+      const { jsPDF } = window.jspdf;
+      const docPDF = new jsPDF();
+      const content = document.body.innerText + 
+`\n\n--------------------------------------------
+Informazioni legali e conservazione
+Questo consenso digitale è stato generato tramite la piattaforma TrueConsent.
+La sua validità è regolata esclusivamente dalla durata indicata al momento della creazione (a tempo determinato o indeterminato) e dalle condizioni di eventuale revoca previste dai Termini e Condizioni ufficiali.
+Scaricare e conservare copia di questo consenso (in formato PDF o archivio) consente di dimostrare in futuro l’autorizzazione effettiva concessa in questa data, anche se l’account o i file originali dovessero essere successivamente rimossi.
+TrueConsent agisce come sistema di registrazione e notifica, non come autorità giudicante o archivio permanente.
+L’utente è responsabile della conservazione personale dei file ai fini probatori.
+Consulta i Termini e Condizioni: https://atroccolo-pixel.github.io/terms.html
+Stampato il ${new Date().toLocaleString("it-IT")}
+--------------------------------------------`;
+      docPDF.text(content, 10, 10);
+      const pdfBlob = docPDF.output("blob");
 
-    document.getElementById("btnPrint").addEventListener("click", () => window.print());
-    document.getElementById("btnDownload").addEventListener("click", downloadAll);
+      const zip = new JSZip();
+      zip.file(`consent_${sessionId}.pdf`, pdfBlob);
+      if (audioURL) {
+        const audioResp = await fetch(audioURL);
+        const audioBlob = await audioResp.blob();
+        zip.file(`audio_${sessionId}.m4a`, audioBlob);
+      }
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      saveAs(zipBlob, `Consenso_${sessionId}.zip`);
+    });
 
     loadConsent();
   </script>
