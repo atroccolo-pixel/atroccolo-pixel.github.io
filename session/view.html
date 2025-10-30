@@ -7,6 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
     body { font-family: Arial, sans-serif; background:#fafafa; padding:20px; font-size:15px; }
     h2 { color:#6c63ff; }
@@ -147,12 +148,16 @@
 
         for(const f of fileRefs){
           try{
-            const r=await fetch(f.url,{mode:"cors"});
-            if(!r.ok)continue;
-            const b=await r.blob();
+            // FIX: uso fetch diretto, senza 'mode: cors'
+            const response=await fetch(f.url);
+            if(!response.ok){
+              console.warn("Impossibile scaricare:",f.url,response.status);
+              continue;
+            }
+            const blob=await response.blob();
             let ext=f.label==="audio"?"m4a":"jpg";
-            zip.file(`${f.label}_${sessionId}.${ext}`,b);
-          }catch(err){console.warn("Errore file:",f.label,err);}
+            zip.file(`${f.label}_${sessionId}.${ext}`,blob);
+          }catch(err){console.warn("Errore file:",f.label,err.message);}
         }
 
         const out=await zip.generateAsync({type:"blob"});
