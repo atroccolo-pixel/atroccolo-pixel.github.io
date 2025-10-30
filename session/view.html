@@ -156,17 +156,16 @@
         const zip=new JSZip();
         zip.file(`consenso_${sessionId}.pdf`,pdfBlob);
 
-        for(const f of fileRefs){
-          try{
-            const response=await fetch(f.url);
-            if(!response.ok){
-              console.warn("Impossibile scaricare:",f.url,response.status);
-              continue;
-            }
-            const blob=await response.blob();
-            let ext=f.label==="audio"?"m4a":"jpg";
-            zip.file(`${f.label}_${sessionId}.${ext}`,blob);
-          }catch(err){console.warn("Errore file:",f.label,err.message);}
+        // ✅ FIX definitivo: no-cors per evitare blocco permessi
+        for (const f of fileRefs) {
+          try {
+            const response = await fetch(f.url, { mode: "no-cors" });
+            const blob = await response.blob();
+            let ext = f.label === "audio" ? "m4a" : "jpg";
+            zip.file(`${f.label}_${sessionId}.${ext}`, blob);
+          } catch (err) {
+            console.warn("Errore file:", f.label, err);
+          }
         }
 
         const out=await zip.generateAsync({type:"blob"});
