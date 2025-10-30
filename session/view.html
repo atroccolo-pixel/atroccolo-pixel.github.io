@@ -2,24 +2,29 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Dettagli Consenso</title>
+  <title>Visualizza Consenso – TrueConsent</title>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
       font-size: 15px;
+      background: #fafafa;
     }
+    h2 { color: #6c63ff; }
     .section { margin-bottom: 18px; }
     button {
-      background: #6c63ff;
+      background-color: #6c63ff;
       color: #fff;
       border: none;
-      padding: 10px 18px;
-      margin-right: 10px;
       border-radius: 6px;
+      padding: 10px 18px;
       cursor: pointer;
+      margin: 10px 8px 20px 0;
+      font-size: 15px;
     }
-    button:hover { background: #554ce0; }
+    button:hover { background-color: #5548e2; }
     img {
       max-width: 220px;
       border: 1px solid #ddd;
@@ -29,19 +34,64 @@
       transition: transform 0.2s;
     }
     img:hover { transform: scale(1.02); }
-    audio { width: 100%; min-height: 60px; border: 1px solid #ccc; border-radius: 6px; }
-    #lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); justify-content:center; align-items:center; }
-    #lightbox img { max-width:90%; max-height:90%; }
+    audio {
+      margin-top: 10px;
+      display: block;
+      width: 100%;
+      min-height: 60px;
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    /* Lightbox overlay */
+    #lightbox {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      align-items: center;
+      justify-content: center;
+    }
+    #lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 13px;
+      color: #555;
+      border-top: 1px solid #ddd;
+      padding-top: 20px;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
-  <h3>📄 Dettagli Consenso</h3>
-  <button id="printBtn">🖨️ Stampa consenso</button>
-  <button id="downloadZipBtn">📦 Scarica consenso completo (.zip)</button>
+  <h2>📄 Dettagli Consenso</h2>
   <div id="details">⏳ Caricamento...</div>
   <div id="media"></div>
+  <div id="actions" style="display:none;">
+    <button id="btnPrint">📄 Stampa consenso</button>
+    <button id="btnDownload">⬇️ Scarica consenso completo</button>
+  </div>
 
-  <div id="lightbox"><img src="" alt="zoom"></div>
+  <div id="lightbox">
+    <img src="" alt="Preview"/>
+  </div>
+
+  <div class="footer">
+    <b>Informativa legale:</b><br>
+    I file e i dati visualizzati in questa pagina rappresentano una prova digitale del consenso espresso,
+    valida per la durata prevista nei <a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Termini e Condizioni</a>.
+    <br>Scarica e conserva il consenso come documentazione probatoria personale.
+    <br>© 2025 TrueConsent – Tutti i diritti riservati.
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -52,97 +102,111 @@
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
       projectId: "trueconsent-cab73",
-      storageBucket: "trueconsent-cab73.firebasestorage.app"
+      storageBucket: "trueconsent-cab73.firebasestorage.app",
+      messagingSenderId: "298691251398",
+      appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
     };
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    const params = new URLSearchParams(window.location.search);
-    const userId = params.get("userId");
-    const sessionId = params.get("sessionId");
+    const url = new URL(window.location.href);
+    const userId = url.searchParams.get("userId");
+    const sessionId = url.searchParams.get("sessionId");
+
+    let filesToDownload = [];
 
     async function loadConsent() {
-      const refDoc = doc(db, "users", userId, "sessions", sessionId);
-      const snap = await getDoc(refDoc);
-      if (!snap.exists()) {
-        document.getElementById("details").innerText = "❌ Consenso non trovato.";
+      if (!userId || !sessionId) {
+        document.getElementById("details").innerText = "❌ Parametri mancanti.";
         return;
       }
 
-      const d = snap.data();
-      let html = `
-        <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
-        <div class="section"><b>Tipo:</b> ${d.type}</div>
-        <div class="section"><b>Stato:</b> ${d.status}</div>
-        <div class="section"><b>Controparte:</b> ${d.counterpartName}</div>
-        <div class="section"><b>Data inizio:</b> ${d.startAt?.toDate ? d.startAt.toDate() : "-"}</div>
-      `;
-      document.getElementById("details").innerHTML = html;
-
-      let mediaHtml = "";
-      const files = [];
-
-      if (d.signaturePath) {
-        const url = await getDownloadURL(ref(storage, d.signaturePath));
-        mediaHtml += `<div><b>Firma:</b><br><img src="${url}" class="zoomable"></div>`;
-        files.push({ name: "firma.png", url });
-      }
-      if (d.selfiePath) {
-        const url = await getDownloadURL(ref(storage, d.selfiePath));
-        mediaHtml += `<div><b>Selfie:</b><br><img src="${url}" class="zoomable"></div>`;
-        files.push({ name: "selfie.jpg", url });
-      }
-      if (d.audioPath) {
-        const url = await getDownloadURL(ref(storage, d.audioPath));
-        mediaHtml += `<div><b>Audio:</b><br><audio controls src="${url}"></audio></div>`;
-        files.push({ name: "audio.m4a", url });
-      }
-
-      document.getElementById("media").innerHTML = mediaHtml;
-
-      // Lightbox zoom
-      document.querySelectorAll(".zoomable").forEach(img => {
-        img.onclick = () => {
-          document.getElementById("lightbox").style.display = "flex";
-          document.querySelector("#lightbox img").src = img.src;
-        };
-      });
-      document.getElementById("lightbox").onclick = () => {
-        document.getElementById("lightbox").style.display = "none";
-      };
-
-      // Stampa
-      document.getElementById("printBtn").onclick = () => window.print();
-
-      // Download ZIP
-      document.getElementById("downloadZipBtn").onclick = async () => {
-        const zip = new JSZip();
-        for (const f of files) {
-          const res = await fetch(f.url);
-          const blob = await res.blob();
-          zip.file(f.name, blob);
+      try {
+        const refDoc = doc(db, "users", userId, "sessions", sessionId);
+        const snap = await getDoc(refDoc);
+        if (!snap.exists()) {
+          document.getElementById("details").innerText = "❌ Consenso non trovato.";
+          return;
         }
-        const html = new Blob([document.documentElement.outerHTML], { type: "text/html" });
-        zip.file(`consenso_${sessionId}.html`, html);
-        const blob = await zip.generateAsync({ type: "blob" });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = `consenso_${sessionId}.zip`;
-        a.click();
-      };
+
+        const data = snap.data();
+        let html = `
+          <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
+          <div class="section"><b>Tipo:</b> ${data.type || "-"}</div>
+          <div class="section"><b>Stato:</b> ${data.status || "-"}</div>
+          <div class="section"><b>Proprietario:</b> ${data.ownerName || "-"}</div>
+          <div class="section"><b>Controparte:</b> ${data.counterpartName || "-"}</div>
+          <div class="section"><b>Data inizio:</b> ${data.startAt?.toDate ? data.startAt.toDate() : "-"}</div>
+          <div class="section"><b>Data fine:</b> ${data.endAt?.toDate ? data.endAt.toDate() : "-"}</div>
+        `;
+        document.getElementById("details").innerHTML = html;
+
+        let mediaHtml = "";
+        filesToDownload = [];
+
+        if (data.signaturePath) {
+          const url = await getDownloadURL(ref(storage, data.signaturePath));
+          mediaHtml += `<div class="section"><b>Firma:</b><br><img src="${url}" alt="Firma" class="zoomable"></div>`;
+          filesToDownload.push({ url, name: "firma.png" });
+        }
+        if (data.selfiePath) {
+          const url = await getDownloadURL(ref(storage, data.selfiePath));
+          mediaHtml += `<div class="section"><b>Selfie:</b><br><img src="${url}" alt="Selfie" class="zoomable"></div>`;
+          filesToDownload.push({ url, name: "selfie.png" });
+        }
+        if (data.audioPath) {
+          const url = await getDownloadURL(ref(storage, data.audioPath));
+          mediaHtml += `<div class="section"><b>Audio:</b><br>
+            <audio controls>
+              <source src="${url}" type="audio/m4a">
+              Il tuo browser non supporta l’audio.
+            </audio></div>`;
+          filesToDownload.push({ url, name: "audio.m4a" });
+        }
+
+        document.getElementById("media").innerHTML = mediaHtml || "<i>Nessun file multimediale disponibile</i>";
+        document.getElementById("actions").style.display = "block";
+
+        // Lightbox
+        document.querySelectorAll(".zoomable").forEach(img => {
+          img.addEventListener("click", () => {
+            const lightbox = document.getElementById("lightbox");
+            lightbox.style.display = "flex";
+            lightbox.querySelector("img").src = img.src;
+          });
+        });
+        document.getElementById("lightbox").addEventListener("click", () => {
+          document.getElementById("lightbox").style.display = "none";
+        });
+
+      } catch (err) {
+        console.error("Errore caricamento consenso:", err);
+        document.getElementById("details").innerText = "❌ Errore durante il caricamento dei dati.";
+      }
     }
 
-    await loadConsent();
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    // Scarica tutti i file in ZIP
+    async function downloadAll() {
+      if (filesToDownload.length === 0) {
+        alert("Nessun file da scaricare.");
+        return;
+      }
+      const zip = new JSZip();
+      for (const f of filesToDownload) {
+        const res = await fetch(f.url);
+        const blob = await res.blob();
+        zip.file(f.name, blob);
+      }
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, `Consenso_${sessionId}.zip`);
+    }
 
-  <footer style="margin-top:40px;font-size:13px;color:#555;border-top:1px solid #ccc;padding-top:10px;">
-    <p><b>Informativa legale</b></p>
-    <p>Questo consenso digitale è stato creato tramite <b>TrueConsent</b> ed è valido secondo le regole indicate nei <a href="https://atroccolo-pixel.github.io/terms.html">Termini e Condizioni ufficiali</a>.</p>
-    <p>I file (immagini, audio e metadati) costituiscono documentazione probatoria ai sensi dell’art. 234 c.p.p. e 2712 c.c.
-    L’integrità è garantita da timestamp e hash univoco. La conservazione personale tutela entrambe le parti.</p>
-    <p>© 2025 TrueConsent – Tutti i diritti riservati</p>
-  </footer>
+    document.getElementById("btnPrint").addEventListener("click", () => window.print());
+    document.getElementById("btnDownload").addEventListener("click", downloadAll);
+
+    loadConsent();
+  </script>
 </body>
 </html>
