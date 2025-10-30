@@ -81,6 +81,16 @@
     const sessionId = url.searchParams.get("sessionId");
     let fileRefs = [];
 
+    function formatDate(val) {
+      try {
+        if (!val) return "-";
+        if (typeof val === "string") return val;
+        if (val.toDate) return val.toDate().toLocaleString();
+        if (val.seconds) return new Date(val.seconds * 1000).toLocaleString();
+        return "-";
+      } catch { return "-"; }
+    }
+
     async function loadConsent() {
       try {
         if (!userId || !sessionId) throw new Error("Parametri mancanti.");
@@ -95,8 +105,8 @@
           <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
           <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
           <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
-          <div class="section"><b>Data inizio:</b> ${d.startAt?.toDate ? d.startAt.toDate() : "-"}</div>
-          <div class="section"><b>Data fine:</b> ${d.endAt?.toDate ? d.endAt.toDate() : "-"}</div>
+          <div class="section"><b>Data inizio:</b> ${formatDate(d.startAt)}</div>
+          <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>
         `;
 
         let media = "";
@@ -148,7 +158,6 @@
 
         for(const f of fileRefs){
           try{
-            // FIX: uso fetch diretto, senza 'mode: cors'
             const response=await fetch(f.url);
             if(!response.ok){
               console.warn("Impossibile scaricare:",f.url,response.status);
