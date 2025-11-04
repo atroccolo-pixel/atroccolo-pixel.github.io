@@ -70,11 +70,20 @@
       padding-top: 20px;
       line-height: 1.6;
     }
+    .expired {
+      color: #ff4c4c;
+      background: #ffecec;
+      border: 1px solid #ffb3b3;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 
 <body>
   <h2>📄 Dettagli Consenso</h2>
+  <div id="expiredMessage"></div>
   <div id="details">⏳ Caricamento...</div>
   <div id="media"></div>
   <div id="actions" style="display:none;">
@@ -129,9 +138,97 @@
       } catch { return "-"; }
     }
 
+    function isLinkExpired(endDate) {
+      try {
+        if (!endDate) return false;
+        const end = new Date(endDate.seconds ? endDate.seconds * 1000 : endDate);
+        const diff = Date.now() - end.getTime();
+        return diff > 7 * 24 * 60 * 60 * 1000;
+      } catch {
+        return false;
+      }
+    }
+
     async function loadConsent() {
       try {
         if (!userId || !sessionId) throw new Error("Parametri mancanti.");
-
         const snap = await getDoc(doc(db, "users", userId, "sessions", sessionId));
-        if (!snap.exists()) throw n
+        if (!snap.exists()) throw new Error("Consenso non trovato.");
+        const d = snap.data();
+
+        const expired = isLinkExpired(d.endAt);
+        if (expired) {
+          document.getElementById("expiredMessage").innerHTML = `
+            <div class="expired">⛔ Questo link non è più disponibile.<br>
+            Per motivi di privacy, i file non sono più accessibili online.</div>`;
+          document.getElementById("details").innerHTML = "";
+          document.getElementById("media").innerHTML = "";
+          document.getElementById("actions").style.display = "none";
+          return;
+        }
+
+        document.getElementById("details").innerHTML = `
+          <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
+          <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
+          <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
+          <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
+          <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
+          <div class="section"><b>Data inizio:</b> ${formatDate(d.startAt)}</div>
+          <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>
+        `;
+
+        let media = "";
+        const safeURL = async (path, label) => {
+          try {
+            const u = await getDownloadURL(ref(storage, path));
+            return `<div class="section"><b>${label}:</b><br><img src="${u}" class="zoomable"></div>`;
+          } catch {
+            return `<div class="section"><b>${label}:</b> <i>non disponibile</i></div>`;
+          }
+        };
+
+        if (d.signaturePath) media += await safeURL(d.signaturePath, "Firma");
+        if (d.selfiePath) media += await safeURL(d.selfiePath, "Selfie");
+        if (d.audioPath) {
+          try {
+            const a = await getDownloadURL(ref(storage, d.audioPath));
+            media += `<div class="section"><b>Audio:</b><br><audio controls src="${a}"></audio></div>`;
+          } catch {
+            media += `<div class="section"><b>Audio:</b> <i>non disponibile</i></div>`;
+          }
+        }
+
+        document.getElementById("media").innerHTML = media || "<i>Nessun file disponibile</i>";
+        document.getElementById("actions").style.display = "block";
+
+        document.querySelectorAll(".zoomable").forEach(img => {
+          img.addEventListener("click", () => {
+            const lightbox = document.getElementById("lightbox");
+            lightbox.style.display = "flex";
+            lightbox.querySelector("img").src = img.src;
+          });
+        });
+        document.getElementById("lightbox").addEventListener("click", () => {
+          document.getElementById("lightbox").style.display = "none";
+        });
+
+      } catch (e) {
+        document.getElementById("details").innerText = "❌ " + e.message;
+        console.error(e);
+      }
+    }
+
+    document.getElementById("btnPrint").addEventListener("click", () => window.print());
+    document.getElementById("btnDownload").addEventListener("click", () => {
+      if (!userId || !sessionId) {
+        alert("Parametri mancanti nel link.");
+        return;
+      }
+      const url = `https://us-central1-trueconsent-cab73.cloudfunctions.net/downloadConsentZip?userId=${userId}&sessionId=${sessionId}`;
+      window.open(url, "_blank");
+    });
+
+    loadConsent();
+  </script>
+</body>
+</html>
