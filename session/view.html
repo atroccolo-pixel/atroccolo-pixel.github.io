@@ -25,11 +25,7 @@
       margin: 10px 8px 20px 0;
       font-size: 15px;
     }
-    button[disabled] {
-      background-color: #aaa;
-      cursor: not-allowed;
-    }
-    button:hover:not([disabled]) { background-color: #5548e2; }
+    button:hover { background-color: #5548e2; }
     img {
       max-width: 220px;
       border: 1px solid #ddd;
@@ -74,20 +70,11 @@
       padding-top: 20px;
       line-height: 1.6;
     }
-    .expired {
-      color: #ff4c4c;
-      background: #ffecec;
-      border: 1px solid #ffb3b3;
-      padding: 12px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-    }
   </style>
 </head>
 
 <body>
   <h2>📄 Dettagli Consenso</h2>
-  <div id="expiredMessage"></div>
   <div id="details">⏳ Caricamento...</div>
   <div id="media"></div>
   <div id="actions" style="display:none;">
@@ -133,17 +120,13 @@
     const sessionId = url.searchParams.get("sessionId");
 
     function formatDate(val) {
-      if (!val) return "-";
-      if (typeof val === "string") return val;
-      if (val.toDate) return val.toDate().toLocaleString("it-IT");
-      if (val.seconds) return new Date(val.seconds * 1000).toLocaleString("it-IT");
-      return "-";
-    }
-
-    function isLinkExpired(endDate) {
-      if (!endDate) return false;
-      const end = new Date(endDate.seconds ? endDate.seconds * 1000 : endDate);
-      return Date.now() - end.getTime() > 7 * 24 * 60 * 60 * 1000;
+      try {
+        if (!val) return "-";
+        if (typeof val === "string") return val;
+        if (val.toDate) return val.toDate().toLocaleString();
+        if (val.seconds) return new Date(val.seconds * 1000).toLocaleString();
+        return "-";
+      } catch { return "-"; }
     }
 
     async function loadConsent() {
@@ -151,92 +134,4 @@
         if (!userId || !sessionId) throw new Error("Parametri mancanti.");
 
         const snap = await getDoc(doc(db, "users", userId, "sessions", sessionId));
-        if (!snap.exists()) throw new Error("Consenso non trovato.");
-
-        const d = snap.data();
-        const expired = isLinkExpired(d.endAt);
-        const deleted = !!d.filesDeletedAt;
-        const inactive = expired || deleted || d.status === "expired" || d.status === "revoked";
-
-        if (inactive) {
-          document.getElementById("expiredMessage").innerHTML = `
-            <div class="expired">⚠️ I file di questo consenso non sono più disponibili.<br>
-            È possibile solo visualizzare i dati generali a fini probatori.</div>`;
-        }
-
-        document.getElementById("details").innerHTML = `
-          <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
-          <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
-          <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
-          <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
-          <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
-          <div class="section"><b>Data inizio:</b> ${formatDate(d.startAt)}</div>
-          <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>
-        `;
-
-        let media = "";
-        if (!deleted) {
-          const safeURL = async (path, label) => {
-            try {
-              const u = await getDownloadURL(ref(storage, path));
-              return `<div class="section"><b>${label}:</b><br><img src="${u}" class="zoomable"></div>`;
-            } catch {
-              return `<div class="section"><b>${label}:</b> <i>non disponibile</i></div>`;
-            }
-          };
-
-          if (d.signaturePath) media += await safeURL(d.signaturePath, "Firma");
-          if (d.selfiePath) media += await safeURL(d.selfiePath, "Selfie");
-          if (d.audioPath) {
-            try {
-              const a = await getDownloadURL(ref(storage, d.audioPath));
-              media += `<div class="section"><b>Audio:</b><br><audio controls src="${a}"></audio></div>`;
-            } catch {
-              media += `<div class="section"><b>Audio:</b> <i>non disponibile</i></div>`;
-            }
-          }
-        }
-
-        document.getElementById("media").innerHTML =
-          deleted ? "<i>Nessun file disponibile (rimossi per privacy)</i>" : media;
-
-        const btnPrint = document.getElementById("btnPrint");
-        const btnDownload = document.getElementById("btnDownload");
-        if (inactive) {
-          btnPrint.disabled = true;
-          btnDownload.disabled = true;
-        }
-
-        document.getElementById("actions").style.display = "block";
-
-        document.querySelectorAll(".zoomable").forEach(img => {
-          img.addEventListener("click", () => {
-            const lb = document.getElementById("lightbox");
-            lb.style.display = "flex";
-            lb.querySelector("img").src = img.src;
-          });
-        });
-        document.getElementById("lightbox").addEventListener("click", () => {
-          document.getElementById("lightbox").style.display = "none";
-        });
-
-      } catch (e) {
-        document.getElementById("details").innerText = "❌ " + e.message;
-        console.error(e);
-      }
-    }
-
-    document.getElementById("btnPrint").addEventListener("click", () => window.print());
-    document.getElementById("btnDownload").addEventListener("click", () => {
-      if (!userId || !sessionId) {
-        alert("Parametri mancanti nel link.");
-        return;
-      }
-      const url = `https://us-central1-trueconsent-cab73.cloudfunctions.net/downloadConsentZip?userId=${userId}&sessionId=${sessionId}`;
-      window.open(url, "_blank");
-    });
-
-    loadConsent();
-  </script>
-</body>
-</html>
+        if (!snap.exists()) throw n
