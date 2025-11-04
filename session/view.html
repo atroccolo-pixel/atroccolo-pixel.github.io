@@ -25,7 +25,11 @@
       margin: 10px 8px 20px 0;
       font-size: 15px;
     }
-    button:hover { background-color: #5548e2; }
+    button[disabled] {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+    button:hover:not([disabled]) { background-color: #5548e2; }
     img {
       max-width: 220px;
       border: 1px solid #ddd;
@@ -129,25 +133,17 @@
     const sessionId = url.searchParams.get("sessionId");
 
     function formatDate(val) {
-      try {
-        if (!val) return "-";
-        if (typeof val === "string") return val;
-        if (val.toDate) return val.toDate().toLocaleString();
-        if (val.seconds) return new Date(val.seconds * 1000).toLocaleString();
-        return "-";
-      } catch { return "-"; }
+      if (!val) return "-";
+      if (typeof val === "string") return val;
+      if (val.toDate) return val.toDate().toLocaleString("it-IT");
+      if (val.seconds) return new Date(val.seconds * 1000).toLocaleString("it-IT");
+      return "-";
     }
 
-    // ✅ Controlla se il consenso è scaduto da più di 7 giorni
     function isLinkExpired(endDate) {
-      try {
-        if (!endDate) return false;
-        const end = new Date(endDate.seconds ? endDate.seconds * 1000 : endDate);
-        const diff = Date.now() - end.getTime();
-        return diff > 7 * 24 * 60 * 60 * 1000; // 7 giorni in ms
-      } catch {
-        return false;
-      }
+      if (!endDate) return false;
+      const end = new Date(endDate.seconds ? endDate.seconds * 1000 : endDate);
+      return Date.now() - end.getTime() > 7 * 24 * 60 * 60 * 1000;
     }
 
     async function loadConsent() {
@@ -159,18 +155,15 @@
 
         const d = snap.data();
         const expired = isLinkExpired(d.endAt);
+        const deleted = !!d.filesDeletedAt;
+        const inactive = expired || deleted || d.status === "expired" || d.status === "revoked";
 
-        if (expired) {
+        if (inactive) {
           document.getElementById("expiredMessage").innerHTML = `
-            <div class="expired">⛔ Questo link non è più disponibile.<br>
-            Per motivi di privacy, i file non sono più accessibili online.</div>`;
-          document.getElementById("details").innerHTML = "";
-          document.getElementById("media").innerHTML = "";
-          document.getElementById("actions").style.display = "none";
-          return;
+            <div class="expired">⚠️ I file di questo consenso non sono più disponibili.<br>
+            È possibile solo visualizzare i dati generali a fini probatori.</div>`;
         }
 
-        // Se il link è ancora valido, mostra i dettagli
         document.getElementById("details").innerHTML = `
           <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
           <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
@@ -182,34 +175,45 @@
         `;
 
         let media = "";
-        const safeURL = async (path, label) => {
-          try {
-            const u = await getDownloadURL(ref(storage, path));
-            return `<div class="section"><b>${label}:</b><br><img src="${u}" class="zoomable"></div>`;
-          } catch {
-            return `<div class="section"><b>${label}:</b> <i>non disponibile</i></div>`;
-          }
-        };
+        if (!deleted) {
+          const safeURL = async (path, label) => {
+            try {
+              const u = await getDownloadURL(ref(storage, path));
+              return `<div class="section"><b>${label}:</b><br><img src="${u}" class="zoomable"></div>`;
+            } catch {
+              return `<div class="section"><b>${label}:</b> <i>non disponibile</i></div>`;
+            }
+          };
 
-        if (d.signaturePath) media += await safeURL(d.signaturePath, "Firma");
-        if (d.selfiePath) media += await safeURL(d.selfiePath, "Selfie");
-        if (d.audioPath) {
-          try {
-            const a = await getDownloadURL(ref(storage, d.audioPath));
-            media += `<div class="section"><b>Audio:</b><br><audio controls src="${a}"></audio></div>`;
-          } catch {
-            media += `<div class="section"><b>Audio:</b> <i>non disponibile</i></div>`;
+          if (d.signaturePath) media += await safeURL(d.signaturePath, "Firma");
+          if (d.selfiePath) media += await safeURL(d.selfiePath, "Selfie");
+          if (d.audioPath) {
+            try {
+              const a = await getDownloadURL(ref(storage, d.audioPath));
+              media += `<div class="section"><b>Audio:</b><br><audio controls src="${a}"></audio></div>`;
+            } catch {
+              media += `<div class="section"><b>Audio:</b> <i>non disponibile</i></div>`;
+            }
           }
         }
 
-        document.getElementById("media").innerHTML = media || "<i>Nessun file disponibile</i>";
+        document.getElementById("media").innerHTML =
+          deleted ? "<i>Nessun file disponibile (rimossi per privacy)</i>" : media;
+
+        const btnPrint = document.getElementById("btnPrint");
+        const btnDownload = document.getElementById("btnDownload");
+        if (inactive) {
+          btnPrint.disabled = true;
+          btnDownload.disabled = true;
+        }
+
         document.getElementById("actions").style.display = "block";
 
         document.querySelectorAll(".zoomable").forEach(img => {
           img.addEventListener("click", () => {
-            const lightbox = document.getElementById("lightbox");
-            lightbox.style.display = "flex";
-            lightbox.querySelector("img").src = img.src;
+            const lb = document.getElementById("lightbox");
+            lb.style.display = "flex";
+            lb.querySelector("img").src = img.src;
           });
         });
         document.getElementById("lightbox").addEventListener("click", () => {
