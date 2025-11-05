@@ -1,45 +1,45 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>Richiedi Revoca – TrueConsent</title>
+  <meta charset="UTF-8" />
+  <title>Richiesta di Revoca – TrueConsent</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #fafafa;
-      padding: 25px;
-      font-size: 15px;
+      background-color: #f9f9fb;
+      padding: 40px;
+      color: #222;
+      line-height: 1.6;
     }
     h2 { color: #6c63ff; }
+    .container {
+      max-width: 650px;
+      margin: auto;
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
     button {
-      background-color: #6c63ff;
-      color: #fff;
       border: none;
       border-radius: 6px;
-      padding: 10px 20px;
+      padding: 10px 16px;
+      margin: 12px 8px 0 0;
       cursor: pointer;
-      margin: 12px 8px 20px 0;
       font-size: 15px;
+      color: white;
     }
-    button:hover { background-color: #5548e2; }
-    .info {
-      margin-top: 15px;
-      font-size: 14px;
-      color: #555;
+    #btnRevoke { background-color: #ff4c4c; }
+    #btnRevoke:hover { background-color: #e03c3c; }
+    #btnCancel {
+      background-color: #6c63ff;
     }
+    #btnCancel:hover { background-color: #5548e2; }
     .error {
-      color: #b30000;
-      background: #ffecec;
-      border: 1px solid #ffb3b3;
+      background: #ffe6e6;
+      border: 1px solid #ff9999;
       padding: 12px;
-      border-radius: 6px;
-      margin-top: 20px;
-    }
-    .success {
-      color: #155724;
-      background: #d4edda;
-      border: 1px solid #c3e6cb;
-      padding: 12px;
+      color: #cc0000;
       border-radius: 6px;
       margin-top: 20px;
     }
@@ -47,36 +47,23 @@
 </head>
 
 <body>
-  <h2>Richiedi Revoca Consenso</h2>
-  <div id="statusMessage">⏳ Verifica consenso...</div>
-
-  <div id="actions" style="display:none;">
-    <p>Confermi di voler richiedere la revoca del consenso?</p>
-    <button id="btnSend">📩 Invia richiesta</button>
-  </div>
-
-  <div class="footer info">
-    © 2025 TrueConsent – Tutti i diritti riservati.<br>
-    Consulta i <a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Termini e Condizioni</a>.
+  <div class="container">
+    <h2>Richiesta di Revoca</h2>
+    <div id="content">Caricamento...</div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { httpsCallable, getFunctions } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
       authDomain: "trueconsent-cab73.firebaseapp.com",
       projectId: "trueconsent-cab73",
-      storageBucket: "trueconsent-cab73.firebasestorage.app",
-      messagingSenderId: "298691251398",
-      appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const functions = getFunctions(app);
 
     const url = new URL(window.location.href);
     const userId = url.searchParams.get("userId");
@@ -84,46 +71,46 @@
 
     async function init() {
       try {
-        if (!userId || !sessionId) throw new Error("Parametri mancanti.");
+        if (!userId || !sessionId) throw new Error("Parametri mancanti nel link.");
+
         const ref = doc(db, "users", userId, "sessions", sessionId);
         const snap = await getDoc(ref);
         if (!snap.exists()) throw new Error("Consenso non trovato.");
-
         const data = snap.data();
 
-        // ⚠️ Blocco se consenso non più valido
-        if (data.status === "expired" || data.status === "revoked" || data.filesDeletedAt) {
-          document.getElementById("statusMessage").innerHTML = `
-            <div class="error">❌ Questo consenso non è più modificabile.<br>
-            È scaduto o già revocato.</div>`;
+        // 🔹 Blocca la revoca se il consenso è scaduto o i file sono stati rimossi
+        if (data.status === "expired" || data.filesDeletedAt) {
+          document.getElementById("content").innerHTML = `
+            <div class="error">
+              ❌ Questo consenso non è più modificabile.<br>
+              È scaduto o i file sono stati rimossi dopo il periodo probatorio.
+            </div>
+          `;
           return;
         }
 
-        document.getElementById("statusMessage").innerHTML = `
-          ✅ Consenso trovato.<br>
-          Proprietario: <b>${data.ownerName || "-"}</b><br>
-          Controparte: <b>${data.counterpartName || "-"}</b><br>
-          ID: <b>${sessionId}</b>`;
-        document.getElementById("actions").style.display = "block";
+        // 🔹 Mostra messaggio e pulsante di conferma
+        document.getElementById("content").innerHTML = `
+          <p>Stai per richiedere la revoca del consenso con ID <b>${sessionId}</b>.</p>
+          <p>Il proprietario riceverà una notifica e potrà accettare o rifiutare la tua richiesta.</p>
+          <button id="btnRevoke">Richiedi revoca</button>
+          <button id="btnCancel">Annulla</button>
+        `;
+
+        document.getElementById("btnRevoke").addEventListener("click", () => {
+          window.location.href =
+            "https://us-central1-trueconsent-cab73.cloudfunctions.net/revokeRequest?userId=" +
+            userId + "&sessionId=" + sessionId;
+        });
+        document.getElementById("btnCancel").addEventListener("click", () => {
+          window.close();
+        });
 
       } catch (err) {
-        document.getElementById("statusMessage").innerHTML = `<div class="error">❌ ${err.message}</div>`;
+        document.getElementById("content").innerHTML =
+          `<div class="error">❌ Errore: ${err.message}</div>`;
       }
     }
-
-    document.getElementById("btnSend").addEventListener("click", async () => {
-      try {
-        document.getElementById("btnSend").disabled = true;
-        document.getElementById("statusMessage").innerHTML = "Invio richiesta di revoca...";
-        const callable = httpsCallable(functions, "sendRevokeRequest");
-        await callable({ userId, sessionId });
-        document.getElementById("statusMessage").innerHTML = `<div class="success">✅ Richiesta di revoca inviata con successo.</div>`;
-        document.getElementById("actions").style.display = "none";
-      } catch (err) {
-        document.getElementById("statusMessage").innerHTML = `<div class="error">❌ Errore: ${err.message}</div>`;
-        document.getElementById("btnSend").disabled = false;
-      }
-    });
 
     init();
   </script>
