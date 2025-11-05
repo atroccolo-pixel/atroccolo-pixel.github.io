@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Richiesta Revoca Consenso</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      margin: 40px;
+      color: #222;
+      background-color: #fafafa;
+    }
+    h2 { color: #5c3ef9; }
+    .info-box, .warning-box {
+      background: #fff;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      max-width: 700px;
+    }
+    .warning-box {
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      color: #856404;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #6c63ff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn:hover { background-color: #4b41d1; }
+  </style>
+</head>
+<body>
+  <div id="content" class="info-box">
+    <h2>Richiesta di Revoca</h2>
+    <p>Caricamento dati consenso...</p>
+  </div>
+
+  <script>
+    async function checkConsent() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      if (!id) return alert("ID consenso mancante.");
+
+      try {
+        const response = await fetch(`/api/getConsent?id=${id}`);
+        const data = await response.json();
+        const container = document.getElementById("content");
+
+        if (!data) {
+          container.innerHTML = `<div class="warning-box"><h3>Consenso non trovato</h3></div>`;
+          return;
+        }
+
+        if (data.status === "expired" || data.filesDeletedAt) {
+          container.innerHTML = `
+            <div class="warning-box">
+              <h2>⚠️ Consenso non più modificabile</h2>
+              <p>Il consenso è scaduto il ${new Date(data.endAt).toLocaleString()}.</p>
+              <p>Non è più possibile richiederne la revoca.</p>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = `
+          <h2>Richiedi Revoca del Consenso</h2>
+          <p>Stai per richiedere la revoca del consenso con ID <b>${id}</b>.</p>
+          <button class="btn" onclick="sendRevoke()">Conferma Revoca</button>
+        `;
+
+      } catch (err) {
+        document.getElementById("content").innerHTML = `<div class="warning-box"><h3>Errore interno</h3></div>`;
+      }
+    }
+
+    function sendRevoke() {
+      alert("Richiesta di revoca inviata (simulazione).");
+    }
+
+    checkConsent();
+  </script>
+</body>
+</html>
