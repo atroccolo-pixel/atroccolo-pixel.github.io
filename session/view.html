@@ -2,231 +2,136 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Visualizza Consenso – TrueConsent</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dettagli Consenso</title>
+  <link rel="icon" href="../icon.png">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #fafafa;
-      padding: 20px;
-      font-size: 15px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 40px;
+      color: #222;
+      background-color: #fafafa;
     }
-    h2 { color: #6c63ff; }
-    .section { margin-bottom: 18px; }
-    button {
-      background-color: #6c63ff;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 10px 18px;
-      cursor: pointer;
-      margin: 10px 8px 20px 0;
-      font-size: 15px;
+    h2 {
+      color: #5c3ef9;
+      margin-bottom: 10px;
     }
-    button:hover { background-color: #5548e2; }
-    img {
-      max-width: 220px;
-      border: 1px solid #ddd;
-      padding: 4px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    img:hover { transform: scale(1.02); }
-    audio {
-      margin-top: 10px;
-      display: block;
-      width: 100%;
-      min-height: 60px;
-      background: #f9f9f9;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    #lightbox {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      align-items: center;
-      justify-content: center;
-    }
-    #lightbox img {
-      max-width: 90%;
-      max-height: 90%;
+    .info-box {
+      background: #fff;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+      padding: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      max-width: 700px;
     }
-    .footer {
-      margin-top: 40px;
+    .warning-box {
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 700px;
+      color: #856404;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #6c63ff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn:hover { background-color: #5146d9; }
+    .btn:disabled {
+      background-color: #bcbcbc;
+      cursor: not-allowed;
+    }
+    footer {
+      margin-top: 50px;
       font-size: 13px;
       color: #555;
-      border-top: 1px solid #ddd;
-      padding-top: 20px;
-      line-height: 1.6;
-    }
-    .expired {
-      color: #ff4c4c;
-      background: #ffecec;
-      border: 1px solid #ffb3b3;
-      padding: 12px;
-      border-radius: 6px;
-      margin-bottom: 20px;
     }
   </style>
 </head>
-
 <body>
-  <h2>📄 Dettagli Consenso</h2>
-  <div id="expiredMessage"></div>
-  <div id="details">⏳ Caricamento...</div>
-  <div id="media"></div>
-  <div id="actions" style="display:none;">
-    <button id="btnPrint">📄 Stampa consenso</button>
-    <button id="btnDownload">📦 Scarica consenso completo</button>
+  <div class="info-box" id="consentContainer">
+    <h2>📄 Dettagli Consenso</h2>
+    <p>Caricamento...</p>
   </div>
 
-  <div id="lightbox"><img src="" alt="Preview"></div>
-
-  <div class="footer">
-    <b>Informazioni legali e conservazione</b><br>
-    Questo consenso digitale è stato generato tramite la piattaforma TrueConsent.<br>
-    La sua validità è regolata esclusivamente dalla durata indicata al momento della creazione
-    e dalle condizioni di revoca previste dai
-    <a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Termini e Condizioni ufficiali</a>.<br>
-    Scaricare e conservare copia di questo consenso consente di dimostrare in futuro
-    l’autorizzazione effettiva concessa in questa data, anche se l’account o i file originali
-    dovessero essere rimossi.<br>
+  <footer>
+    <p><b>Informazioni legali e conservazione</b><br>
+    Questo consenso digitale è stato generato tramite la piattaforma <b>TrueConsent</b>.<br>
+    La sua validità è regolata esclusivamente dalla durata indicata al momento della creazione e dalle condizioni di revoca previste dai <a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Termini e Condizioni ufficiali</a>.<br>
     TrueConsent è sistema di registrazione e notifica, non archivio permanente.<br>
     © 2025 TrueConsent – Tutti i diritti riservati.
-  </div>
+    </p>
+  </footer>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
-      authDomain: "trueconsent-cab73.firebaseapp.com",
-      projectId: "trueconsent-cab73",
-      storageBucket: "trueconsent-cab73.firebasestorage.app",
-      messagingSenderId: "298691251398",
-      appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
-
-    const url = new URL(window.location.href);
-    const userId = url.searchParams.get("userId");
-    const sessionId = url.searchParams.get("sessionId");
-
-    function formatDate(val) {
-      try {
-        if (!val) return "-";
-        if (typeof val === "string") return val;
-        if (val.toDate) return val.toDate().toLocaleString();
-        if (val.seconds) return new Date(val.seconds * 1000).toLocaleString();
-        return "-";
-      } catch { return "-"; }
-    }
-
-    function isLinkExpired(endDate) {
-      try {
-        if (!endDate) return false;
-        const end = new Date(endDate.seconds ? endDate.seconds * 1000 : endDate);
-        const diff = Date.now() - end.getTime();
-        return diff > 7 * 24 * 60 * 60 * 1000;
-      } catch {
-        return false;
-      }
-    }
-
+  <script>
     async function loadConsent() {
-      try {
-        if (!userId || !sessionId) throw new Error("Parametri mancanti.");
-        const snap = await getDoc(doc(db, "users", userId, "sessions", sessionId));
-        if (!snap.exists()) throw new Error("Consenso non trovato.");
-        const d = snap.data();
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      if (!id) return alert("ID consenso mancante.");
 
-        const expired = isLinkExpired(d.endAt);
-        if (expired) {
-          document.getElementById("expiredMessage").innerHTML = `
-            <div class="expired">⛔ Questo link non è più disponibile.<br>
-            Per motivi di privacy, i file non sono più accessibili online.</div>`;
-          document.getElementById("details").innerHTML = "";
-          document.getElementById("media").innerHTML = "";
-          document.getElementById("actions").style.display = "none";
+      try {
+        const res = await fetch(`https://firestore.googleapis.com/v1/projects/trueconsent-cab73/databases/(default)/documents/users`);
+        const container = document.getElementById("consentContainer");
+        container.innerHTML = `<p>Ricerca consenso...</p>`;
+
+        // Il consenso viene recuperato tramite l’API cloud function
+        const response = await fetch(`/api/getConsent?id=${id}`);
+        const data = await response.json();
+
+        if (!data) {
+          container.innerHTML = `<div class="warning-box"><h3>Consenso non trovato</h3><p>Il consenso richiesto non esiste o è stato rimosso.</p></div>`;
           return;
         }
 
-        document.getElementById("details").innerHTML = `
-          <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
-          <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
-          <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
-          <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
-          <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
-          <div class="section"><b>Data inizio:</b> ${formatDate(d.startAt)}</div>
-          <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>
-        `;
-
-        let media = "";
-        const safeURL = async (path, label) => {
-          try {
-            const u = await getDownloadURL(ref(storage, path));
-            return `<div class="section"><b>${label}:</b><br><img src="${u}" class="zoomable"></div>`;
-          } catch {
-            return `<div class="section"><b>${label}:</b> <i>non disponibile</i></div>`;
-          }
-        };
-
-        if (d.signaturePath) media += await safeURL(d.signaturePath, "Firma");
-        if (d.selfiePath) media += await safeURL(d.selfiePath, "Selfie");
-        if (d.audioPath) {
-          try {
-            const a = await getDownloadURL(ref(storage, d.audioPath));
-            media += `<div class="section"><b>Audio:</b><br><audio controls src="${a}"></audio></div>`;
-          } catch {
-            media += `<div class="section"><b>Audio:</b> <i>non disponibile</i></div>`;
-          }
+        // Messaggio dopo eliminazione file
+        if (data.filesDeletedAt) {
+          container.innerHTML = `
+            <div class="warning-box">
+              <h2>⚠️ File non più disponibili</h2>
+              <p>Il periodo di conservazione di questo consenso è terminato il ${new Date(data.proofRetainedUntil).toLocaleString()}.</p>
+              <p>Puoi comunque visualizzare i dettagli riepilogativi del consenso.</p>
+            </div>
+            <br>
+          `;
         }
 
-        document.getElementById("media").innerHTML = media || "<i>Nessun file disponibile</i>";
-        document.getElementById("actions").style.display = "block";
+        container.innerHTML += `
+          <p><b>ID Consenso:</b> ${id}</p>
+          <p><b>Tipo:</b> ${data.type}</p>
+          <p><b>Stato:</b> ${data.status}</p>
+          <p><b>Proprietario:</b> ${data.ownerName}</p>
+          <p><b>Controparte:</b> ${data.counterpartName}</p>
+          <p><b>Data inizio:</b> ${new Date(data.startAt).toLocaleString()}</p>
+          <p><b>Data fine:</b> ${new Date(data.endAt).toLocaleString()}</p>
+          <p><b>Firma:</b> ${data.filesDeletedAt ? 'non disponibile' : 'disponibile'}</p>
+          <p><b>Selfie:</b> ${data.filesDeletedAt ? 'non disponibile' : 'disponibile'}</p>
+          <p><b>Audio:</b> ${data.filesDeletedAt ? 'non disponibile' : 'disponibile'}</p>
 
-        document.querySelectorAll(".zoomable").forEach(img => {
-          img.addEventListener("click", () => {
-            const lightbox = document.getElementById("lightbox");
-            lightbox.style.display = "flex";
-            lightbox.querySelector("img").src = img.src;
-          });
-        });
-        document.getElementById("lightbox").addEventListener("click", () => {
-          document.getElementById("lightbox").style.display = "none";
-        });
+          <button class="btn" onclick="window.print()">🖨️ Stampa consenso</button>
+          <button class="btn" id="downloadBtn">📦 Scarica consenso completo</button>
+        `;
+
+        const downloadBtn = document.getElementById("downloadBtn");
+        if (data.filesDeletedAt) {
+          downloadBtn.disabled = true;
+          downloadBtn.onclick = () => alert("Il consenso non è più disponibile per il download completo. Il periodo di conservazione è terminato.");
+        } else {
+          downloadBtn.onclick = () => window.location.href = `/downloadConsentZip?id=${id}`;
+        }
 
       } catch (e) {
-        document.getElementById("details").innerText = "❌ " + e.message;
         console.error(e);
+        document.getElementById("consentContainer").innerHTML = `
+          <div class="warning-box"><h3>Errore interno</h3><p>Impossibile caricare il consenso.</p></div>`;
       }
     }
-
-    document.getElementById("btnPrint").addEventListener("click", () => window.print());
-    document.getElementById("btnDownload").addEventListener("click", () => {
-      if (!userId || !sessionId) {
-        alert("Parametri mancanti nel link.");
-        return;
-      }
-      const url = `https://us-central1-trueconsent-cab73.cloudfunctions.net/downloadConsentZip?userId=${userId}&sessionId=${sessionId}`;
-      window.open(url, "_blank");
-    });
 
     loadConsent();
   </script>
