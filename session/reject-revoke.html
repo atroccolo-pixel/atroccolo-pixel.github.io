@@ -1,13 +1,50 @@
 <!DOCTYPE html>
 <html lang="it">
-<head><meta charset="UTF-8"><title>Rifiuta Revoca</title></head>
-<body style="font-family: Arial; padding:20px;">
-  <h2>🚫 Rifiuto Revoca</h2>
-  <div id="result">⏳ Invio rifiuto...</div>
+<head>
+  <meta charset="UTF-8">
+  <title>Rifiuta Revoca – TrueConsent</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9fb;
+      padding: 40px;
+      color: #222;
+      line-height: 1.6;
+    }
+    h2 { color: #ff4c4c; }
+    .container {
+      max-width: 650px;
+      margin: auto;
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .success {
+      color: #28a745;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    .error {
+      color: #ff4c4c;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>🚫 Rifiuto Revoca</h2>
+    <div id="result">⏳ Invio rifiuto...</div>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      getFirestore, doc, getDoc, updateDoc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
@@ -27,18 +64,37 @@
 
     async function rejectRevoke() {
       try {
+        if (!userId || !sessionId)
+          throw new Error("Parametri mancanti nel link.");
+
         const ref = doc(db, "users", userId, "sessions", sessionId);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) throw new Error("Consenso non trovato.");
+
+        const data = snap.data();
+        const requester = data?.revokeRequesterUid || "unknown";
+        const isOwnerRequester = requester === data?.ownerUid;
+
         await updateDoc(ref, {
           status: "valid",
           revokeRequesterUid: null,
           revokeRequesterAt: null,
-          revokeCounterpartyAt: serverTimestamp()
+          revokeCounterpartyAt: serverTimestamp(),
+          // ✅ registra chi ha rifiutato per coerenza backend
+          revokeRejectedBy: isOwnerRequester
+            ? data?.counterpartUid || "counterpart"
+            : data?.ownerUid || "owner"
         });
-        document.getElementById("result").innerHTML = "✅ Revoca rifiutata, consenso valido.";
-      } catch {
-        document.getElementById("result").innerHTML = "❌ Errore durante il rifiuto.";
+
+        document.getElementById("result").innerHTML =
+          "<div class='success'>✅ Revoca rifiutata, consenso valido.</div>";
+      } catch (err) {
+        console.error("Errore rifiuto:", err);
+        document.getElementById("result").innerHTML =
+          "<div class='error'>❌ Errore durante il rifiuto.</div>";
       }
     }
+
     rejectRevoke();
   </script>
 </body>
