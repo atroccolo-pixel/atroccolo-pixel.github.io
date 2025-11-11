@@ -146,7 +146,6 @@
       } catch { return "-"; }
     }
 
-    // 🔹 Controlla se il link è scaduto dopo 7 giorni da revoca o scadenza
     function isLinkExpired(d) {
       try {
         const ref = d.revokedAt || d.expiredAt || d.endAt;
@@ -167,7 +166,9 @@
         const d = snap.data();
 
         const expired = isLinkExpired(d);
-        if (expired) {
+
+        // 🔹 Mostra messaggio rosso SOLO se link oltre 7 giorni e anche filesDeletedAt presente
+        if (expired && d.filesDeletedAt) {
           document.getElementById("expiredMessage").innerHTML = `
             <div class="expired">⛔ Questo link non è più disponibile.<br>
             Per motivi di privacy, i file non sono più accessibili online.</div>`;
@@ -177,6 +178,7 @@
           return;
         }
 
+        // ✅ Mostra dettagli base
         document.getElementById("details").innerHTML = `
           <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
           <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
@@ -187,6 +189,7 @@
           <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>
         `;
 
+        // ⚠️ Banner giallo se i file sono stati rimossi ma i dettagli restano
         if (d.filesDeletedAt) {
           document.getElementById("expiredMessage").innerHTML = `
             <div class="warning">⚠️ I file originali sono stati rimossi automaticamente dopo il periodo probatorio (7 giorni).<br>
@@ -194,6 +197,7 @@
           document.getElementById("btnDownload").disabled = true;
         }
 
+        // ✅ Media
         let media = "";
         const safeURL = async (path, label) => {
           try {
