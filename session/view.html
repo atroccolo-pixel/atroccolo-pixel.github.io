@@ -167,13 +167,20 @@
 
         const expired = isLinkExpired(d);
 
-        // 🔹 Mostra messaggio rosso SOLO se link oltre 7 giorni e anche filesDeletedAt presente
+        // 🔹 Mostra messaggio rosso solo se link oltre 7 giorni E filesDeletedAt presente
         if (expired && d.filesDeletedAt) {
           document.getElementById("expiredMessage").innerHTML = `
             <div class="expired">⛔ Questo link non è più disponibile.<br>
             Per motivi di privacy, i file non sono più accessibili online.</div>`;
-          document.getElementById("details").innerHTML = "";
-          document.getElementById("media").innerHTML = "";
+          document.getElementById("details").innerHTML = `
+            <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
+            <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
+            <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
+            <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
+            <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
+            <div class="section"><b>Data inizio:</b> ${formatDate(d.startAt)}</div>
+            <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>`;
+          document.getElementById("media").innerHTML = "<i>I file sono stati rimossi automaticamente.</i>";
           document.getElementById("actions").style.display = "none";
           return;
         }
@@ -189,8 +196,8 @@
           <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>
         `;
 
-        // ⚠️ Banner giallo se i file sono stati rimossi ma i dettagli restano
-        if (d.filesDeletedAt) {
+        // ⚠️ Se i file sono stati rimossi ma non è ancora scaduto → banner giallo
+        if (d.filesDeletedAt && !expired) {
           document.getElementById("expiredMessage").innerHTML = `
             <div class="warning">⚠️ I file originali sono stati rimossi automaticamente dopo il periodo probatorio (7 giorni).<br>
             È possibile visualizzare solo le informazioni principali del consenso.</div>`;
