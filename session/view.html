@@ -146,11 +146,13 @@
       } catch { return "-"; }
     }
 
-    function isLinkExpired(endDate) {
+    // 🔹 Controlla se il link è scaduto dopo 7 giorni da revoca o scadenza
+    function isLinkExpired(d) {
       try {
-        if (!endDate) return false;
-        const end = new Date(endDate.seconds ? endDate.seconds * 1000 : endDate);
-        const diff = Date.now() - end.getTime();
+        const ref = d.revokedAt || d.expiredAt || d.endAt;
+        if (!ref) return false;
+        const baseDate = ref.seconds ? new Date(ref.seconds * 1000) : new Date(ref);
+        const diff = Date.now() - baseDate.getTime();
         return diff > 7 * 24 * 60 * 60 * 1000;
       } catch {
         return false;
@@ -164,7 +166,7 @@
         if (!snap.exists()) throw new Error("Consenso non trovato.");
         const d = snap.data();
 
-        const expired = isLinkExpired(d.endAt);
+        const expired = isLinkExpired(d);
         if (expired) {
           document.getElementById("expiredMessage").innerHTML = `
             <div class="expired">⛔ Questo link non è più disponibile.<br>
@@ -175,7 +177,6 @@
           return;
         }
 
-        // ✅ Mostra dettagli base
         document.getElementById("details").innerHTML = `
           <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
           <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
@@ -186,7 +187,6 @@
           <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>
         `;
 
-        // ⚠️ Se i file sono stati eliminati (filesDeletedAt esiste)
         if (d.filesDeletedAt) {
           document.getElementById("expiredMessage").innerHTML = `
             <div class="warning">⚠️ I file originali sono stati rimossi automaticamente dopo il periodo probatorio (7 giorni).<br>
@@ -194,7 +194,6 @@
           document.getElementById("btnDownload").disabled = true;
         }
 
-        // ✅ Media
         let media = "";
         const safeURL = async (path, label) => {
           try {
