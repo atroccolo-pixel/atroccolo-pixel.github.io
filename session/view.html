@@ -86,27 +86,14 @@
       border-radius: 6px;
       margin-bottom: 20px;
     }
-    .info {
-      color: #31708f;
-      background: #d9edf7;
-      border: 1px solid #bce8f1;
-      padding: 12px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-    }
   </style>
 </head>
 
 <body>
   <h2>📄 Dettagli Consenso</h2>
-
   <div id="expiredMessage"></div>
-  <div id="accountDeletedMessage"></div>
-  <div id="determinatoNoRevoca"></div>
-
   <div id="details">⏳ Caricamento...</div>
   <div id="media"></div>
-
   <div id="actions" style="display:none;">
     <button id="btnPrint">📄 Stampa consenso</button>
     <button id="btnDownload">📦 Scarica consenso completo</button>
@@ -149,11 +136,12 @@
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
 
-    function formatDate(v) {
+    function formatDate(val) {
       try {
-        if (!v) return "-";
-        if (v.seconds) return new Date(v.seconds * 1000).toLocaleString("it-IT");
-        if (v.toDate) return v.toDate().toLocaleString("it-IT");
+        if (!val) return "-";
+        if (typeof val === "string") return val;
+        if (val.toDate) return val.toDate().toLocaleString();
+        if (val.seconds) return new Date(val.seconds * 1000).toLocaleString();
         return "-";
       } catch { return "-"; }
     }
@@ -162,9 +150,12 @@
       try {
         const ref = d.revokedAt || d.expiredAt || d.endAt;
         if (!ref) return false;
-        const base = ref.seconds ? new Date(ref.seconds * 1000) : new Date(ref);
-        return Date.now() - base.getTime() > 7 * 24 * 60 * 60 * 1000;
-      } catch { return false; }
+        const baseDate = ref.seconds ? new Date(ref.seconds * 1000) : new Date(ref);
+        const diff = Date.now() - baseDate.getTime();
+        return diff > 7 * 24 * 60 * 60 * 1000;
+      } catch {
+        return false;
+      }
     }
 
     async function loadConsent() {
@@ -172,54 +163,31 @@
         if (!userId || !sessionId) throw new Error("Parametri mancanti.");
         const snap = await getDoc(doc(db, "users", userId, "sessions", sessionId));
         if (!snap.exists()) throw new Error("Consenso non trovato.");
-
         const d = snap.data();
+
         const expired = isLinkExpired(d);
 
-        // =====================================================
-        // 1) Caso file rimossi dopo 7 giorni
-        // =====================================================
+        // 🔹 Mostra messaggio rosso solo se link oltre 7 giorni E filesDeletedAt presente
         if (expired && d.filesDeletedAt) {
           document.getElementById("expiredMessage").innerHTML = `
             <div class="expired">⛔ Questo link non è più disponibile.<br>
-            I file sono stati rimossi per motivi di privacy.</div>`;
+            Per motivi di privacy, i file non sono più accessibili online.</div>`;
           document.getElementById("details").innerHTML = `
-            <div class="section"><b>ID:</b> ${sessionId}</div>
-            <div class="section"><b>Tipo:</b> ${d.type}</div>
-            <div class="section"><b>Stato:</b> ${d.status}</div>
-            <div class="section"><b>Proprietario:</b> ${d.ownerName}</div>
-            <div class="section"><b>Controparte:</b> ${d.counterpartName}</div>`;
-          document.getElementById("media").innerHTML =
-            "<i>File rimossi automaticamente.</i>";
+            <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
+            <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
+            <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
+            <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
+            <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
+            <div class="section"><b>Data inizio:</b> ${formatDate(d.startAt)}</div>
+            <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>`;
+          document.getElementById("media").innerHTML = "<i>I file sono stati rimossi automaticamente.</i>";
           document.getElementById("actions").style.display = "none";
           return;
         }
 
-        // =====================================================
-        // 2) Avviso: una parte ha eliminato l’account
-        // =====================================================
-        if (d.ownerDeleted || d.counterpartDeleted) {
-          let who = [];
-          if (d.ownerDeleted) who.push("il creatore del consenso");
-          if (d.counterpartDeleted) who.push("la controparte");
-          document.getElementById("accountDeletedMessage").innerHTML = `
-            <div class="info">ℹ️ Attenzione: ${who.join(" e ")} ha eliminato il proprio account.<br>
-            I dettagli rimangono consultabili per fini probatori.</div>`;
-        }
-
-        // =====================================================
-        // 3) Consenso determinato → no revoca se una parte eliminata
-        // =====================================================
-        if (d.type === "determinato" && (d.ownerDeleted || d.counterpartDeleted)) {
-          document.getElementById("determinatoNoRevoca").innerHTML = `
-            <div class="warning">⚠️ Questo consenso determinato non può più essere revocato
-            poiché una delle parti ha eliminato il proprio account.<br>
-            Rimane valido fino alla sua scadenza naturale.</div>`;
-        }
-
-        // Dettagli base
+        // ✅ Mostra dettagli base
         document.getElementById("details").innerHTML = `
-          <div class="section"><b>ID:</b> ${sessionId}</div>
+          <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
           <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
           <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
           <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
@@ -228,41 +196,44 @@
           <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>
         `;
 
-        // =====================================================
-        // 4) File multimediali
-        // =====================================================
-        let media = "";
+        // ⚠️ Se i file sono stati rimossi ma non è ancora scaduto → banner giallo
+        if (d.filesDeletedAt && !expired) {
+          document.getElementById("expiredMessage").innerHTML = `
+            <div class="warning">⚠️ I file originali sono stati rimossi automaticamente dopo il periodo probatorio (7 giorni).<br>
+            È possibile visualizzare solo le informazioni principali del consenso.</div>`;
+          document.getElementById("btnDownload").disabled = true;
+        }
 
-        const safe = async (path, label) => {
+        // ✅ Media
+        let media = "";
+        const safeURL = async (path, label) => {
           try {
-            const url = await getDownloadURL(ref(storage, path));
-            return `<div class="section"><b>${label}:</b><br><img src="${url}" class="zoomable"></div>`;
+            const u = await getDownloadURL(ref(storage, path));
+            return `<div class="section"><b>${label}:</b><br><img src="${u}" class="zoomable"></div>`;
           } catch {
             return `<div class="section"><b>${label}:</b> <i>non disponibile</i></div>`;
           }
         };
 
-        if (d.signaturePath) media += await safe(d.signaturePath, "Firma");
-        if (d.selfiePath) media += await safe(d.selfiePath, "Selfie");
-
+        if (d.signaturePath) media += await safeURL(d.signaturePath, "Firma");
+        if (d.selfiePath) media += await safeURL(d.selfiePath, "Selfie");
         if (d.audioPath) {
           try {
-            const url = await getDownloadURL(ref(storage, d.audioPath));
-            media += `<div class="section"><b>Audio:</b><br><audio controls src="${url}"></audio></div>`;
+            const a = await getDownloadURL(ref(storage, d.audioPath));
+            media += `<div class="section"><b>Audio:</b><br><audio controls src="${a}"></audio></div>`;
           } catch {
-            media += `<div class="section"><b>Audio:</b> non disponibile</div>`;
+            media += `<div class="section"><b>Audio:</b> <i>non disponibile</i></div>`;
           }
         }
 
         document.getElementById("media").innerHTML = media || "<i>Nessun file disponibile</i>";
         document.getElementById("actions").style.display = "block";
 
-        // Zoom immagini
         document.querySelectorAll(".zoomable").forEach(img => {
           img.addEventListener("click", () => {
-            const box = document.getElementById("lightbox");
-            box.style.display = "flex";
-            box.querySelector("img").src = img.src;
+            const lightbox = document.getElementById("lightbox");
+            lightbox.style.display = "flex";
+            lightbox.querySelector("img").src = img.src;
           });
         });
         document.getElementById("lightbox").addEventListener("click", () => {
@@ -278,13 +249,11 @@
     document.getElementById("btnPrint").addEventListener("click", () => window.print());
     document.getElementById("btnDownload").addEventListener("click", () => {
       if (!userId || !sessionId) {
-        alert("Parametri mancanti.");
+        alert("Parametri mancanti nel link.");
         return;
       }
-      window.open(
-        `https://us-central1-trueconsent-cab73.cloudfunctions.net/downloadConsentZip?userId=${userId}&sessionId=${sessionId}`,
-        "_blank"
-      );
+      const url = `https://us-central1-trueconsent-cab73.cloudfunctions.net/downloadConsentZip?userId=${userId}&sessionId=${sessionId}`;
+      window.open(url, "_blank");
     });
 
     loadConsent();
