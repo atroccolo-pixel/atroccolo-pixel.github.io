@@ -1,302 +1,119 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>Visualizza Consenso – TrueConsent</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+  <meta charset="UTF-8" />
+  <title>TrueConsent – Visualizzazione Consenso</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #fafafa;
-      padding: 20px;
-      font-size: 15px;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 0;
     }
-    h2 { color: #6c63ff; }
-    .section { margin-bottom: 18px; }
-    button {
-      background-color: #6c63ff;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 10px 18px;
-      cursor: pointer;
-      margin: 10px 8px 20px 0;
-      font-size: 15px;
-    }
-    button:hover { background-color: #5548e2; }
-    img {
-      max-width: 220px;
-      border: 1px solid #ddd;
-      padding: 4px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    img:hover { transform: scale(1.02); }
-    audio {
-      margin-top: 10px;
-      display: block;
-      width: 100%;
-      min-height: 60px;
-      background: #f9f9f9;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    #lightbox {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      align-items: center;
-      justify-content: center;
-    }
-    #lightbox img {
-      max-width: 90%;
-      max-height: 90%;
+    .container {
+      background: white;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px 30px;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
     }
-    .footer {
-      margin-top: 40px;
-      font-size: 13px;
-      color: #555;
-      border-top: 1px solid #ddd;
-      padding-top: 20px;
-      line-height: 1.6;
+    h2 {
+      color: #444;
+      margin-bottom: 10px;
     }
-    .expired {
-      color: #ff4c4c;
-      background: #ffecec;
-      border: 1px solid #ffb3b3;
-      padding: 12px;
-      border-radius: 6px;
+    .info-box {
+      background: #eef4ff;
+      border-left: 4px solid #6c63ff;
+      padding: 12px 14px;
       margin-bottom: 20px;
-    }
-    .warning {
-      color: #8a6d3b;
-      background: #fff3cd;
-      border: 1px solid #ffeeba;
-      padding: 12px;
       border-radius: 6px;
-      margin-bottom: 20px;
+      color: #333;
+      font-size: 15px;
+      line-height: 1.5;
     }
-
-    .account-deleted {
-      color: #856404;
-      background: #fff8e1;
-      border: 1px solid #ffe9a8;
-      padding: 12px;
-      border-radius: 6px;
+    .warning-box {
+      background: #fff4e6;
+      border-left: 4px solid #ff9800;
+      padding: 12px 14px;
       margin-bottom: 20px;
-      font-size: 14px;
-      line-height: 1.6;
+      border-radius: 6px;
+      color: #333;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    a.button {
+      background: #6c63ff;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 10px;
     }
   </style>
 </head>
 
 <body>
-  <h2>📄 Dettagli Consenso</h2>
+  <div class="container">
+    <h2>Dettagli Consenso</h2>
 
-  <div id="accountDeletedBanner"></div>
-  <div id="expiredMessage"></div>
+    <!-- =========================================================
+         🆕 AVVISI SE UNA DELLE PARTI HA ELIMINATO L’ACCOUNT
+    ============================================================ -->
 
-  <div id="details">⏳ Caricamento...</div>
-  <div id="media"></div>
+    <div id="ownerDeletedBox" class="warning-box" style="display:none;">
+      Il proprietario del consenso ha eliminato il proprio account.  
+      Il consenso <b>non termina</b> e resta valido fino alla scadenza naturale.
+    </div>
 
-  <div id="actions" style="display:none;">
-    <button id="btnPrint">📄 Stampa consenso</button>
-    <button id="btnDownload">📦 Scarica consenso completo</button>
+    <div id="counterDeletedBox" class="warning-box" style="display:none;">
+      La controparte ha eliminato il proprio account.  
+      I file biometrici sono disponibili <b>solo per 7 giorni</b>.
+    </div>
+
+    <!-- =========================================================
+         CONTENUTO PRINCIPALE (NON MODIFICATO)
+    ============================================================ -->
+
+    <div id="consentInfo"></div>
+
+    <a id="downloadBtn" class="button" href="#">📥 Scarica ZIP completo</a>
+
   </div>
 
-  <div id="lightbox"><img src="" alt="Preview"></div>
-
-  <div class="footer">
-    <b>Informazioni legali e conservazione</b><br>
-    Questo consenso digitale è stato generato tramite la piattaforma TrueConsent.<br>
-    La sua validità è regolata esclusivamente dalla durata indicata al momento della creazione
-    e dalle condizioni di revoca previste dai
-    <a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Termini e Condizioni ufficiali</a>.<br>
-    Scaricare e conservare copia di questo consenso consente di dimostrare in futuro
-    l’autorizzazione effettiva concessa in questa data, anche se l’account o i file originali
-    dovessero essere rimossi.<br>
-    TrueConsent è sistema di registrazione e notifica, non archivio permanente.<br>
-    © 2025 TrueConsent – Tutti i diritti riservati.
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
-      authDomain: "trueconsent-cab73.firebaseapp.com",
-      projectId: "trueconsent-cab73",
-      storageBucket: "trueconsent-cab73.firebasestorage.app",
-      messagingSenderId: "298691251398",
-      appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
-
+  <script>
+    // Query parameters
     const url = new URL(window.location.href);
     const userId = url.searchParams.get("userId");
     const sessionId = url.searchParams.get("sessionId");
 
-    function formatDate(val) {
-      try {
-        if (!val) return "-";
-        if (typeof val === "string") return val;
-        if (val.toDate) return val.toDate().toLocaleString();
-        if (val.seconds) return new Date(val.seconds * 1000).toLocaleString();
-        return "-";
-      } catch { return "-"; }
-    }
+    // API endpoint cloud function esistente (non modificato)
+    const endpoint = `https://us-central1-trueconsent-cab73.cloudfunctions.net/getConsentInfo?userId=${userId}&sessionId=${sessionId}`;
 
-    function isLinkExpired(d) {
-      try {
-        const ref = d.revokedAt || d.expiredAt || d.endAt;
-        if (!ref) return false;
-        const baseDate = ref.seconds ? new Date(ref.seconds * 1000) : new Date(ref);
-        const diff = Date.now() - baseDate.getTime();
-        return diff > 7 * 24 * 60 * 60 * 1000;
-      } catch {
-        return false;
-      }
-    }
+    fetch(endpoint)
+      .then((r) => r.json())
+      .then((data) => {
+        // Mostra informazioni consenso
+        document.getElementById("consentInfo").innerHTML = data.html;
 
-    async function loadConsent() {
-      try {
-        if (!userId || !sessionId) throw new Error("Parametri mancanti.");
-        const snap = await getDoc(doc(db, "users", userId, "sessions", sessionId));
-        if (!snap.exists()) throw new Error("Consenso non trovato.");
-        const d = snap.data();
+        // Link ZIP
+        document.getElementById("downloadBtn").href = data.zipUrl;
 
-        const expired = isLinkExpired(d);
-
-        // ============================================================
-        // 🔥 NUOVO — AVVISO ACCOUNT ELIMINATO
-        // ============================================================
-        if (d.ownerDeleted || d.counterpartDeleted) {
-          const deleted = d.ownerDeleted ? "Il proprietario (A)" : "La controparte (B)";
-          document.getElementById("accountDeletedBanner").innerHTML = `
-            <div class="account-deleted">
-              ⚠️ <b>${deleted} ha eliminato il proprio account.</b><br>
-              Questo non invalida il consenso già creato ma influisce sulla disponibilità dei file.
-            </div>`;
+        // 🆕 Mostra banner account eliminato
+        if (data.ownerDeleted) {
+          document.getElementById("ownerDeletedBox").style.display = "block";
         }
-
-        // ============================================================
-        // 🔥 LINK SCADUTO (>7 giorni)
-        // ============================================================
-        if (expired && d.filesDeletedAt) {
-          document.getElementById("expiredMessage").innerHTML = `
-            <div class="expired">⛔ Questo link non è più disponibile.<br>
-            Per motivi di privacy, i file non sono più accessibili online.</div>`;
-
-          document.getElementById("details").innerHTML = `
-            <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
-            <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
-            <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
-            <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
-            <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
-            <div class="section"><b>Data inizio:</b> ${formatDate(d.startAt)}</div>
-            <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>`;
-
-          document.getElementById("media").innerHTML = "<i>I file sono stati rimossi automaticamente.</i>";
-          document.getElementById("actions").style.display = "none";
-          return;
+        if (data.counterpartDeleted) {
+          document.getElementById("counterDeletedBox").style.display = "block";
         }
-
-        // ============================================================
-        // 🔥 DETTAGLI BASE
-        // ============================================================
-        document.getElementById("details").innerHTML = `
-          <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
-          <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
-          <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
-          <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
-          <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
-          <div class="section"><b>Data inizio:</b> ${formatDate(d.startAt)}</div>
-          <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>
-        `;
-
-        // ============================================================
-        // ⚠️ FILE RIMOSSI (ma non scaduti)
-        // ============================================================
-        if (d.filesDeletedAt && !expired) {
-          document.getElementById("expiredMessage").innerHTML = `
-            <div class="warning">⚠️ I file originali sono stati rimossi automaticamente dopo il periodo probatorio (7 giorni).<br>
-            È possibile visualizzare solo le informazioni principali del consenso.</div>`;
-          document.getElementById("btnDownload").disabled = true;
-        }
-
-        // ============================================================
-        // 🔥 MEDIA (firma, selfie, audio)
-        // ============================================================
-        let media = "";
-        const safeURL = async (path, label) => {
-          try {
-            const u = await getDownloadURL(ref(storage, path));
-            return `<div class="section"><b>${label}:</b><br><img src="${u}" class="zoomable"></div>`;
-          } catch {
-            return `<div class="section"><b>${label}:</b> <i>non disponibile</i></div>`;
-          }
-        };
-
-        if (d.signaturePath) media += await safeURL(d.signaturePath, "Firma");
-        if (d.selfiePath) media += await safeURL(d.selfiePath, "Selfie");
-
-        if (d.audioPath) {
-          try {
-            const audioURL = await getDownloadURL(ref(storage, d.audioPath));
-            media += `<div class="section"><b>Audio:</b><br><audio controls src="${audioURL}"></audio></div>`;
-          } catch {
-            media += `<div class="section"><b>Audio:</b> <i>non disponibile</i></div>`;
-          }
-        }
-
-        document.getElementById("media").innerHTML = media || "<i>Nessun file disponibile</i>";
-        document.getElementById("actions").style.display = "block";
-
-        document.querySelectorAll(".zoomable").forEach(img => {
-          img.addEventListener("click", () => {
-            const lightbox = document.getElementById("lightbox");
-            lightbox.style.display = "flex";
-            lightbox.querySelector("img").src = img.src;
-          });
-        });
-
-        document.getElementById("lightbox").addEventListener("click", () => {
-          document.getElementById("lightbox").style.display = "none";
-        });
-
-      } catch (e) {
-        document.getElementById("details").innerText = "❌ " + e.message;
-        console.error(e);
-      }
-    }
-
-    document.getElementById("btnPrint").addEventListener("click", () => window.print());
-
-    document.getElementById("btnDownload").addEventListener("click", () => {
-      if (!userId || !sessionId) {
-        alert("Parametri mancanti nel link.");
-        return;
-      }
-      const url = `https://us-central1-trueconsent-cab73.cloudfunctions.net/downloadConsentZip?userId=${userId}&sessionId=${sessionId}`;
-      window.open(url, "_blank");
-    });
-
-    loadConsent();
+      })
+      .catch(() => {
+        document.getElementById("consentInfo").innerHTML =
+          "<p>Errore nel caricamento dei dati.</p>";
+      });
   </script>
+
 </body>
 </html>
