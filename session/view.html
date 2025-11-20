@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Visualizza Consenso – TrueConsent</title>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -14,15 +13,8 @@
       padding: 20px;
       font-size: 15px;
     }
-
-    h2 {
-      color: #6c63ff;
-    }
-
-    .section {
-      margin-bottom: 18px;
-    }
-
+    h2 { color: #6c63ff; }
+    .section { margin-bottom: 18px; }
     button {
       background-color: #6c63ff;
       color: #fff;
@@ -33,11 +25,7 @@
       margin: 10px 8px 20px 0;
       font-size: 15px;
     }
-
-    button:hover {
-      background-color: #5548e2;
-    }
-
+    button:hover { background-color: #5548e2; }
     img {
       max-width: 220px;
       border: 1px solid #ddd;
@@ -46,11 +34,7 @@
       cursor: pointer;
       transition: transform 0.2s;
     }
-
-    img:hover {
-      transform: scale(1.02);
-    }
-
+    img:hover { transform: scale(1.02); }
     audio {
       margin-top: 10px;
       display: block;
@@ -60,7 +44,6 @@
       border: 1px solid #ccc;
       border-radius: 6px;
     }
-
     #lightbox {
       display: none;
       position: fixed;
@@ -73,14 +56,12 @@
       align-items: center;
       justify-content: center;
     }
-
     #lightbox img {
       max-width: 90%;
       max-height: 90%;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
     }
-
     .footer {
       margin-top: 40px;
       font-size: 13px;
@@ -89,7 +70,6 @@
       padding-top: 20px;
       line-height: 1.6;
     }
-
     .expired {
       color: #ff4c4c;
       background: #ffecec;
@@ -98,7 +78,6 @@
       border-radius: 6px;
       margin-bottom: 20px;
     }
-
     .warning {
       color: #8a6d3b;
       background: #fff3cd;
@@ -108,13 +87,15 @@
       margin-bottom: 20px;
     }
 
-    .deletedAccount {
-      color: #2c3e50;
-      background: #eaf2fa;
-      border: 1px solid #bcd3e6;
+    .account-deleted {
+      color: #856404;
+      background: #fff8e1;
+      border: 1px solid #ffe9a8;
       padding: 12px;
       border-radius: 6px;
       margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.6;
     }
   </style>
 </head>
@@ -122,8 +103,9 @@
 <body>
   <h2>📄 Dettagli Consenso</h2>
 
+  <div id="accountDeletedBanner"></div>
   <div id="expiredMessage"></div>
-  <div id="deletedAccountMessage"></div>
+
   <div id="details">⏳ Caricamento...</div>
   <div id="media"></div>
 
@@ -132,20 +114,20 @@
     <button id="btnDownload">📦 Scarica consenso completo</button>
   </div>
 
-  <div id="lightbox"><img src="" alt="Preview" /></div>
+  <div id="lightbox"><img src="" alt="Preview"></div>
 
   <div class="footer">
-    <b>Informazioni legali e conservazione</b><br />
-    Questo consenso digitale è stato generato tramite la piattaforma TrueConsent.<br />
-    La sua validità è regolata esclusivamente dalla durata indicata al momento della creazione e dalle regole probatorie dei
-    <a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Termini e Condizioni ufficiali</a>.<br />
-    TrueConsent è sistema di registrazione e notifica, non archivio permanente.<br />
+    <b>Informazioni legali e conservazione</b><br>
+    Questo consenso digitale è stato generato tramite la piattaforma TrueConsent.<br>
+    La sua validità è regolata esclusivamente dalla durata indicata al momento della creazione
+    e dalle condizioni di revoca previste dai
+    <a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Termini e Condizioni ufficiali</a>.<br>
+    Scaricare e conservare copia di questo consenso consente di dimostrare in futuro
+    l’autorizzazione effettiva concessa in questa data, anche se l’account o i file originali
+    dovessero essere rimossi.<br>
+    TrueConsent è sistema di registrazione e notifica, non archivio permanente.<br>
     © 2025 TrueConsent – Tutti i diritti riservati.
   </div>
-
-  <!-- ================================================== -->
-  <!-- 🔥 SCRIPT FIREBASE -->
-  <!-- ================================================== -->
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -173,20 +155,19 @@
       try {
         if (!val) return "-";
         if (typeof val === "string") return val;
-        if (val.toDate) return val.toDate().toLocaleString("it-IT");
-        if (val.seconds) return new Date(val.seconds * 1000).toLocaleString("it-IT");
+        if (val.toDate) return val.toDate().toLocaleString();
+        if (val.seconds) return new Date(val.seconds * 1000).toLocaleString();
         return "-";
-      } catch {
-        return "-";
-      }
+      } catch { return "-"; }
     }
 
     function isLinkExpired(d) {
       try {
         const ref = d.revokedAt || d.expiredAt || d.endAt;
         if (!ref) return false;
-        const base = ref.seconds ? new Date(ref.seconds * 1000) : new Date(ref);
-        return Date.now() - base.getTime() > 7 * 24 * 60 * 60 * 1000;
+        const baseDate = ref.seconds ? new Date(ref.seconds * 1000) : new Date(ref);
+        const diff = Date.now() - baseDate.getTime();
+        return diff > 7 * 24 * 60 * 60 * 1000;
       } catch {
         return false;
       }
@@ -194,97 +175,90 @@
 
     async function loadConsent() {
       try {
-        if (!userId || !sessionId) throw new Error("Parametri mancanti");
-
+        if (!userId || !sessionId) throw new Error("Parametri mancanti.");
         const snap = await getDoc(doc(db, "users", userId, "sessions", sessionId));
-        if (!snap.exists()) throw new Error("Consenso non trovato");
-
+        if (!snap.exists()) throw new Error("Consenso non trovato.");
         const d = snap.data();
+
         const expired = isLinkExpired(d);
 
-        // ==================================================
-        // 🔹 AVVISO ACCOUNT ELIMINATO
-        // ==================================================
+        // ============================================================
+        // 🔥 NUOVO — AVVISO ACCOUNT ELIMINATO
+        // ============================================================
         if (d.ownerDeleted || d.counterpartDeleted) {
-          document.getElementById("deletedAccountMessage").innerHTML = `
-            <div class="deletedAccount">
-              ⚠️ Una delle parti ha eliminato il proprio account.<br>
-              Questo non altera il valore probatorio del consenso.<br>
-              I file restano disponibili per 7 giorni dalla scadenza/revoca.
+          const deleted = d.ownerDeleted ? "Il proprietario (A)" : "La controparte (B)";
+          document.getElementById("accountDeletedBanner").innerHTML = `
+            <div class="account-deleted">
+              ⚠️ <b>${deleted} ha eliminato il proprio account.</b><br>
+              Questo non invalida il consenso già creato ma influisce sulla disponibilità dei file.
             </div>`;
         }
 
-        // ==================================================
-        // ⛔ LINK SCADUTO (7 giorni + file rimossi)
-        // ==================================================
+        // ============================================================
+        // 🔥 LINK SCADUTO (>7 giorni)
+        // ============================================================
         if (expired && d.filesDeletedAt) {
           document.getElementById("expiredMessage").innerHTML = `
-            <div class="expired">
-              ⛔ Questo link non è più disponibile.<br>
-              Per motivi di privacy, i file non sono più accessibili.
-            </div>`;
+            <div class="expired">⛔ Questo link non è più disponibile.<br>
+            Per motivi di privacy, i file non sono più accessibili online.</div>`;
 
           document.getElementById("details").innerHTML = `
             <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
-            <div class="section"><b>Tipo:</b> ${d.type}</div>
-            <div class="section"><b>Stato:</b> ${d.status}</div>
-            <div class="section"><b>Proprietario:</b> ${d.ownerName}</div>
-            <div class="section"><b>Controparte:</b> ${d.counterpartName}</div>
-            <div class="section"><b>Inizio:</b> ${formatDate(d.startAt)}</div>
-            <div class="section"><b>Fine:</b> ${formatDate(d.endAt)}</div>
-          `;
+            <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
+            <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
+            <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
+            <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
+            <div class="section"><b>Data inizio:</b> ${formatDate(d.startAt)}</div>
+            <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>`;
 
           document.getElementById("media").innerHTML = "<i>I file sono stati rimossi automaticamente.</i>";
           document.getElementById("actions").style.display = "none";
           return;
         }
 
-        // ==================================================
-        // 📄 DETTAGLI CONSENSO
-        // ==================================================
+        // ============================================================
+        // 🔥 DETTAGLI BASE
+        // ============================================================
         document.getElementById("details").innerHTML = `
           <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
-          <div class="section"><b>Tipo:</b> ${d.type}</div>
-          <div class="section"><b>Stato:</b> ${d.status}</div>
-          <div class="section"><b>Proprietario:</b> ${d.ownerName}</div>
-          <div class="section"><b>Controparte:</b> ${d.counterpartName}</div>
-          <div class="section"><b>Inizio:</b> ${formatDate(d.startAt)}</div>
-          <div class="section"><b>Fine:</b> ${formatDate(d.endAt)}</div>
+          <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
+          <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
+          <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
+          <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
+          <div class="section"><b>Data inizio:</b> ${formatDate(d.startAt)}</div>
+          <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>
         `;
 
-        // ==================================================
-        // ⚠️ FILE RIMOSSI MA LINK ANCORA VALIDO (< 7 giorni)
-        // ==================================================
+        // ============================================================
+        // ⚠️ FILE RIMOSSI (ma non scaduti)
+        // ============================================================
         if (d.filesDeletedAt && !expired) {
           document.getElementById("expiredMessage").innerHTML = `
-            <div class="warning">
-              ⚠️ I file originali sono stati rimossi automaticamente dopo il periodo probatorio (7 giorni).
-              È possibile visualizzare solo le informazioni principali.
-            </div>`;
+            <div class="warning">⚠️ I file originali sono stati rimossi automaticamente dopo il periodo probatorio (7 giorni).<br>
+            È possibile visualizzare solo le informazioni principali del consenso.</div>`;
           document.getElementById("btnDownload").disabled = true;
         }
 
-        // ==================================================
-        // 🎨 MEDIA (firma / selfie / audio)
-        // ==================================================
+        // ============================================================
+        // 🔥 MEDIA (firma, selfie, audio)
+        // ============================================================
         let media = "";
-
-        async function safeImg(path, label) {
+        const safeURL = async (path, label) => {
           try {
             const u = await getDownloadURL(ref(storage, path));
-            return `<div class="section"><b>${label}:</b><br><img src="${u}" class="zoomable" /></div>`;
+            return `<div class="section"><b>${label}:</b><br><img src="${u}" class="zoomable"></div>`;
           } catch {
             return `<div class="section"><b>${label}:</b> <i>non disponibile</i></div>`;
           }
-        }
+        };
 
-        if (d.signaturePath) media += await safeImg(d.signaturePath, "Firma");
-        if (d.selfiePath) media += await safeImg(d.selfiePath, "Selfie");
+        if (d.signaturePath) media += await safeURL(d.signaturePath, "Firma");
+        if (d.selfiePath) media += await safeURL(d.selfiePath, "Selfie");
 
         if (d.audioPath) {
           try {
-            const a = await getDownloadURL(ref(storage, d.audioPath));
-            media += `<div class="section"><b>Audio:</b><br><audio controls src="${a}"></audio></div>`;
+            const audioURL = await getDownloadURL(ref(storage, d.audioPath));
+            media += `<div class="section"><b>Audio:</b><br><audio controls src="${audioURL}"></audio></div>`;
           } catch {
             media += `<div class="section"><b>Audio:</b> <i>non disponibile</i></div>`;
           }
@@ -293,14 +267,11 @@
         document.getElementById("media").innerHTML = media || "<i>Nessun file disponibile</i>";
         document.getElementById("actions").style.display = "block";
 
-        // ==================================================
-        // 🔍 LIGHTBOX
-        // ==================================================
         document.querySelectorAll(".zoomable").forEach(img => {
           img.addEventListener("click", () => {
-            const lb = document.getElementById("lightbox");
-            lb.style.display = "flex";
-            lb.querySelector("img").src = img.src;
+            const lightbox = document.getElementById("lightbox");
+            lightbox.style.display = "flex";
+            lightbox.querySelector("img").src = img.src;
           });
         });
 
@@ -309,23 +280,23 @@
         });
 
       } catch (e) {
-        document.getElementById("details").innerHTML = `❌ ${e.message}`;
+        document.getElementById("details").innerText = "❌ " + e.message;
+        console.error(e);
       }
     }
-
-    // ==================================================
-    // 🖨️ STAMPA + DOWNLOAD ZIP
-    // ==================================================
 
     document.getElementById("btnPrint").addEventListener("click", () => window.print());
 
     document.getElementById("btnDownload").addEventListener("click", () => {
+      if (!userId || !sessionId) {
+        alert("Parametri mancanti nel link.");
+        return;
+      }
       const url = `https://us-central1-trueconsent-cab73.cloudfunctions.net/downloadConsentZip?userId=${userId}&sessionId=${sessionId}`;
       window.open(url, "_blank");
     });
 
     loadConsent();
   </script>
-
 </body>
 </html>
