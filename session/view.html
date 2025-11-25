@@ -99,10 +99,14 @@
 
 <body>
   <h2>📄 Dettagli Consenso</h2>
+
+  <!-- Banner dinamici -->
   <div id="expiredMessage"></div>
   <div id="deletedMessage"></div>
+
   <div id="details">⏳ Caricamento...</div>
   <div id="media"></div>
+
   <div id="actions" style="display:none;">
     <button id="btnPrint">📄 Stampa consenso</button>
     <button id="btnDownload">📦 Scarica consenso completo</button>
@@ -123,144 +127,148 @@
     © 2025 TrueConsent – Tutti i diritti riservati.
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
-      authDomain: "trueconsent-cab73.firebaseapp.com",
-      projectId: "trueconsent-cab73",
-      storageBucket: "trueconsent-cab73.firebasestorage.app",
-      messagingSenderId: "298691251398",
-      appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyATGSpPkvYLxazHHWW90oWWkgxoEsTkayI",
+    authDomain: "trueconsent-cab73.firebaseapp.com",
+    projectId: "trueconsent-cab73",
+    storageBucket: "trueconsent-cab73.firebasestorage.app",
+    messagingSenderId: "298691251398",
+    appId: "1:298691251398:web:793a5aea900cc1cccc1bc7"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
 
-    const url = new URL(window.location.href);
-    const userId = url.searchParams.get("userId");
-    const sessionId = url.searchParams.get("sessionId");
+  const url = new URL(window.location.href);
+  const userId = url.searchParams.get("userId");
+  const sessionId = url.searchParams.get("sessionId");
 
-    function formatDate(val) {
-      try {
-        if (!val) return "-";
-        if (typeof val === "string") return val;
-        if (val.toDate) return val.toDate().toLocaleString("it-IT");
-        if (val.seconds) return new Date(val.seconds * 1000).toLocaleString("it-IT");
-        return "-";
-      } catch { return "-"; }
-    }
+  function formatDate(val) {
+    try {
+      if (!val) return "-";
+      if (typeof val === "string") return val;
+      if (val.toDate) return val.toDate().toLocaleString("it-IT");
+      if (val.seconds) return new Date(val.seconds * 1000).toLocaleString("it-IT");
+      return "-";
+    } catch { return "-"; }
+  }
 
-    function isExpired(d) {
-      try {
-        const ref = d.revokedAt || d.expiredAt;
-        if (!ref) return false;
-        const base = ref.seconds ? new Date(ref.seconds * 1000) : new Date(ref);
-        return Date.now() - base.getTime() > 7 * 24 * 60 * 60 * 1000;
-      } catch { return false; }
-    }
+  function isExpired(d) {
+    try {
+      const ref = d.revokedAt || d.expiredAt;
+      if (!ref) return false;
+      const base = ref.seconds ? new Date(ref.seconds * 1000) : new Date(ref);
+      return Date.now() - base.getTime() > 7 * 24 * 60 * 60 * 1000;
+    } catch { return false; }
+  }
 
-    async function loadConsent() {
-      try {
-        const snap = await getDoc(doc(db, "users", userId, "sessions", sessionId));
-        if (!snap.exists()) throw new Error("Consenso non trovato.");
-        const d = snap.data();
-        const expired = isExpired(d);
+  function showDetails(d) {
+    return `
+      <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
+      <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
+      <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
+      <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
+      <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
+      <div class="section"><b>Data inizio:</b> ${formatDate(d.startAt)}</div>
+      <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>
+    `;
+  }
 
-        // 🟦 Banner "Parte eliminata"
-        if (d.ownerDeleted) {
-          document.getElementById("deletedMessage").innerHTML = `
-            <div class="info">ℹ️ Il proprietario del consenso ha eliminato il proprio account.</div>`;
-        }
-        if (d.counterpartDeleted) {
-          document.getElementById("deletedMessage").innerHTML = `
-            <div class="info">ℹ️ La controparte ha eliminato il proprio account.</div>`;
-        }
+  async function loadConsent() {
+    try {
+      const snap = await getDoc(doc(db, "users", userId, "sessions", sessionId));
+      if (!snap.exists()) throw new Error("Consenso non trovato.");
+      const d = snap.data();
+      const expired = isExpired(d);
 
-        // 🔴 File non più accessibili
-        if (expired && d.filesDeletedAt) {
-          document.getElementById("expiredMessage").innerHTML = `
-            <div class="expired">⛔ Questo link non è più disponibile. I file sono stati rimossi.</div>`;
-          document.getElementById("details").innerHTML = showDetails(d);
-          document.getElementById("media").innerHTML = "<i>I file sono stati rimossi automaticamente.</i>";
-          return;
-        }
-
-        // 🟨 File rimossi ma ancora entro i 7 giorni (view.html dopo eliminazione B)
-        if (d.filesDeletedAt && !expired) {
-          document.getElementById("expiredMessage").innerHTML = `
-            <div class="warning">⚠️ I file originali sono stati rimossi a seguito dell’eliminazione account.</div>`;
-          document.getElementById("btnDownload").disabled = true;
-        }
-
-        document.getElementById("details").innerHTML = showDetails(d);
-
-        // MEDIA
-        let media = "";
-        const safeImg = async (path, label) => {
-          try {
-            const u = await getDownloadURL(ref(storage, path));
-            return `<div class="section"><b>${label}:</b><br><img class="zoomable" src="${u}"></div>`;
-          } catch {
-            return `<div class="section"><b>${label}:</b> <i>non disponibile</i></div>`;
-          }
-        };
-
-        if (d.signaturePath) media += await safeImg(d.signaturePath, "Firma");
-        if (d.selfiePath)    media += await safeImg(d.selfiePath, "Selfie");
-        if (d.audioPath) {
-          try {
-            const u = await getDownloadURL(ref(storage, d.audioPath));
-            media += `<div class="section"><b>Audio:</b><br><audio controls src="${u}"></audio></div>`;
-          } catch {
-            media += `<div class="section"><b>Audio:</b> <i>non disponibile</i></div>`;
-          }
-        }
-
-        document.getElementById("media").innerHTML = media;
-        document.getElementById("actions").style.display = "block";
-
-        // Zoom immagini
-        document.querySelectorAll(".zoomable").forEach(img => {
-          img.onclick = () => {
-            document.getElementById("lightbox").style.display = "flex";
-            document.querySelector("#lightbox img").src = img.src;
-          };
-        });
-        document.getElementById("lightbox").onclick = () => {
-          document.getElementById("lightbox").style.display = "none";
-        };
-
-      } catch (e) {
-        document.getElementById("details").innerText = "❌ " + e.message;
+      // 🟦 Banner "parte eliminata"
+      if (d.ownerDeleted) {
+        document.getElementById("deletedMessage").innerHTML =
+          `<div class="info">ℹ️ Il proprietario ha eliminato il proprio account.</div>`;
       }
+      if (d.counterpartDeleted) {
+        document.getElementById("deletedMessage").innerHTML =
+          `<div class="info">ℹ️ La controparte ha eliminato il proprio account.</div>`;
+      }
+
+      // 🔴 Files non più accessibili (oltre 7 giorni)
+      if (expired && d.filesDeletedAt) {
+        document.getElementById("expiredMessage").innerHTML =
+          `<div class="expired">⛔ Questo link non è più disponibile. I file sono stati rimossi.</div>`;
+        document.getElementById("details").innerHTML = showDetails(d);
+        document.getElementById("media").innerHTML = "<i>I file sono stati rimossi automaticamente.</i>";
+        return;
+      }
+
+      // 🟨 Files rimossi ma ancora entro 7 giorni
+      if (d.filesDeletedAt && !expired) {
+        document.getElementById("expiredMessage").innerHTML =
+          `<div class="warning">⚠️ I file originali sono stati rimossi dopo periodo probatorio.</div>`;
+        document.getElementById("btnDownload").disabled = true;
+      }
+
+      document.getElementById("details").innerHTML = showDetails(d);
+
+      // MEDIA
+      let media = "";
+      const safeImg = async (path, label) => {
+        try {
+          const u = await getDownloadURL(ref(storage, path));
+          return `<div class="section"><b>${label}:</b><br>
+                    <img class="zoomable" src="${u}">
+                  </div>`;
+        } catch {
+          return `<div class="section"><b>${label}:</b> <i>non disponibile</i></div>`;
+        }
+      };
+
+      if (d.signaturePath) media += await safeImg(d.signaturePath, "Firma");
+      if (d.selfiePath)    media += await safeImg(d.selfiePath, "Selfie");
+
+      if (d.audioPath) {
+        try {
+          const u = await getDownloadURL(ref(storage, d.audioPath));
+          media += `<div class="section"><b>Audio:</b><br><audio controls src="${u}"></audio></div>`;
+        } catch {
+          media += `<div class="section"><b>Audio:</b> <i>non disponibile</i></div>`;
+        }
+      }
+
+      document.getElementById("media").innerHTML = media;
+      document.getElementById("actions").style.display = "block";
+
+      // Zoom immagini
+      document.querySelectorAll(".zoomable").forEach(img => {
+        img.onclick = () => {
+          document.getElementById("lightbox").style.display = "flex";
+          document.querySelector("#lightbox img").src = img.src;
+        };
+      });
+
+      document.getElementById("lightbox").onclick = () =>
+        document.getElementById("lightbox").style.display = "none";
+
+    } catch (e) {
+      document.getElementById("details").innerText = "❌ " + e.message;
     }
+  }
 
-    function showDetails(d) {
-      return `
-        <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
-        <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
-        <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
-        <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
-        <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
-        <div class="section"><b>Data inizio:</b> ${formatDate(d.startAt)}</div>
-        <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>
-      `;
-    }
+  document.getElementById("btnPrint").onclick = () => window.print();
+  document.getElementById("btnDownload").onclick = () => {
+    window.open(
+      `https://us-central1-trueconsent-cab73.cloudfunctions.net/downloadConsentZip?userId=${userId}&sessionId=${sessionId}`,
+      "_blank"
+    );
+  };
 
-    document.getElementById("btnPrint").onclick = () => window.print();
-    document.getElementById("btnDownload").onclick = () => {
-      window.open(
-        `https://us-central1-trueconsent-cab73.cloudfunctions.net/downloadConsentZip?userId=${userId}&sessionId=${sessionId}`,
-        "_blank"
-      );
-    };
+  loadConsent();
+</script>
 
-    loadConsent();
-  </script>
 </body>
 </html>
