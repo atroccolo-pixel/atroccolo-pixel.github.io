@@ -159,12 +159,13 @@
     } catch { return "-"; }
   }
 
+  // 🔵 Regola dei 7 giorni dopo TERMINAZIONE
   function isExpired(d) {
     try {
-      const ref = d.revokedAt || d.expiredAt;
-      if (!ref) return false;
-      const base = ref.seconds ? new Date(ref.seconds * 1000) : new Date(ref);
-      return Date.now() - base.getTime() > 7 * 24 * 60 * 60 * 1000;
+      const base = d.revokedAt || d.expiredAt;
+      if (!base) return false;
+      const ts = base.seconds ? new Date(base.seconds * 1000) : new Date(base);
+      return Date.now() - ts.getTime() > 7 * 24 * 60 * 60 * 1000;
     } catch { return false; }
   }
 
@@ -173,7 +174,7 @@
       <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
       <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
       <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
-      <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
+      <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</html>}</div>
       <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
       <div class="section"><b>Data inizio:</b> ${formatDate(d.startAt)}</div>
       <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>
@@ -184,10 +185,11 @@
     try {
       const snap = await getDoc(doc(db, "users", userId, "sessions", sessionId));
       if (!snap.exists()) throw new Error("Consenso non trovato.");
+
       const d = snap.data();
       const expired = isExpired(d);
 
-      // 🟦 Banner "parte eliminata"
+      // 🟦 Banner parte eliminata
       if (d.ownerDeleted) {
         document.getElementById("deletedMessage").innerHTML =
           `<div class="info">ℹ️ Il proprietario ha eliminato il proprio account.</div>`;
@@ -197,32 +199,30 @@
           `<div class="info">ℹ️ La controparte ha eliminato il proprio account.</div>`;
       }
 
-      // 🔴 Files non più accessibili (oltre 7 giorni)
+      // 🔴 files eliminati post-7 giorni
       if (expired && d.filesDeletedAt) {
         document.getElementById("expiredMessage").innerHTML =
-          `<div class="expired">⛔ Questo link non è più disponibile. I file sono stati rimossi.</div>`;
+          `<div class="expired">⛔ File non più disponibili. Eliminati automaticamente per privacy.</div>`;
         document.getElementById("details").innerHTML = showDetails(d);
-        document.getElementById("media").innerHTML = "<i>I file sono stati rimossi automaticamente.</i>";
+        document.getElementById("media").innerHTML = "<i>I file non sono più disponibili</i>";
         return;
       }
 
-      // 🟨 Files rimossi ma ancora entro 7 giorni
+      // 🟨 Files eliminati ma entro i 7 giorni
       if (d.filesDeletedAt && !expired) {
         document.getElementById("expiredMessage").innerHTML =
-          `<div class="warning">⚠️ I file originali sono stati rimossi dopo periodo probatorio.</div>`;
+          `<div class="warning">⚠️ I file biometrici originali sono stati rimossi dopo il periodo probatorio.</div>`;
         document.getElementById("btnDownload").disabled = true;
       }
 
       document.getElementById("details").innerHTML = showDetails(d);
 
-      // MEDIA
+      // 🔵 Media render
       let media = "";
       const safeImg = async (path, label) => {
         try {
           const u = await getDownloadURL(ref(storage, path));
-          return `<div class="section"><b>${label}:</b><br>
-                    <img class="zoomable" src="${u}">
-                  </div>`;
+          return `<div class="section"><b>${label}:</b><br><img class="zoomable" src="${u}"></div>`;
         } catch {
           return `<div class="section"><b>${label}:</b> <i>non disponibile</i></div>`;
         }
@@ -233,8 +233,8 @@
 
       if (d.audioPath) {
         try {
-          const u = await getDownloadURL(ref(storage, d.audioPath));
-          media += `<div class="section"><b>Audio:</b><br><audio controls src="${u}"></audio></div>`;
+          const a = await getDownloadURL(ref(storage, d.audioPath));
+          media += `<div class="section"><b>Audio:</b><br><audio controls src="${a}"></audio></div>`;
         } catch {
           media += `<div class="section"><b>Audio:</b> <i>non disponibile</i></div>`;
         }
