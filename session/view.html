@@ -169,10 +169,28 @@
     } catch { return false; }
   }
 
+  // Tipologia consenso (medico / sessuale / altro)
+  function buildConsentCategory(d) {
+    const main = (d.consentType || "").trim();
+    const other = (d.consentTypeOther || "").trim();
+
+    if (main && other && main.toLowerCase() !== other.toLowerCase()) {
+      return `${main} – ${other}`;
+    } else if (main) {
+      return main;
+    } else if (other) {
+      return other;
+    }
+    return "-";
+  }
+
   function showDetails(d) {
+    const category = buildConsentCategory(d);
+
     return `
       <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
       <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
+      <div class="section"><b>Tipologia consenso:</b> ${category}</div>
       <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
       <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
       <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
