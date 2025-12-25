@@ -4,55 +4,194 @@
   <meta charset="UTF-8">
   <title>Termini e Condizioni - TrueConsent</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; line-height: 1.6; }
-    h1, h2 { color: #2c3e50; }
-    p { margin-bottom: 15px; }
-    ul { margin-bottom: 20px; }
+    body { font-family: Arial, sans-serif; max-width: 960px; margin: 40px auto; line-height: 1.6; color:#222; }
+    h1, h2, h3 { color: #2c3e50; }
+    h1 { margin-bottom: 10px; }
+    h2 { margin-top: 30px; }
+    h3 { margin-top: 20px; }
+    p { margin-bottom: 12px; }
+    ul { margin-bottom: 16px; padding-left: 20px; }
+    li { margin-bottom: 6px; }
+    .note { font-size: 0.95em; color: #555; }
     hr { margin: 30px 0; }
+    .tag { font-weight:bold; color:#5e17eb; }
+    .boxed {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 14px 18px;
+      background: #fafafa;
+      margin: 18px 0;
+    }
+    .boxed h3 { margin-top: 0; }
   </style>
 </head>
 <body>
   <h1>Termini e Condizioni di TrueConsent</h1>
-  <p>Benvenuto in <b>TrueConsent</b>. Utilizzando l’applicazione, accetti integralmente i presenti Termini e Condizioni.</p>
+  <p>Benvenuto in <b>TrueConsent</b>. Utilizzando l’applicazione e i servizi collegati accetti integralmente i presenti Termini e Condizioni.</p>
 
   <h2>1. Oggetto del servizio</h2>
-  <p>TrueConsent è un servizio che consente di creare, condividere e gestire consensi digitali tra due o più parti, con validità a tempo determinato o indeterminato, e con possibilità di revoca secondo le regole riportate di seguito.</p>
-
-  <h2>2. Consenso a tempo determinato</h2>
+  <p><b>TrueConsent</b> è uno strumento tecnologico che consente di creare, condividere e gestire consensi digitali tra due parti:</p>
   <ul>
-    <li>Al momento della creazione viene stabilita una data di inizio e una data di fine.</li>
-    <li>La controparte riceve una copia del consenso tramite email e notifica push.</li>
-    <li>È possibile richiedere la revoca anticipata in qualsiasi momento.</li>
-    <li>La revoca avrà effetto <b>solo se accettata dalla parte che ha creato il consenso</b>.</li>
-    <li>In caso di rifiuto, il consenso rimane valido fino alla scadenza prestabilita.</li>
+    <li><b>Creatore del consenso (Parte A)</b></li>
+    <li><b>Controparte (Parte B)</b></li>
+  </ul>
+  <p>Il consenso può essere a tempo <b>determinato</b> (con data di fine) o <b>indeterminato</b> (senza scadenza preimpostata) e può prevedere l’uso di dati biometrici (firma, selfie, registrazione audio) come prova dell’identità delle parti.</p>
+
+  <h2>2. Definizioni</h2>
+  <ul>
+    <li><b>Consenso</b>: accordo digitale registrato tramite TrueConsent tra A e B.</li>
+    <li><b>Consenso a tempo determinato</b>: consenso con data/ora di inizio e data/ora di fine.</li>
+    <li><b>Consenso a tempo indeterminato</b>: consenso senza data di fine predefinita.</li>
+    <li><b>Terminazione del consenso</b>: momento in cui il consenso non è più attivo (scadenza, revoca o – solo per gli indeterminati – eliminazione account).</li>
+    <li><b>File biometrici</b>: firma digitale, selfie, registrazione audio associati al consenso.</li>
+    <li><b>Hash</b>: impronta crittografica (es. SHA-256) del PDF del consenso, usata come certificato di integrità.</li>
   </ul>
 
-  <h2>3. Consenso a tempo indeterminato</h2>
+  <div class="boxed">
+    <h3>2.1 Regola principale sulla conservazione dei file</h3>
+    <p class="tag">REGOLA FISSA:</p>
+    <p>I file biometrici (PDF, firma, selfie, audio) restano scaricabili per un massimo di <b>7 giorni</b> solo dopo che il consenso è <b>terminato</b>. Trascorsi i 7 giorni i file vengono cancellati, mentre l’hash e i metadati essenziali sono conservati per un massimo di <b>365 giorni</b> a fini probatori e di sicurezza.</p>
+    <p>La “terminazione” del consenso avviene solo nei casi indicati al punto 4.</p>
+  </div>
+
+  <h2>3. Tipologie di consenso e revoca</h2>
+
+  <h3>3.1 Consenso a tempo determinato</h3>
   <ul>
-    <li>Al momento della creazione viene stabilita la durata "senza scadenza".</li>
-    <li>La controparte riceve una copia del consenso tramite email e notifica push.</li>
-    <li>È possibile richiedere la revoca in qualsiasi momento.</li>
-    <li>La revoca si considera valida in due modalità:
+    <li>Al momento della creazione vengono impostate una data/ora di inizio e una data/ora di fine.</li>
+    <li>La controparte riceve email e notifica push con il dettaglio del consenso.</li>
+    <li>È possibile richiedere la <b>revoca anticipata</b>:
       <ul>
-        <li><b>Accettata dalla controparte</b> → il consenso termina immediatamente.</li>
-        <li><b>Nessuna risposta</b> → il consenso termina automaticamente dopo 24 ore dalla richiesta.</li>
+        <li>la richiesta può provenire da A o da B;</li>
+        <li>la revoca diventa effettiva solo se la controparte accetta esplicitamente;</li>
+        <li>in caso di rifiuto, il consenso resta valido fino alla scadenza naturale;</li>
+        <li>in caso di mancata risposta, il consenso resta valido fino alla scadenza naturale (nessuna revoca automatica).</li>
+      </ul>
+    </li>
+  </ul>
+  <p class="note"><b>Importante:</b> per i consensi determinati non esiste revoca unilaterale automatica.</p>
+
+  <h3>3.2 Consenso a tempo indeterminato</h3>
+  <ul>
+    <li>Non ha una data di fine prestabilita.</li>
+    <li>La revoca può essere richiesta in qualsiasi momento da A o da B.</li>
+    <li>Alla richiesta, lo stato passa a <b>“revoca in sospeso”</b> con una scadenza di 24 ore:
+      <ul>
+        <li>se l’altra parte accetta → il consenso termina immediatamente;</li>
+        <li>se nessuno risponde → il consenso termina automaticamente dopo 24 ore (revoca automatica).</li>
       </ul>
     </li>
   </ul>
 
-  <h2>4. Notifiche e comunicazioni</h2>
-  <p>Tutte le comunicazioni ufficiali (creazione di consenso, richiesta di revoca, accettazione o rifiuto) vengono inviate tramite email e notifica push. Entrambe le parti sono responsabili di mantenere aggiornati i propri recapiti.</p>
+  <h2>4. Quando il consenso si considera TERMINATO</h2>
+  <p>Un consenso si considera terminato solo nei casi seguenti:</p>
+  <ul>
+    <li><b>Consensi determinati</b>:
+      <ul>
+        <li><b>Scadenza naturale</b> (raggiungimento della data/ora di fine impostata).</li>
+        <li><b>Revoca accettata</b> dalla controparte.</li>
+      </ul>
+    </li>
+    <li><b>Consensi indeterminati</b>:
+      <ul>
+        <li><b>Revoca accettata</b> dalla controparte.</li>
+        <li><b>Revoca automatica</b> dopo 24 ore senza risposta.</li>
+        <li><b>Eliminazione dell’account</b> di una delle parti, che avvia una revoca automatica con finestra di 24 ore.</li>
+      </ul>
+    </li>
+  </ul>
 
-  <h2>5. Limitazioni di responsabilità</h2>
-  <p>TrueConsent fornisce esclusivamente uno strumento tecnologico di registrazione e gestione digitale del consenso. Non si assume alcuna responsabilità legale sulle decisioni, azioni o contenuti dei consensi generati dagli utenti.</p>
+  <div class="boxed">
+    <h3>4.1 Effetti della terminazione</h3>
+    <ul>
+      <li>Dal momento della terminazione decorrono <b>7 giorni</b> durante i quali è possibile scaricare i file associati al consenso.</li>
+      <li>Allo scadere dei 7 giorni i file biometrici vengono cancellati dai sistemi TrueConsent.</li>
+      <li>Hash del PDF, metadati principali e log tecnici (es. timestamp) possono essere conservati per un massimo di <b>365 giorni</b> a fini probatori e di sicurezza, dopodiché vengono cancellati o anonimizzati.</li>
+    </ul>
+  </div>
 
-  <h2>6. Privacy e sicurezza</h2>
-  <p>Tutti i dati sono gestiti in conformità alle normative vigenti in materia di protezione dei dati personali. Le informazioni scambiate sono cifrate e archiviate in modo sicuro.</p>
+  <h2>5. Eliminazione account e casi particolari</h2>
 
-  <h2>7. Accettazione dei Termini</h2>
-  <p>Registrandoti e utilizzando TrueConsent, dichiari di aver letto, compreso e accettato i presenti Termini e Condizioni.</p>
+  <h3>5.1 Consenso determinato – eliminazione account</h3>
+  <p><b>L’eliminazione dell’account non termina mai un consenso determinato.</b></p>
+  <ul>
+    <li><b>A elimina l’account</b>:
+      <ul>
+        <li>il consenso resta valido fino alla sua scadenza naturale;</li>
+        <li>la controparte B riceve un’email informativa (“A ha eliminato l’account, il consenso resta valido fino alla scadenza”);</li>
+        <li>i file restano accessibili secondo le normali regole del consenso determinato;</li>
+        <li>al momento della scadenza naturale parte il periodo di 7 giorni per il download.</li>
+      </ul>
+    </li>
+    <li><b>B elimina l’account</b>:
+      <ul>
+        <li>il consenso resta valido fino alla scadenza naturale;</li>
+        <li>per motivi di privacy, i file biometrici di B possono essere scaricati da A solo per <b>7 giorni a partire dall’eliminazione dell’account di B</b>;</li>
+        <li>trascorsi i 7 giorni, i file biometrici di B vengono cancellati;</li>
+        <li>alla scadenza naturale del consenso <b>non</b> si apre una nuova finestra di 7 giorni per i file di B.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>5.2 Consenso indeterminato – eliminazione account</h3>
+  <ul>
+    <li><b>A elimina l’account</b>:
+      <ul>
+        <li>il consenso passa in stato “revoca in sospeso” con deadline di 24 ore;</li>
+        <li>la controparte B riceve una comunicazione informativa (“Il consenso sarà chiuso entro 24 ore”);</li>
+        <li>dopo 24 ore il consenso viene revocato automaticamente → da quel momento decorrono i 7 giorni per scaricare i file.</li>
+      </ul>
+    </li>
+    <li><b>B elimina l’account</b>:
+      <ul>
+        <li>si applica lo stesso meccanismo, con comunicazione speculare verso A;</li>
+        <li>dopo la revoca automatica decorrono i 7 giorni per il download dei file.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>6. Gestione delle email e delle notifiche</h2>
+  <p>Per garantire tracciabilità e valore probatorio, TrueConsent invia email e notifiche push nei principali eventi:</p>
+  <ul>
+    <li>creazione del consenso (a entrambe le parti, con ID del consenso);</li>
+    <li>richiesta di revoca (con pulsanti di accettazione/rifiuto, dove previsti);</li>
+    <li>esito della revoca (accettata, rifiutata, automatica);</li>
+    <li>scadenza naturale di un consenso determinato;</li>
+    <li>eliminazione di un account quando sono presenti consensi attivi collegati.</li>
+  </ul>
+  <p>Ogni email contiene l’ID del consenso e le indicazioni sui tempi di disponibilità dei file, in coerenza con le regole sopra descritte.</p>
+
+  <h2>7. Ruolo di TrueConsent e limiti di responsabilità</h2>
+  <ul>
+    <li>TrueConsent non è un notaio né un pubblico ufficiale, ma uno strumento tecnologico di registrazione, notifica e conservazione limitata del consenso.</li>
+    <li>Il valore probatorio dei documenti generati dipende dalla correttezza delle informazioni inserite dalle parti, dalla coerenza dei log tecnici e, se necessario, da eventuali perizie indipendenti.</li>
+    <li>TrueConsent non interviene nel merito del contenuto dei consensi né nelle relazioni tra le parti.</li>
+    <li>L’utente è responsabile di:
+      <ul>
+        <li>conservare localmente le copie scaricate dei file di consenso se ritiene di averne bisogno a fini probatori;</li>
+        <li>custodire le proprie credenziali di accesso;</li>
+        <li>utilizzare il servizio nel rispetto delle leggi e dei diritti dei terzi.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>8. Privacy e trattamento dei dati</h2>
+  <p>Il trattamento dei dati personali, inclusi i dati biometrici eventualmente raccolti, è disciplinato dall’<b>Informativa Privacy</b> disponibile all’indirizzo:</p>
+  <p><a href="https://atroccolo-pixel.github.io/privacy.html">https://atroccolo-pixel.github.io/privacy.html</a></p>
+
+  <h2>9. Modifiche ai Termini</h2>
+  <p>TrueConsent potrà aggiornare i presenti Termini e Condizioni per adeguarli a modifiche normative o evoluzioni del servizio. In caso di modifiche rilevanti, gli utenti verranno informati tramite l’app o via email. L’uso continuato del servizio dopo tali modifiche comporta l’accettazione dei nuovi Termini.</p>
+
+  <h2>10. Accettazione dei Termini</h2>
+  <p>Registrandoti, utilizzando l’app e proseguendo nella creazione/gestione dei consensi, dichiari di aver letto, compreso e accettato i presenti Termini e Condizioni, inclusi i punti relativi a:</p>
+  <ul>
+    <li>durata e revoca dei consensi determinati e indeterminati;</li>
+    <li>effetti dell’eliminazione dell’account;</li>
+    <li>finestra di 7 giorni per il download dei file e conservazione dell’hash per 365 giorni;</li>
+    <li>ruolo tecnico e limiti di responsabilità di TrueConsent.</li>
+  </ul>
 
   <hr>
-  <p style="font-size:12px;color:#666;">© 2025 TrueConsent - Tutti i diritti riservati</p>
+  <p style="font-size:12px;color:#666;">© 2025 TrueConsent – Tutti i diritti riservati</p>
 </body>
 </html>
