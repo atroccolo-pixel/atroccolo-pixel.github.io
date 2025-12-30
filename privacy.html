@@ -27,7 +27,28 @@
   <p>TrueConsent tratta, a seconda delle funzionalità utilizzate, le seguenti categorie di dati:</p>
   <ul>
     <li><b>Dati di registrazione account</b>: nome, indirizzo email, numero di telefono, password (memorizzata in forma cifrata), piano di abbonamento.</li>
+
+    <li><b>Dati relativi ad abbonamenti e piani</b>:
+      <ul>
+        <li>piano selezionato e relativo stato (es. Free / Pack 10 / Illimitato 12 mesi);</li>
+        <li>codici e metadati tecnici del piano (es. identificativi interni del piano);</li>
+        <li>contatori di utilizzo (es. consensi disponibili per Pack o prova gratuita);</li>
+        <li>data di attivazione e data di scadenza dell’abbonamento, ove applicabile;</li>
+        <li>record di prevenzione abusi della prova gratuita (es. “prova già utilizzata” legata all’email).</li>
+      </ul>
+    </li>
+
+    <li><b>Dati di pagamento e transazione</b> (solo ove necessari per l’acquisto dei piani a pagamento):
+      <ul>
+        <li>identificativi della transazione, ricevute/receipt o riferimenti equivalenti;</li>
+        <li>esito del pagamento (riuscito/non riuscito) e data/ora dell’operazione;</li>
+        <li>informazioni minime necessarie ad attivare o ripristinare un piano acquistato.</li>
+      </ul>
+      <p class="note">I dati completi degli strumenti di pagamento (es. numero carta) sono gestiti dal fornitore di pagamento o dallo store e non vengono memorizzati integralmente da TrueConsent, quando la transazione avviene su piattaforme esterne.</p>
+    </li>
+
     <li><b>Dati di utilizzo del servizio</b>: ID utente, ID dei consensi creati o ricevuti, ruoli (creatore/controparte), data e ora di creazione, modifiche di stato (es. richiesta revoca, accettazione, rifiuto).</li>
+
     <li><b>Dati biometrici</b> (se abilitati dall’utente e necessari al consenso):
       <ul>
         <li>firma digitale (immagine);</li>
@@ -35,6 +56,7 @@
         <li>registrazione audio della dichiarazione di consenso.</li>
       </ul>
     </li>
+
     <li><b>Dati tecnici</b>: indirizzo IP, orari di accesso, token di notifica push, log tecnici delle operazioni.</li>
     <li><b>Dati di integrità</b>: hash crittografici (es. SHA-256) dei documenti generati e metadati associati (ID consenso, timestamp).</li>
   </ul>
@@ -44,6 +66,18 @@
     <li><b>Registrazione e gestione dell’account</b><br>
       Creazione dell’utenza, autenticazione, gestione del profilo, accesso all’app.<br>
       <i>Base giuridica:</i> esecuzione di misure precontrattuali e contrattuali (art. 6.1.b GDPR).</li>
+
+    <li><b>Gestione piani, abbonamenti e blocchi funzionali</b><br>
+      Attivazione del piano scelto, gestione della scadenza, gestione contatori (es. prova gratuita / Pack 10), abilitazione o blocco della creazione di nuovi consensi in base al piano.<br>
+      <i>Base giuridica:</i> esecuzione del contratto/servizio (art. 6.1.b GDPR).</li>
+
+    <li><b>Gestione pagamenti e transazioni</b><br>
+      Elaborazione dell’acquisto dei piani a pagamento, registrazione degli esiti, prevenzione errori e supporto alla gestione del piano acquistato (es. ripristino acquisto).<br>
+      <i>Base giuridica:</i> esecuzione del contratto (art. 6.1.b GDPR) e, ove applicabile, adempimento di obblighi legali (art. 6.1.c GDPR).</li>
+
+    <li><b>Prevenzione abusi e sicurezza del servizio</b><br>
+      Prevenzione del riutilizzo indebito della prova gratuita, rilevazione comportamenti anomali, tutela dell’infrastruttura e dell’affidabilità del servizio.<br>
+      <i>Base giuridica:</i> legittimo interesse del Titolare a prevenire abusi e frodi e a garantire la sicurezza del servizio (art. 6.1.f GDPR).</li>
 
     <li><b>Creazione e gestione dei consensi digitali</b><br>
       Registrazione del contenuto del consenso, invio delle notifiche alle parti, tracciamento degli stati (creazione, revoca, scadenza, eliminazione account).<br>
@@ -92,6 +126,13 @@
   </ul>
   <p>Trascorso tale periodo, anche questi dati vengono cancellati o anonimizzati.</p>
 
+  <h3>4.3 Dati relativi a piani, prova gratuita e transazioni</h3>
+  <ul>
+    <li><b>Dati del piano</b> (es. piano attivo, scadenze, contatori): conservati per la durata dell’account e per il tempo necessario a gestire contestazioni tecniche o amministrative.</li>
+    <li><b>Record di prevenzione abusi della prova gratuita</b> (es. “prova già utilizzata” associata all’email): conservati per il tempo necessario a prevenire riutilizzi indebiti e proteggere il servizio, in modo proporzionato rispetto alla finalità di sicurezza/anti-abuso.</li>
+    <li><b>Dati di transazione</b> (es. riferimenti ricevuta/identificativi): conservati per il tempo necessario alla gestione del piano e, ove applicabile, per adempiere obblighi di legge (es. contabili/fiscali).</li>
+  </ul>
+
   <h2>5. Eliminazione dell’account</h2>
   <p>L’utente può richiedere l’eliminazione del proprio account all’interno dell’app. L’eliminazione comporta:</p>
   <ul>
@@ -105,7 +146,7 @@
       </ul>
     </li>
   </ul>
-  <p>L’eliminazione dell’account non preclude la possibilità di registrarsi nuovamente in futuro con lo stesso indirizzo email, come nuovo utente.</p>
+  <p>L’eliminazione dell’account non preclude la possibilità di registrarsi nuovamente in futuro con lo stesso indirizzo email, come nuovo utente. Restano tuttavia applicabili le regole di prevenzione abusi della prova gratuita (se la prova risulta già utilizzata, potrebbe non essere riproposta).</p>
 
   <h2>6. Modalità del trattamento</h2>
   <p>I dati sono trattati con strumenti elettronici e telematici, con logiche strettamente correlate alle finalità indicate e adottando misure di sicurezza adeguate per proteggere dati personali e biometrici da accessi non autorizzati, alterazioni o divulgazioni indebite.</p>
@@ -115,6 +156,7 @@
   <ul>
     <li>personale autorizzato dal Titolare;</li>
     <li>fornitori di servizi tecnologici (es. hosting, cloud, sistemi di invio email e notifiche push) nominati responsabili del trattamento ai sensi dell’art. 28 GDPR;</li>
+    <li>fornitori di pagamento e/o piattaforme di distribuzione (es. store) nei limiti necessari a gestire gli acquisti e i relativi esiti;</li>
     <li>autorità giudiziarie o amministrative, nei limiti previsti dalla legge.</li>
   </ul>
   <p>I dati non vengono venduti a terzi per finalità di marketing.</p>
