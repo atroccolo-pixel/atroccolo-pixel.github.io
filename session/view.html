@@ -98,7 +98,7 @@
 </head>
 
 <body>
-  <h2>📄 Dettagli Consenso</h2>
+  <h2 id="pageTitle">📄 Dettagli Consenso</h2>
 
   <!-- Banner dinamici -->
   <div id="expiredMessage"></div>
@@ -114,18 +114,7 @@
 
   <div id="lightbox"><img src="" alt="Preview"></div>
 
-  <div class="footer">
-    <b>Informazioni legali e conservazione</b><br>
-    Questo consenso digitale è stato generato tramite la piattaforma TrueConsent.<br>
-    La sua validità è regolata esclusivamente dalla durata indicata al momento della creazione
-    e dalle condizioni di revoca previste dai
-    <a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Termini e Condizioni ufficiali</a>.<br>
-    Scaricare e conservare copia di questo consenso consente di dimostrare in futuro
-    l’autorizzazione effettiva concessa in questa data, anche se l’account o i file originali
-    dovessero essere rimossi.<br>
-    TrueConsent è sistema di registrazione e notifica, non archivio permanente.<br>
-    © 2025 TrueConsent – Tutti i diritti riservati.
-  </div>
+  <div class="footer" id="footer"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -149,14 +138,109 @@
   const userId = url.searchParams.get("userId");
   const sessionId = url.searchParams.get("sessionId");
 
+  // ==========================
+  // 🔠 Testi IT / EN
+  // ==========================
+  const I18N = {
+    it: {
+      pageTitle: "📄 Dettagli Consenso",
+      loading: "⏳ Caricamento...",
+      consentIdLabel: "ID Consenso:",
+      typeLabel: "Tipo:",
+      consentCategoryLabel: "Tipologia consenso:",
+      statusLabel: "Stato:",
+      ownerLabel: "Proprietario:",
+      counterpartLabel: "Controparte:",
+      startDateLabel: "Data inizio:",
+      endDateLabel: "Data fine:",
+      signatureLabel: "Firma",
+      selfieLabel: "Selfie",
+      audioLabel: "Audio",
+      filesNotAvailable: "I file non sono più disponibili",
+      filesRemovedWarning:
+        "⚠️ I file biometrici originali sono stati rimossi dopo il periodo probatorio.",
+      expiredBanner:
+        "⛔ File non più disponibili. Eliminati automaticamente per privacy.",
+      ownerDeletedBanner: "ℹ️ Il proprietario ha eliminato il proprio account.",
+      counterpartDeletedBanner:
+        "ℹ️ La controparte ha eliminato il proprio account.",
+      btnPrint: "📄 Stampa consenso",
+      btnDownload: "📦 Scarica consenso completo",
+      footerHtml:
+        "<b>Informazioni legali e conservazione</b><br>" +
+        "Questo consenso digitale è stato generato tramite la piattaforma TrueConsent.<br>" +
+        "La sua validità è regolata esclusivamente dalla durata indicata al momento della creazione " +
+        "e dalle condizioni di revoca previste dai " +
+        '<a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Termini e Condizioni ufficiali</a>.<br>' +
+        "Scaricare e conservare copia di questo consenso consente di dimostrare in futuro " +
+        "l’autorizzazione effettiva concessa in questa data, anche se l’account o i file originali " +
+        "dovessero essere rimossi.<br>" +
+        "TrueConsent è sistema di registrazione e notifica, non archivio permanente.<br>" +
+        "© 2025 TrueConsent – Tutti i diritti riservati.",
+      notFound: "Consenso non trovato.",
+    },
+    en: {
+      pageTitle: "📄 Consent details",
+      loading: "⏳ Loading...",
+      consentIdLabel: "Consent ID:",
+      typeLabel: "Type:",
+      consentCategoryLabel: "Consent category:",
+      statusLabel: "Status:",
+      ownerLabel: "Owner:",
+      counterpartLabel: "Counterparty:",
+      startDateLabel: "Start date:",
+      endDateLabel: "End date:",
+      signatureLabel: "Signature",
+      selfieLabel: "Selfie",
+      audioLabel: "Audio",
+      filesNotAvailable: "Files are no longer available",
+      filesRemovedWarning:
+        "⚠️ Biometric files have been removed after the allowed retention period.",
+      expiredBanner:
+        "⛔ Files are no longer available. They have been automatically deleted for privacy reasons.",
+      ownerDeletedBanner: "ℹ️ The owner has deleted their account.",
+      counterpartDeletedBanner: "ℹ️ The counterparty has deleted their account.",
+      btnPrint: "📄 Print consent",
+      btnDownload: "📦 Download full consent",
+      footerHtml:
+        "<b>Legal information and retention</b><br>" +
+        "This digital consent was generated through the TrueConsent platform.<br>" +
+        "Its validity is governed solely by the duration set at creation time " +
+        "and by the revocation conditions defined in the " +
+        '<a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">official Terms and Conditions</a>.<br>' +
+        "Downloading and keeping a copy of this consent allows you to prove the authorization " +
+        "given on this date, even if the account or the original files are later removed.<br>" +
+        "TrueConsent is a recording and notification system, not a permanent archive.<br>" +
+        "© 2025 TrueConsent – All rights reserved.",
+      notFound: "Consent not found.",
+    },
+  };
+
+  let currentLang = "it";
+
+  function applyTexts() {
+    const t = I18N[currentLang] || I18N.it;
+    document.getElementById("pageTitle").innerText = t.pageTitle;
+    document.getElementById("details").innerText = t.loading;
+    document.getElementById("btnPrint").innerText = t.btnPrint;
+    document.getElementById("btnDownload").innerText = t.btnDownload;
+    document.getElementById("footer").innerHTML = t.footerHtml;
+  }
+
+  // Prima applicazione (fallback IT)
+  applyTexts();
+
   function formatDate(val) {
     try {
       if (!val) return "-";
+      const locale = currentLang === "en" ? "en-GB" : "it-IT";
       if (typeof val === "string") return val;
-      if (val.toDate) return val.toDate().toLocaleString("it-IT");
-      if (val.seconds) return new Date(val.seconds * 1000).toLocaleString("it-IT");
+      if (val.toDate) return val.toDate().toLocaleString(locale);
+      if (val.seconds) return new Date(val.seconds * 1000).toLocaleString(locale);
       return "-";
-    } catch { return "-"; }
+    } catch {
+      return "-";
+    }
   }
 
   // 🔵 Regola dei 7 giorni dopo TERMINAZIONE
@@ -185,51 +269,63 @@
   }
 
   function showDetails(d) {
+    const t = I18N[currentLang] || I18N.it;
     const category = buildConsentCategory(d);
 
     return `
-      <div class="section"><b>ID Consenso:</b> ${sessionId}</div>
-      <div class="section"><b>Tipo:</b> ${d.type || "-"}</div>
-      <div class="section"><b>Tipologia consenso:</b> ${category}</div>
-      <div class="section"><b>Stato:</b> ${d.status || "-"}</div>
-      <div class="section"><b>Proprietario:</b> ${d.ownerName || "-"}</div>
-      <div class="section"><b>Controparte:</b> ${d.counterpartName || "-"}</div>
-      <div class="section"><b>Data inizio:</b> ${formatDate(d.startAt)}</div>
-      <div class="section"><b>Data fine:</b> ${formatDate(d.endAt)}</div>
+      <div class="section"><b>${t.consentIdLabel}</b> ${sessionId}</div>
+      <div class="section"><b>${t.typeLabel}</b> ${d.type || "-"}</div>
+      <div class="section"><b>${t.consentCategoryLabel}</b> ${category}</div>
+      <div class="section"><b>${t.statusLabel}</b> ${d.status || "-"}</div>
+      <div class="section"><b>${t.ownerLabel}</b> ${d.ownerName || "-"}</div>
+      <div class="section"><b>${t.counterpartLabel}</b> ${d.counterpartName || "-"}</div>
+      <div class="section"><b>${t.startDateLabel}</b> ${formatDate(d.startAt)}</div>
+      <div class="section"><b>${t.endDateLabel}</b> ${formatDate(d.endAt)}</div>
     `;
   }
 
   async function loadConsent() {
     try {
       const snap = await getDoc(doc(db, "users", userId, "sessions", sessionId));
-      if (!snap.exists()) throw new Error("Consenso non trovato.");
+      if (!snap.exists()) throw new Error(I18N[currentLang].notFound);
 
       const d = snap.data();
+      // Lingua dalla sessione
+      if (d.language === "en") {
+        currentLang = "en";
+      } else {
+        currentLang = "it";
+      }
+      document.documentElement.lang = currentLang === "en" ? "en" : "it";
+      applyTexts();
+
+      const t = I18N[currentLang] || I18N.it;
       const expired = isExpired(d);
 
       // 🟦 Banner parte eliminata
       if (d.ownerDeleted) {
         document.getElementById("deletedMessage").innerHTML =
-          `<div class="info">ℹ️ Il proprietario ha eliminato il proprio account.</div>`;
+          `<div class="info">${t.ownerDeletedBanner}</div>`;
       }
       if (d.counterpartDeleted) {
         document.getElementById("deletedMessage").innerHTML =
-          `<div class="info">ℹ️ La controparte ha eliminato il proprio account.</div>`;
+          `<div class="info">${t.counterpartDeletedBanner}</div>`;
       }
 
       // 🔴 files eliminati post-7 giorni
       if (expired && d.filesDeletedAt) {
         document.getElementById("expiredMessage").innerHTML =
-          `<div class="expired">⛔ File non più disponibili. Eliminati automaticamente per privacy.</div>`;
+          `<div class="expired">${t.expiredBanner}</div>`;
         document.getElementById("details").innerHTML = showDetails(d);
-        document.getElementById("media").innerHTML = "<i>I file non sono più disponibili</i>";
+        document.getElementById("media").innerHTML =
+          `<i>${t.filesNotAvailable}</i>`;
         return;
       }
 
       // 🟨 Files eliminati ma entro i 7 giorni
       if (d.filesDeletedAt && !expired) {
         document.getElementById("expiredMessage").innerHTML =
-          `<div class="warning">⚠️ I file biometrici originali sono stati rimossi dopo il periodo probatorio.</div>`;
+          `<div class="warning">${t.filesRemovedWarning}</div>`;
         document.getElementById("btnDownload").disabled = true;
       }
 
@@ -246,15 +342,17 @@
         }
       };
 
-      if (d.signaturePath) media += await safeImg(d.signaturePath, "Firma");
-      if (d.selfiePath)    media += await safeImg(d.selfiePath, "Selfie");
+      const tLabels = I18N[currentLang] || I18N.it;
+
+      if (d.signaturePath) media += await safeImg(d.signaturePath, tLabels.signatureLabel);
+      if (d.selfiePath)    media += await safeImg(d.selfiePath, tLabels.selfieLabel);
 
       if (d.audioPath) {
         try {
           const a = await getDownloadURL(ref(storage, d.audioPath));
-          media += `<div class="section"><b>Audio:</b><br><audio controls src="${a}"></audio></div>`;
+          media += `<div class="section"><b>${tLabels.audioLabel}:</b><br><audio controls src="${a}"></audio></div>`;
         } catch {
-          media += `<div class="section"><b>Audio:</b> <i>non disponibile</i></div>`;
+          media += `<div class="section"><b>${tLabels.audioLabel}:</b> <i>non disponibile</i></div>`;
         }
       }
 
@@ -262,7 +360,7 @@
       document.getElementById("actions").style.display = "block";
 
       // Zoom immagini
-      document.querySelectorAll(".zoomable").forEach(img => {
+      document.querySelectorAll(".zoomable").forEach((img) => {
         img.onclick = () => {
           document.getElementById("lightbox").style.display = "flex";
           document.querySelector("#lightbox img").src = img.src;
@@ -273,7 +371,9 @@
         document.getElementById("lightbox").style.display = "none";
 
     } catch (e) {
-      document.getElementById("details").innerText = "❌ " + e.message;
+      const t = I18N[currentLang] || I18N.it;
+      const msg = e && e.message ? e.message : t.notFound;
+      document.getElementById("details").innerText = "❌ " + msg;
     }
   }
 
