@@ -139,7 +139,7 @@
   const sessionId = url.searchParams.get("sessionId");
 
   // ==========================
-  // 🔠 Testi IT / EN
+  // 🔠 Testi IT / EN / FR
   // ==========================
   const I18N = {
     it: {
@@ -214,6 +214,43 @@
         "© 2025 TrueConsent – All rights reserved.",
       notFound: "Consent not found.",
     },
+    fr: {
+      pageTitle: "📄 Détails du consentement",
+      loading: "⏳ Chargement...",
+      consentIdLabel: "ID du consentement :",
+      typeLabel: "Type :",
+      consentCategoryLabel: "Catégorie de consentement :",
+      statusLabel: "Statut :",
+      ownerLabel: "Propriétaire :",
+      counterpartLabel: "Contrepartie :",
+      startDateLabel: "Date de début :",
+      endDateLabel: "Date de fin :",
+      signatureLabel: "Signature numérique",
+      selfieLabel: "Selfie",
+      audioLabel: "Audio",
+      filesNotAvailable: "Les fichiers ne sont plus disponibles",
+      filesRemovedWarning:
+        "⚠️ Les fichiers biométriques originaux ont été supprimés après la période probatoire.",
+      expiredBanner:
+        "⛔ Fichiers non disponibles. Supprimés automatiquement pour des raisons de confidentialité.",
+      ownerDeletedBanner: "ℹ️ Le propriétaire a supprimé son compte.",
+      counterpartDeletedBanner:
+        "ℹ️ La contrepartie a supprimé son compte.",
+      btnPrint: "📄 Imprimer le consentement",
+      btnDownload: "📦 Télécharger le consentement complet",
+      footerHtml:
+        "<b>Informations légales et conservation</b><br>" +
+        "Ce consentement numérique a été généré via la plateforme TrueConsent.<br>" +
+        "Sa validité est régie uniquement par la durée définie au moment de la création " +
+        "et par les conditions de révocation prévues dans les " +
+        '<a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Conditions générales officielles</a>.<br>' +
+        "Télécharger et conserver une copie de ce consentement permet de démontrer ultérieurement " +
+        "l’autorisation effectivement donnée à cette date, même si le compte ou les fichiers originaux " +
+        "sont ensuite supprimés.<br>" +
+        "TrueConsent est un système d’enregistrement et de notification, et non un archivage permanent.<br>" +
+        "© 2025 TrueConsent – Tous droits réservés.",
+      notFound: "Consentement introuvable.",
+    },
   };
 
   let currentLang = "it";
@@ -233,7 +270,12 @@
   function formatDate(val) {
     try {
       if (!val) return "-";
-      const locale = currentLang === "en" ? "en-GB" : "it-IT";
+      let locale = "it-IT";
+      if (currentLang === "en") {
+        locale = "en-GB";
+      } else if (currentLang === "fr") {
+        locale = "fr-FR";
+      }
       if (typeof val === "string") return val;
       if (val.toDate) return val.toDate().toLocaleString(locale);
       if (val.seconds) return new Date(val.seconds * 1000).toLocaleString(locale);
@@ -293,10 +335,12 @@
       // Lingua dalla sessione
       if (d.language === "en") {
         currentLang = "en";
+      } else if (d.language === "fr") {
+        currentLang = "fr";
       } else {
         currentLang = "it";
       }
-      document.documentElement.lang = currentLang === "en" ? "en" : "it";
+      document.documentElement.lang = currentLang;
       applyTexts();
 
       const t = I18N[currentLang] || I18N.it;
