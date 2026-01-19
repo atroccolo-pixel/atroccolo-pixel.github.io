@@ -138,9 +138,9 @@
   const userId = url.searchParams.get("userId");
   const sessionId = url.searchParams.get("sessionId");
 
-  // ==========================
-  // 🔠 Testi IT / EN / FR / ES
-  // ==========================
+  // ==============================
+  // 🔠 Testi IT / EN / FR / ES / DE
+  // ==============================
   const I18N = {
     it: {
       pageTitle: "📄 Dettagli Consenso",
@@ -288,6 +288,43 @@
         "© 2025 TrueConsent – Todos los derechos reservados.",
       notFound: "Consentimiento no encontrado.",
     },
+    de: {
+      pageTitle: "📄 Einwilligungsdetails",
+      loading: "⏳ Wird geladen...",
+      consentIdLabel: "Einwilligungs-ID:",
+      typeLabel: "Art:",
+      consentCategoryLabel: "Art der Einwilligung:",
+      statusLabel: "Status:",
+      ownerLabel: "Inhaber:",
+      counterpartLabel: "Gegenpartei:",
+      startDateLabel: "Startdatum:",
+      endDateLabel: "Enddatum:",
+      signatureLabel: "Unterschrift",
+      selfieLabel: "Selfie",
+      audioLabel: "Audio",
+      filesNotAvailable: "Dateien sind nicht mehr verfügbar",
+      filesRemovedWarning:
+        "⚠️ Die ursprünglichen biometrischen Dateien wurden nach Ablauf der Beweisfrist gelöscht.",
+      expiredBanner:
+        "⛔ Dateien nicht mehr verfügbar. Sie wurden aus Datenschutzgründen automatisch gelöscht.",
+      ownerDeletedBanner: "ℹ️ Der Inhaber hat sein Konto gelöscht.",
+      counterpartDeletedBanner:
+        "ℹ️ Die Gegenpartei hat ihr Konto gelöscht.",
+      btnPrint: "📄 Einwilligung drucken",
+      btnDownload: "📦 Vollständige Einwilligung herunterladen",
+      footerHtml:
+        "<b>Rechtliche Hinweise und Aufbewahrung</b><br>" +
+        "Diese digitale Einwilligung wurde über die Plattform TrueConsent erstellt.<br>" +
+        "Ihre Gültigkeit wird ausschließlich durch die bei der Erstellung festgelegte Dauer " +
+        "und durch die Widerrufsbedingungen in den " +
+        '<a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">offiziellen Allgemeinen Geschäftsbedingungen</a> geregelt.<br>' +
+        "Das Herunterladen und Aufbewahren einer Kopie dieser Einwilligung ermöglicht es, " +
+        "die tatsächlich an diesem Datum erteilte Zustimmung nachzuweisen, auch wenn das Konto " +
+        "oder die Originaldateien später gelöscht werden sollten.<br>" +
+        "TrueConsent ist ein System zur Protokollierung und Benachrichtigung, kein dauerhaftes Archiv.<br>" +
+        "© 2025 TrueConsent – Alle Rechte vorbehalten.",
+      notFound: "Einwilligung nicht gefunden.",
+    },
   };
 
   let currentLang = "it";
@@ -314,6 +351,8 @@
         locale = "fr-FR";
       } else if (currentLang === "es") {
         locale = "es-ES";
+      } else if (currentLang === "de") {
+        locale = "de-DE";
       }
       if (typeof val === "string") return val;
       if (val.toDate) return val.toDate().toLocaleString(locale);
@@ -378,6 +417,8 @@
         currentLang = "fr";
       } else if (d.language === "es") {
         currentLang = "es";
+      } else if (d.language === "de") {
+        currentLang = "de";
       } else {
         currentLang = "it";
       }
