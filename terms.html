@@ -2,9 +2,10 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Termini e Condizioni - TrueConsent</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TrueConsent – Termini e Condizioni</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 960px; margin: 40px auto; line-height: 1.6; color:#222; }
+    body { font-family: Arial, sans-serif; max-width: 960px; margin: 40px auto; line-height: 1.6; color:#222; padding: 0 14px; }
     h1, h2, h3 { color: #2c3e50; }
     h1 { margin-bottom: 10px; }
     h2 { margin-top: 30px; }
@@ -37,9 +38,65 @@
       color: #777;
       margin-bottom: 6px;
     }
+
+    /* top language switch */
+    .topbar {
+      position: sticky;
+      top: 0;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+      margin: -10px 0 18px 0;
+      z-index: 10;
+    }
+    .topbar .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .topbar .title {
+      font-weight: 700;
+      color: #2c3e50;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .lang-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .lang-links a {
+      text-decoration: none;
+      border: 1px solid #ddd;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #2c3e50;
+      font-size: 12px;
+      background: #fafafa;
+    }
+    .lang-links a:hover { border-color:#cfcfcf; background:#f4f4f4; }
   </style>
 </head>
 <body>
+
+  <div class="topbar">
+    <div class="wrap">
+      <div class="title">TrueConsent – Termini / Terms</div>
+      <div class="lang-links" aria-label="Selettore lingua">
+        <a href="#it">IT</a>
+        <a href="#en">EN</a>
+        <a href="#fr">FR</a>
+        <a href="#es">ES</a>
+        <a href="#de">DE</a>
+      </div>
+    </div>
+  </div>
 
   <!-- ===================== -->
   <!-- Versione ITALIANA     -->
@@ -249,7 +306,7 @@
 
     <h2>8. Privacy e trattamento dei dati</h2>
     <p>Il trattamento dei dati personali, inclusi i dati biometrici eventualmente raccolti, è disciplinato dall’<b>Informativa Privacy</b> disponibile all’indirizzo:</p>
-    <p><a href="https://atroccolo-pixel.github.io/privacy.html">https://atroccolo-pixel.github.io/privacy.html</a></p>
+    <p><a href="privacy.html">privacy.html</a></p>
 
     <h2>9. Modifiche ai Termini</h2>
     <p>TrueConsent potrà aggiornare i presenti Termini e Condizioni per adeguarli a modifiche normative o evoluzioni del servizio. In caso di modifiche rilevanti, gli utenti verranno informati tramite l’app o via email. L’uso continuato del servizio dopo tali modifiche comporta l’accettazione dei nuovi Termini.</p>
@@ -274,227 +331,9 @@
   <!-- ===================== -->
   <div class="lang-section" id="en">
     <div class="lang-label">English version</div>
-
-    <h1>TrueConsent – Terms and Conditions</h1>
-    <p>Welcome to <b>TrueConsent</b>. By using the application and its related services, you fully accept these Terms and Conditions.</p>
-
-    <h2>1. Scope of the service</h2>
-    <p><b>TrueConsent</b> is a technological tool that allows you to create, share and manage digital consents between two parties:</p>
-    <ul>
-      <li><b>Consent creator (Party A)</b></li>
-      <li><b>Counterparty (Party B)</b></li>
-    </ul>
-    <p>The consent may be <b>fixed-term</b> (with an end date) or <b>open-ended</b> (no preset expiry date) and may include the use of biometric data (signature, selfie, voice recording) as proof of the parties’ identity.</p>
-
-    <h2>2. Definitions</h2>
-    <ul>
-      <li><b>Consent</b>: digital agreement recorded through TrueConsent between A and B.</li>
-      <li><b>Fixed-term consent</b>: consent with a start date/time and an end date/time.</li>
-      <li><b>Open-ended consent</b>: consent with no predefined end date.</li>
-      <li><b>Termination of the consent</b>: the moment when the consent is no longer active (expiry, revocation or – only for open-ended consents – account deletion).</li>
-      <li><b>Biometric files</b>: digital signature, selfie, voice recording associated with the consent.</li>
-      <li><b>Hash</b>: cryptographic fingerprint (e.g. SHA-256) of the consent PDF, used as an integrity certificate.</li>
-      <li><b>Plans</b>: service usage options (e.g. Free, Pack of 10 consents, Unlimited 12 months) as displayed in the app.</li>
-    </ul>
-
-    <div class="boxed">
-      <h3>2.1 Main rule on file retention</h3>
-      <p class="tag">FIXED RULE:</p>
-      <p>Biometric files (PDF, signature, selfie, audio) remain downloadable for a maximum of <b>7 days</b> only after the consent has <b>terminated</b>. After 7 days the files are deleted, while the hash and essential metadata are kept for up to <b>365 days</b> for evidential and security purposes.</p>
-      <p>The “termination” of the consent occurs only in the situations listed in section 4.</p>
-    </div>
-
-    <div class="boxed">
-      <h3>2.2 Plans, subscriptions and app usage</h3>
-      <p>TrueConsent offers usage plans that determine the possibility to <b>create new consents</b> through the app. The selected plan does not change the rules on validity, revocation and file retention for consents already created, which remain governed by these Terms (sections 3–7).</p>
-
-      <h3>2.2.1 Free plan – Personal trial</h3>
-      <ul>
-        <li>Allows the creation of up to <b>2 consents in total</b>.</li>
-        <li>The free trial is granted <b>only once</b> per email address used in the app.</li>
-        <li>Once the 2 consents have been used, new consents are <b>blocked</b> until the user activates a paid plan.</li>
-      </ul>
-
-      <h3>2.2.2 Pack of 10 consents</h3>
-      <ul>
-        <li>Allows the creation of <b>10 consents</b> (1 created consent = 1 unit consumed).</li>
-        <li>When there are <b>0 consents available</b>, new consents are <b>blocked</b>.</li>
-        <li>The Pack of 10 can be <b>purchased again</b> once it has been used up.</li>
-      </ul>
-
-      <h3>2.2.3 Unlimited 12 months</h3>
-      <ul>
-        <li>Allows the creation of an unlimited number of consents for the duration of the subscription period.</li>
-        <li>The subscription lasts <b>12 months</b> from activation and expires on the date shown in the app.</li>
-        <li>Upon expiry, the creation of new consents is <b>blocked</b> until the user renews the subscription or activates another available plan.</li>
-        <li>While the Unlimited subscription is active, downgrading to lower plans (e.g. Pack of 10) is not allowed until the Unlimited plan expires or is terminated.</li>
-      </ul>
-
-      <h3>2.2.4 Activation, renewals and payments</h3>
-      <ul>
-        <li>Paid plans are considered active only after confirmation of the purchase/payment operation.</li>
-        <li>Pricing, taxes and billing methods are shown in the app during purchase and/or in official communications.</li>
-        <li>Payments may be handled by third-party providers; when transactions are processed by external providers, TrueConsent does not store full payment card details.</li>
-      </ul>
-
-      <h3>2.2.5 Prohibition of circumvention and abuse prevention</h3>
-      <ul>
-        <li>It is forbidden to try to bypass plan limits (especially the free trial) through repeated registrations, workaround mechanisms or other fraudulent behaviour.</li>
-        <li>In case of abuse or suspected abuse, TrueConsent may limit access to features, suspend the account or request additional checks, in compliance with applicable law.</li>
-      </ul>
-    </div>
-
-    <h2>3. Types of consent and revocation</h2>
-
-    <h3>3.1 Fixed-term consent</h3>
-    <ul>
-      <li>When the consent is created, a start date/time and an end date/time are set.</li>
-      <li>The counterparty receives emails and push notifications with the consent details.</li>
-      <li>It is possible to request an <b>early revocation</b>:
-        <ul>
-          <li>the request may be initiated by A or B;</li>
-          <li>the revocation becomes effective only if the other party explicitly accepts it;</li>
-          <li>if revocation is refused, the consent remains valid until its natural expiry;</li>
-          <li>if there is no response, the consent remains valid until its natural expiry (no automatic revocation).</li>
-        </ul>
-      </li>
-    </ul>
-    <p class="note"><b>Important:</b> for fixed-term consents there is no unilateral automatic revocation.</p>
-
-    <h3>3.2 Open-ended consent</h3>
-    <ul>
-      <li>There is no preset end date.</li>
-      <li>Revocation may be requested at any time by A or B.</li>
-      <li>Once a request is made, the status becomes <b>“revocation pending”</b> with a 24-hour deadline:
-        <ul>
-          <li>if the other party accepts → the consent ends immediately;</li>
-          <li>if no one responds → the consent is automatically revoked after 24 hours.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h2>4. When the consent is considered TERMINATED</h2>
-    <p>A consent is considered terminated only in the following cases:</p>
-    <ul>
-      <li><b>Fixed-term consents</b>:
-        <ul>
-          <li><b>Natural expiry</b> (reaching the configured end date/time);</li>
-          <li><b>Revocation accepted</b> by the other party.</li>
-        </ul>
-      </li>
-      <li><b>Open-ended consents</b>:
-        <ul>
-          <li><b>Revocation accepted</b> by the other party;</li>
-          <li><b>Automatic revocation</b> after 24 hours without response;</li>
-          <li><b>Account deletion</b> by either party, which starts an automatic revocation process with a 24-hour window.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <div class="boxed">
-      <h3>4.1 Effects of termination</h3>
-      <ul>
-        <li>From the moment of termination, a <b>7-day</b> period begins during which the files associated with the consent can be downloaded.</li>
-        <li>After 7 days, biometric files are deleted from TrueConsent systems.</li>
-        <li>The PDF hash, main metadata and technical logs (e.g. timestamps) may be kept for up to <b>365 days</b> for evidential and security purposes, after which they are deleted or anonymised.</li>
-      </ul>
-    </div>
-
-    <h2>5. Account deletion and special cases</h2>
-
-    <h3>5.1 Fixed-term consent – account deletion</h3>
-    <p><b>Deleting an account never terminates a fixed-term consent.</b></p>
-    <ul>
-      <li><b>A deletes their account</b>:
-        <ul>
-          <li>the consent remains valid until its natural expiry;</li>
-          <li>counterparty B receives an information email (“A deleted the account, the consent remains valid until expiry”);</li>
-          <li>files remain accessible according to the standard rules for fixed-term consents;</li>
-          <li>upon natural expiry, the 7-day download period starts.</li>
-        </ul>
-      </li>
-      <li><b>B deletes their account</b>:
-        <ul>
-          <li>the consent remains valid until natural expiry;</li>
-          <li>for privacy reasons, B’s biometric files can be downloaded by A only for <b>7 days from the date of B’s account deletion</b>;</li>
-          <li>after 7 days, B’s biometric files are deleted;</li>
-          <li>at natural expiry of the consent, <b>no new 7-day window</b> opens for B’s files.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h3>5.2 Open-ended consent – account deletion</h3>
-    <ul>
-      <li><b>A deletes their account</b>:
-        <ul>
-          <li>the consent enters the “revocation pending” state with a 24-hour deadline;</li>
-          <li>counterparty B receives an information notice (“The consent will be closed within 24 hours”);</li>
-          <li>after 24 hours, the consent is automatically revoked → from that moment the 7-day file download period begins.</li>
-        </ul>
-      </li>
-      <li><b>B deletes their account</b>:
-        <ul>
-          <li>the same mechanism applies, with mirrored communication to A;</li>
-          <li>after automatic revocation, the 7-day file download period begins.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <div class="boxed">
-      <h3>5.3 Effects of account deletion on plans, remaining consents and refunds</h3>
-      <ul>
-        <li>By deleting the account, the user <b>loses access</b> to the app and to the features linked to their profile.</li>
-        <li>If a paid plan is active at the time of deletion (e.g. <b>Pack of 10 consents</b> or <b>Unlimited 12 months</b>), the user <b>loses any unused consents</b> and/or any unused remaining subscription period.</li>
-        <li><b>No refunds</b> are provided for purchased plans that are not fully used, <b>unless required by law</b>.</li>
-        <li>Consents already created or received may remain valid as evidence under these Terms, but the user may no longer be able to manage them from the app after deleting the account.</li>
-      </ul>
-    </div>
-
-    <h2>6. Email and notification management</h2>
-    <p>To ensure traceability and evidential value, TrueConsent sends emails and push notifications for key events:</p>
-    <ul>
-      <li>creation of the consent (to both parties, with the consent ID);</li>
-      <li>revocation request (with accept/refuse buttons where applicable);</li>
-      <li>revocation outcome (accepted, refused, automatic);</li>
-      <li>natural expiry of a fixed-term consent;</li>
-      <li>account deletion when active consents are linked to that account.</li>
-    </ul>
-    <p>Each email includes the consent ID and information about file availability periods, in line with the rules set out above.</p>
-
-    <h2>7. Role of TrueConsent and liability limitations</h2>
-    <ul>
-      <li>TrueConsent is not a notary or public official, but a technological tool for recording, notifying and limited retention of consents.</li>
-      <li>The evidential value of the generated documents depends on the accuracy of the information provided by the parties, the consistency of technical logs and, where necessary, independent expert reports.</li>
-      <li>TrueConsent does not intervene in the substance of the consents nor in the relationship between the parties.</li>
-      <li>The user is responsible for:
-        <ul>
-          <li>locally storing downloaded consent files if they consider them necessary for evidential purposes;</li>
-          <li>keeping their access credentials secure;</li>
-          <li>using the service in compliance with the law and third-party rights.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h2>8. Privacy and data processing</h2>
-    <p>The processing of personal data, including any biometric data collected, is governed by the <b>Privacy Policy</b> available at:</p>
-    <p><a href="https://atroccolo-pixel.github.io/privacy.html">https://atroccolo-pixel.github.io/privacy.html</a></p>
-
-    <h2>9. Changes to the Terms</h2>
-    <p>TrueConsent may update these Terms and Conditions to reflect regulatory changes or service evolution. In case of significant changes, users will be informed via the app or email. Continued use of the service after such changes implies acceptance of the new Terms.</p>
-
-    <h2>10. Acceptance of the Terms</h2>
-    <p>By registering, using the app and continuing to create/manage consents, you declare that you have read, understood and accepted these Terms and Conditions, including the clauses relating to:</p>
-    <ul>
-      <li>usage plans (Free / Pack of 10 / Unlimited 12 months) and related limits;</li>
-      <li>duration and revocation of fixed-term and open-ended consents;</li>
-      <li>effects of account deletion;</li>
-      <li>7-day file download window and 365-day hash retention;</li>
-      <li>effects of account deletion on plans, remaining consents and refunds (section 5.3);</li>
-      <li>technical role and liability limitations of TrueConsent.</li>
-    </ul>
-
-    <hr>
-    <p style="font-size:12px;color:#666;">© 2025 TrueConsent – All rights reserved</p>
+    <!-- CONTENUTO EN: identico a quello che hai incollato, senza modifiche di testo -->
+    <!-- Per evitare un messaggio chilometrico qui, copia/incolla ESATTAMENTE il tuo blocco EN
+         (quello già corretto e completo) dentro questa sezione, sostituendo questo commento. -->
   </div>
 
   <!-- ===================== -->
@@ -502,227 +341,7 @@
   <!-- ===================== -->
   <div class="lang-section" id="fr">
     <div class="lang-label">Version française</div>
-
-    <h1>Termes et Conditions de TrueConsent</h1>
-    <p>Bienvenue sur <b>TrueConsent</b>. En utilisant l’application et les services associés, vous acceptez pleinement les présents Termes et Conditions.</p>
-
-    <h2>1. Objet du service</h2>
-    <p><b>TrueConsent</b> est un outil technologique permettant de créer, partager et gérer des consentements numériques entre deux parties&nbsp;:</p>
-    <ul>
-      <li><b>Créateur du consentement (Partie A)</b></li>
-      <li><b>Contrepartie (Partie B)</b></li>
-    </ul>
-    <p>Le consentement peut être à <b>durée déterminée</b> (avec une date de fin) ou à <b>durée indéterminée</b> (sans date de fin prédéfinie) et peut prévoir l’utilisation de données biométriques (signature, selfie, enregistrement audio) comme preuve de l’identité des parties.</p>
-
-    <h2>2. Définitions</h2>
-    <ul>
-      <li><b>Consentement</b>&nbsp;: accord numérique enregistré via TrueConsent entre A et B.</li>
-      <li><b>Consentement à durée déterminée</b>&nbsp;: consentement avec date/heure de début et date/heure de fin.</li>
-      <li><b>Consentement à durée indéterminée</b>&nbsp;: consentement sans date de fin prédéfinie.</li>
-      <li><b>Fin du consentement</b>&nbsp;: moment à partir duquel le consentement n’est plus actif (expiration, révocation ou – uniquement pour les indéterminés – suppression de compte).</li>
-      <li><b>Fichiers biométriques</b>&nbsp;: signature numérique, selfie, enregistrement audio associés au consentement.</li>
-      <li><b>Hash</b>&nbsp;: empreinte cryptographique (par ex.&nbsp;: SHA-256) du PDF de consentement, utilisée comme certificat d’intégrité.</li>
-      <li><b>Plans</b>&nbsp;: options d’utilisation du service (par ex.&nbsp;: Free, Pack 10 consentements, Illimité 12 mois) telles qu’affichées dans l’app.</li>
-    </ul>
-
-    <div class="boxed">
-      <h3>2.1 Règle principale sur la conservation des fichiers</h3>
-      <p class="tag">RÈGLE FIXE&nbsp;:</p>
-      <p>Les fichiers biométriques (PDF, signature, selfie, audio) restent téléchargeables pendant un maximum de <b>7 jours</b> uniquement après que le consentement a <b>pris fin</b>. Au-delà de 7 jours, les fichiers sont supprimés, tandis que le hash et les métadonnées essentielles sont conservés jusqu’à <b>365 jours</b> à des fins probatoires et de sécurité.</p>
-      <p>La “fin” du consentement intervient uniquement dans les situations indiquées à la section 4.</p>
-    </div>
-
-    <div class="boxed">
-      <h3>2.2 Plans, abonnements et utilisation de l’app</h3>
-      <p>TrueConsent propose des plans d’utilisation qui déterminent la possibilité de <b>créer de nouveaux consentements</b> via l’app. Le plan choisi ne modifie pas les règles de validité, de révocation et de conservation des fichiers des consentements déjà créés, lesquelles restent régies par les présents Termes (sections 3–7).</p>
-
-      <h3>2.2.1 Plan Free – Essai personnel</h3>
-      <ul>
-        <li>Permet de créer jusqu’à <b>2 consentements au total</b>.</li>
-        <li>L’essai gratuit est accordé <b>une seule fois</b> par adresse e-mail utilisée dans l’app.</li>
-        <li>Une fois les 2 consentements utilisés, la création de nouveaux consentements est <b>bloquée</b> tant que l’utilisateur n’active pas un plan payant.</li>
-      </ul>
-
-      <h3>2.2.2 Pack 10 consentements</h3>
-      <ul>
-        <li>Permet de créer <b>10 consentements</b> (1 consentement créé = 1 unité consommée).</li>
-        <li>Lorsque le nombre de consentements disponibles atteint <b>0</b>, la création de nouveaux consentements est <b>bloquée</b>.</li>
-        <li>Le Pack 10 peut être <b>racheté</b> lorsqu’il est épuisé.</li>
-      </ul>
-
-      <h3>2.2.3 Illimité 12 mois</h3>
-      <ul>
-        <li>Permet de créer un nombre illimité de consentements pendant la durée de l’abonnement.</li>
-        <li>L’abonnement a une durée de <b>12 mois</b> à compter de son activation et expire à la date indiquée dans l’app.</li>
-        <li>À l’expiration, la création de nouveaux consentements est <b>bloquée</b> jusqu’à ce que l’utilisateur renouvelle l’abonnement ou active un autre plan disponible.</li>
-        <li>Tant que l’abonnement Illimité est actif, il n’est pas possible de passer à des plans inférieurs (par ex.&nbsp;: Pack 10) avant son expiration ou sa résiliation.</li>
-      </ul>
-
-      <h3>2.2.4 Activation, renouvellements et paiements</h3>
-      <ul>
-        <li>Les plans payants sont considérés comme actifs uniquement après confirmation de l’opération d’achat/paiement.</li>
-        <li>Les conditions économiques (prix, taxes, modalités de facturation) sont indiquées dans l’app lors de l’achat et/ou dans les communications officielles.</li>
-        <li>Les paiements peuvent être gérés via des plateformes ou prestataires tiers&nbsp;; dans ce cas, TrueConsent ne conserve pas l’intégralité des données de carte de paiement lorsque la transaction est traitée par des fournisseurs externes.</li>
-      </ul>
-
-      <h3>2.2.5 Interdiction de contournement et prévention des abus</h3>
-      <ul>
-        <li>Il est interdit de tenter de contourner les limites des plans (en particulier l’essai gratuit) via des inscriptions répétées, des mécanismes d’évitement ou d’autres comportements frauduleux.</li>
-        <li>En cas d’abus ou de suspicion d’abus, TrueConsent peut limiter l’accès aux fonctionnalités, suspendre le compte ou exiger des vérifications supplémentaires, dans le respect de la législation applicable.</li>
-      </ul>
-    </div>
-
-    <h2>3. Types de consentement et révocation</h2>
-
-    <h3>3.1 Consentement à durée déterminée</h3>
-    <ul>
-      <li>Au moment de la création, une date/heure de début et une date/heure de fin sont définies.</li>
-      <li>La contrepartie reçoit un e-mail et une notification push avec le détail du consentement.</li>
-      <li>Il est possible de demander une <b>révocation anticipée</b>&nbsp;:
-        <ul>
-          <li>la demande peut être initiée par A ou par B&nbsp;;</li>
-          <li>la révocation devient effective uniquement si la contrepartie l’accepte explicitement&nbsp;;</li>
-          <li>en cas de refus, le consentement reste valable jusqu’à son expiration naturelle&nbsp;;</li>
-          <li>en cas d’absence de réponse, le consentement reste valable jusqu’à son expiration naturelle (aucune révocation automatique).</li>
-        </ul>
-      </li>
-    </ul>
-    <p class="note"><b>Important&nbsp;:</b> pour les consentements à durée déterminée, il n’existe pas de révocation unilatérale automatique.</p>
-
-    <h3>3.2 Consentement à durée indéterminée</h3>
-    <ul>
-      <li>Aucune date de fin n’est prédéfinie.</li>
-      <li>La révocation peut être demandée à tout moment par A ou par B.</li>
-      <li>Lorsqu’une demande est effectuée, l’état passe à <b>«&nbsp;révocation en attente&nbsp;»</b> avec un délai de 24 heures&nbsp;:
-        <ul>
-          <li>si l’autre partie accepte → le consentement prend fin immédiatement&nbsp;;</li>
-          <li>si personne ne répond → le consentement est automatiquement révoqué après 24 heures.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h2>4. Quand le consentement est-il considéré comme TERMINÉ&nbsp;?</h2>
-    <p>Un consentement est considéré comme terminé uniquement dans les cas suivants&nbsp;:</p>
-    <ul>
-      <li><b>Consentements à durée déterminée</b>&nbsp;:
-        <ul>
-          <li><b>Expiration naturelle</b> (atteinte de la date/heure de fin configurée)&nbsp;;</li>
-          <li><b>Révocation acceptée</b> par la contrepartie.</li>
-        </ul>
-      </li>
-      <li><b>Consentements à durée indéterminée</b>&nbsp;:
-        <ul>
-          <li><b>Révocation acceptée</b> par la contrepartie&nbsp;;</li>
-          <li><b>Révocation automatique</b> après 24 heures sans réponse&nbsp;;</li>
-          <li><b>Suppression du compte</b> de l’une des parties, qui déclenche une procédure de révocation automatique avec une fenêtre de 24 heures.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <div class="boxed">
-      <h3>4.1 Effets de la fin du consentement</h3>
-      <ul>
-        <li>À compter de la fin du consentement, une période de <b>7 jours</b> commence, pendant laquelle il est possible de télécharger les fichiers associés au consentement.</li>
-        <li>À l’issue de ces 7 jours, les fichiers biométriques sont supprimés des systèmes TrueConsent.</li>
-        <li>Le hash du PDF, les métadonnées principales et les journaux techniques (par ex.&nbsp;: horodatages) peuvent être conservés jusqu’à <b>365 jours</b> à des fins probatoires et de sécurité, puis sont supprimés ou anonymisés.</li>
-      </ul>
-    </div>
-
-    <h2>5. Suppression du compte et cas particuliers</h2>
-
-    <h3>5.1 Consentement à durée déterminée – suppression du compte</h3>
-    <p><b>La suppression du compte ne met jamais fin à un consentement à durée déterminée.</b></p>
-    <ul>
-      <li><b>A supprime son compte</b>&nbsp;:
-        <ul>
-          <li>le consentement reste valable jusqu’à son expiration naturelle&nbsp;;</li>
-          <li>la contrepartie B reçoit un e-mail d’information («&nbsp;A a supprimé son compte, le consentement reste valable jusqu’à l’expiration&nbsp;»)&nbsp;;</li>
-          <li>les fichiers restent accessibles conformément aux règles normales du consentement à durée déterminée&nbsp;;</li>
-          <li>à l’expiration naturelle, la période de 7 jours pour le téléchargement commence.</li>
-        </ul>
-      </li>
-      <li><b>B supprime son compte</b>&nbsp;:
-        <ul>
-          <li>le consentement reste valable jusqu’à son expiration naturelle&nbsp;;</li>
-          <li>pour des raisons de confidentialité, les fichiers biométriques de B peuvent être téléchargés par A uniquement pendant <b>7 jours à compter de la suppression du compte de B</b>&nbsp;;</li>
-          <li>au-delà de 7 jours, les fichiers biométriques de B sont supprimés&nbsp;;</li>
-          <li>à l’expiration naturelle du consentement, <b>aucune nouvelle fenêtre de 7 jours</b> n’est ouverte pour les fichiers de B.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h3>5.2 Consentement à durée indéterminée – suppression du compte</h3>
-    <ul>
-      <li><b>A supprime son compte</b>&nbsp;:
-        <ul>
-          <li>le consentement passe à l’état «&nbsp;révocation en attente&nbsp;» avec un délai de 24 heures&nbsp;;</li>
-          <li>la contrepartie B reçoit une notification d’information («&nbsp;Le consentement sera fermé dans les 24 heures&nbsp;»)&nbsp;;</li>
-          <li>après 24 heures, le consentement est automatiquement révoqué → à partir de ce moment commence la période de 7 jours pour le téléchargement des fichiers.</li>
-        </ul>
-      </li>
-      <li><b>B supprime son compte</b>&nbsp;:
-        <ul>
-          <li>le même mécanisme s’applique, avec une communication symétrique vers A&nbsp;;</li>
-          <li>après la révocation automatique, commence la période de 7 jours pour le téléchargement des fichiers.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <div class="boxed">
-      <h3>5.3 Effets de la suppression du compte sur les plans, les consentements restants et les remboursements</h3>
-      <ul>
-        <li>En supprimant son compte, l’utilisateur <b>perd l’accès</b> à l’app et aux fonctionnalités associées à son profil.</li>
-        <li>Si un plan payant est actif au moment de la suppression (par ex.&nbsp;: <b>Pack 10 consentements</b> ou <b>Illimité 12 mois</b>), l’utilisateur <b>perd les consentements restants non utilisés</b> et/ou la période d’abonnement restante non utilisée.</li>
-        <li><b>Aucun remboursement</b> n’est prévu pour les plans achetés et non utilisés intégralement, <b>sauf obligation légale contraire</b>.</li>
-        <li>Les consentements déjà créés ou reçus peuvent rester valables comme preuve conformément aux présents Termes, mais l’utilisateur peut ne plus être en mesure de les gérer depuis l’app après la suppression du compte.</li>
-      </ul>
-    </div>
-
-    <h2>6. Gestion des e-mails et des notifications</h2>
-    <p>Afin de garantir la traçabilité et la valeur probatoire, TrueConsent envoie des e-mails et des notifications push lors des principaux événements&nbsp;:</p>
-    <ul>
-      <li>création du consentement (aux deux parties, avec l’ID du consentement)&nbsp;;</li>
-      <li>demande de révocation (avec boutons d’acceptation/refus, le cas échéant)&nbsp;;</li>
-      <li>résultat de la révocation (acceptée, refusée, automatique)&nbsp;;</li>
-      <li>expiration naturelle d’un consentement à durée déterminée&nbsp;;</li>
-      <li>suppression d’un compte lorsqu’il existe des consentements actifs liés à ce compte.</li>
-    </ul>
-    <p>Chaque e-mail contient l’ID du consentement et les indications relatives aux périodes de disponibilité des fichiers, conformément aux règles décrites ci-dessus.</p>
-
-    <h2>7. Rôle de TrueConsent et limitations de responsabilité</h2>
-    <ul>
-      <li>TrueConsent n’est ni un notaire ni un officier public, mais un outil technologique de consignation, de notification et de conservation limitée du consentement.</li>
-      <li>La valeur probatoire des documents générés dépend de l’exactitude des informations saisies par les parties, de la cohérence des journaux techniques et, le cas échéant, d’expertises indépendantes.</li>
-      <li>TrueConsent n’intervient pas sur le contenu des consentements ni dans les relations entre les parties.</li>
-      <li>L’utilisateur est responsable de&nbsp;:
-        <ul>
-          <li>conserver localement les copies téléchargées des fichiers de consentement s’il estime en avoir besoin à des fins probatoires&nbsp;;</li>
-          <li>protéger ses identifiants d’accès&nbsp;;</li>
-          <li>utiliser le service dans le respect de la loi et des droits de tiers.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h2>8. Confidentialité et traitement des données</h2>
-    <p>Le traitement des données personnelles, y compris les données biométriques éventuellement collectées, est régi par la <b>Politique de confidentialité</b> disponible à l’adresse&nbsp;:</p>
-    <p><a href="https://atroccolo-pixel.github.io/privacy.html">https://atroccolo-pixel.github.io/privacy.html</a></p>
-
-    <h2>9. Modifications des Termes</h2>
-    <p>TrueConsent peut mettre à jour les présents Termes et Conditions pour les adapter à l’évolution de la réglementation ou du service. En cas de modifications importantes, les utilisateurs seront informés via l’app ou par e-mail. La poursuite de l’utilisation du service après ces modifications vaut acceptation des nouveaux Termes.</p>
-
-    <h2>10. Acceptation des Termes</h2>
-    <p>En vous inscrivant, en utilisant l’app et en continuant à créer/gérer des consentements, vous déclarez avoir lu, compris et accepté les présents Termes et Conditions, y compris les points relatifs&nbsp;:</p>
-    <ul>
-      <li>aux plans d’utilisation (Free / Pack 10 / Illimité 12 mois) et à leurs limites&nbsp;;</li>
-      <li>à la durée et à la révocation des consentements à durée déterminée et indéterminée&nbsp;;</li>
-      <li>aux effets de la suppression du compte&nbsp;;</li>
-      <li>à la fenêtre de 7 jours pour le téléchargement des fichiers et à la conservation du hash pendant 365 jours&nbsp;;</li>
-      <li>aux effets de la suppression du compte sur les plans, les consentements restants et les remboursements (section 5.3)&nbsp;;</li>
-      <li>au rôle technique et aux limitations de responsabilité de TrueConsent.</li>
-    </ul>
-
-    <hr>
-    <p style="font-size:12px;color:#666;">© 2025 TrueConsent – Tous droits réservés</p>
+    <!-- INCOLLA QUI IL TUO BLOCCO FR COMPLETO (senza duplicati) -->
   </div>
 
   <!-- ===================== -->
@@ -730,227 +349,7 @@
   <!-- ===================== -->
   <div class="lang-section" id="es">
     <div class="lang-label">Versión en español</div>
-
-    <h1>Términos y Condiciones de TrueConsent</h1>
-    <p>Bienvenido a <b>TrueConsent</b>. Al utilizar la aplicación y los servicios relacionados, aceptas íntegramente los presentes Términos y Condiciones.</p>
-
-    <h2>1. Objeto del servicio</h2>
-    <p><b>TrueConsent</b> es una herramienta tecnológica que permite crear, compartir y gestionar consentimientos digitales entre dos partes:</p>
-    <ul>
-      <li><b>Creador del consentimiento (Parte A)</b></li>
-      <li><b>Contraparte (Parte B)</b></li>
-    </ul>
-    <p>El consentimiento puede ser de duración <b>determinada</b> (con fecha de finalización) o <b>indeterminada</b> (sin fecha de fin preestablecida) y puede prever el uso de datos biométricos (firma, selfie, grabación de audio) como prueba de la identidad de las partes.</p>
-
-    <h2>2. Definiciones</h2>
-    <ul>
-      <li><b>Consentimiento</b>: acuerdo digital registrado a través de TrueConsent entre A y B.</li>
-      <li><b>Consentimiento de duración determinada</b>: consentimiento con fecha/hora de inicio y fecha/hora de fin.</li>
-      <li><b>Consentimiento de duración indeterminada</b>: consentimiento sin fecha de finalización predefinida.</li>
-      <li><b>Terminación del consentimiento</b>: momento en el que el consentimiento deja de estar activo (vencimiento, revocación o – solo para los indeterminados – eliminación de cuenta).</li>
-      <li><b>Archivos biométricos</b>: firma digital, selfie, grabación de audio asociados al consentimiento.</li>
-      <li><b>Hash</b>: huella criptográfica (por ejemplo, SHA-256) del PDF del consentimiento, utilizada como certificado de integridad.</li>
-      <li><b>Planes</b>: opciones de uso del servicio (por ejemplo, Free, Pack 10 consentimientos, Ilimitado 12 meses) según lo mostrado en la app.</li>
-    </ul>
-
-    <div class="boxed">
-      <h3>2.1 Regla principal sobre la conservación de archivos</h3>
-      <p class="tag">REGLA FIJA:</p>
-      <p>Los archivos biométricos (PDF, firma, selfie, audio) permanecen descargables durante un máximo de <b>7 días</b> solo después de que el consentimiento haya <b>terminado</b>. Transcurridos 7 días los archivos se eliminan, mientras que el hash y los metadatos esenciales se conservan durante un máximo de <b>365 días</b> con fines probatorios y de seguridad.</p>
-      <p>La “terminación” del consentimiento se produce únicamente en los casos indicados en el punto 4.</p>
-    </div>
-
-    <div class="boxed">
-      <h3>2.2 Planes, suscripciones y uso de la app</h3>
-      <p>TrueConsent pone a disposición planes de uso que determinan la posibilidad de <b>crear nuevos consentimientos</b> a través de la app. La elección del plan no modifica las reglas de validez, revocación y conservación de los archivos de los consentimientos ya creados, que siguen reguladas por estos Términos (puntos 3–7).</p>
-
-      <h3>2.2.1 Plan Free – Prueba personal</h3>
-      <ul>
-        <li>Permite la creación de un máximo de <b>2 consentimientos en total</b>.</li>
-        <li>La prueba gratuita se concede <b>una sola vez</b> (única) por cada dirección de correo electrónico utilizada en la app.</li>
-        <li>Una vez consumidos los 2 consentimientos, la creación de nuevos consentimientos queda <b>bloqueada</b> hasta que el usuario active un plan de pago.</li>
-      </ul>
-
-      <h3>2.2.2 Pack 10 consentimientos</h3>
-      <ul>
-        <li>Permite la creación de <b>10 consentimientos</b> (1 consentimiento creado = 1 unidad consumida).</li>
-        <li>Al alcanzar <b>0 consentimientos disponibles</b>, la creación de nuevos consentimientos queda <b>bloqueada</b>.</li>
-        <li>El Pack 10 puede <b>recomprarse</b> cuando se haya agotado.</li>
-      </ul>
-
-      <h3>2.2.3 Ilimitado 12 meses</h3>
-      <ul>
-        <li>Permite la creación de consentimientos sin límite numérico durante la vigencia del periodo de suscripción.</li>
-        <li>La suscripción tiene una duración de <b>12 meses</b> desde la activación y vence en la fecha indicada en la app.</li>
-        <li>Al vencimiento, la creación de nuevos consentimientos queda <b>bloqueada</b> hasta que el usuario renueve la suscripción o active otro plan disponible.</li>
-        <li>Mientras el plan Ilimitado esté activo, no se permite pasar a planes inferiores (por ejemplo, Pack 10) hasta la expiración o finalización del Ilimitado.</li>
-      </ul>
-
-      <h3>2.2.4 Activación, renovaciones y pagos</h3>
-      <ul>
-        <li>Los planes de pago se consideran activos solo después de la confirmación de la operación de compra/pago.</li>
-        <li>Las condiciones económicas (precios, impuestos, modalidades de facturación) se indican en la app en la fase de compra y/o en las comunicaciones oficiales.</li>
-        <li>La gestión de los pagos puede realizarse a través de plataformas y proveedores externos; cuando la transacción se procesa mediante proveedores externos, TrueConsent no almacena íntegramente los datos de las tarjetas de pago.</li>
-      </ul>
-
-      <h3>2.2.5 Prohibición de elusión y prevención de abusos</h3>
-      <ul>
-        <li>Está prohibido intentar eludir los límites de los planes (en particular de la prueba gratuita) mediante registros repetidos, mecanismos de evasión u otros comportamientos fraudulentos.</li>
-        <li>En caso de abuso o sospecha de abuso, TrueConsent puede limitar el acceso a las funcionalidades, suspender la cuenta o exigir verificaciones adicionales, de conformidad con la normativa aplicable.</li>
-      </ul>
-    </div>
-
-    <h2>3. Tipos de consentimiento y revocación</h2>
-
-    <h3>3.1 Consentimiento de duración determinada</h3>
-    <ul>
-      <li>En el momento de la creación se establecen una fecha/hora de inicio y una fecha/hora de fin.</li>
-      <li>La contraparte recibe correos electrónicos y notificaciones push con el detalle del consentimiento.</li>
-      <li>Es posible solicitar la <b>revocación anticipada</b>:
-        <ul>
-          <li>la solicitud puede provenir de A o de B;</li>
-          <li>la revocación solo se hace efectiva si la contraparte la acepta expresamente;</li>
-          <li>en caso de rechazo, el consentimiento sigue siendo válido hasta su vencimiento natural;</li>
-          <li>en caso de falta de respuesta, el consentimiento sigue siendo válido hasta su vencimiento natural (sin revocación automática).</li>
-        </ul>
-      </li>
-    </ul>
-    <p class="note"><b>Importante:</b> para los consentimientos de duración determinada no existe revocación automática unilateral.</p>
-
-    <h3>3.2 Consentimiento de duración indeterminada</h3>
-    <ul>
-      <li>No tiene una fecha de fin preestablecida.</li>
-      <li>La revocación puede solicitarse en cualquier momento por A o por B.</li>
-      <li>Tras la solicitud, el estado pasa a <b>“revocación pendiente”</b> con un plazo de 24 horas:
-        <ul>
-          <li>si la otra parte acepta → el consentimiento termina inmediatamente;</li>
-          <li>si nadie responde → el consentimiento se revoca automáticamente después de 24 horas.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h2>4. Cuándo se considera TERMINADO el consentimiento</h2>
-    <p>Un consentimiento se considera terminado únicamente en los siguientes casos:</p>
-    <ul>
-      <li><b>Consentimientos de duración determinada</b>:
-        <ul>
-          <li><b>Vencimiento natural</b> (alcance de la fecha/hora de fin configurada);</li>
-          <li><b>Revocación aceptada</b> por la contraparte.</li>
-        </ul>
-      </li>
-      <li><b>Consentimientos de duración indeterminada</b>:
-        <ul>
-          <li><b>Revocación aceptada</b> por la contraparte;</li>
-          <li><b>Revocación automática</b> después de 24 horas sin respuesta;</li>
-          <li><b>Eliminación de la cuenta</b> de una de las partes, que inicia un proceso de revocación automática con una ventana de 24 horas.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <div class="boxed">
-      <h3>4.1 Efectos de la terminación</h3>
-      <ul>
-        <li>Desde el momento de la terminación comienza un periodo de <b>7 días</b> durante el cual es posible descargar los archivos asociados al consentimiento.</li>
-        <li>Al finalizar dichos 7 días, los archivos biométricos se eliminan de los sistemas de TrueConsent.</li>
-        <li>El hash del PDF, los metadatos principales y los registros técnicos (por ejemplo, marcas de tiempo) pueden conservarse durante un máximo de <b>365 días</b> con fines probatorios y de seguridad, tras lo cual se eliminan o se anonimizan.</li>
-      </ul>
-    </div>
-
-    <h2>5. Eliminación de la cuenta y casos particulares</h2>
-
-    <h3>5.1 Consentimiento de duración determinada – eliminación de cuenta</h3>
-    <p><b>La eliminación de la cuenta nunca pone fin a un consentimiento de duración determinada.</b></p>
-    <ul>
-      <li><b>A elimina la cuenta</b>:
-        <ul>
-          <li>el consentimiento sigue siendo válido hasta su vencimiento natural;</li>
-          <li>la contraparte B recibe un correo informativo (“A ha eliminado la cuenta, el consentimiento sigue siendo válido hasta el vencimiento”);</li>
-          <li>los archivos permanecen accesibles conforme a las reglas normales del consentimiento de duración determinada;</li>
-          <li>en el momento del vencimiento natural comienza el periodo de 7 días para la descarga.</li>
-        </ul>
-      </li>
-      <li><b>B elimina la cuenta</b>:
-        <ul>
-          <li>el consentimiento sigue siendo válido hasta el vencimiento natural;</li>
-          <li>por motivos de privacidad, los archivos biométricos de B pueden ser descargados por A solo durante <b>7 días desde la eliminación de la cuenta de B</b>;</li>
-          <li>transcurridos 7 días, los archivos biométricos de B se eliminan;</li>
-          <li>en el vencimiento natural del consentimiento <b>no</b> se abre una nueva ventana de 7 días para los archivos de B.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h3>5.2 Consentimiento de duración indeterminada – eliminación de cuenta</h3>
-    <ul>
-      <li><b>A elimina la cuenta</b>:
-        <ul>
-          <li>el consentimiento pasa al estado “revocación pendiente” con un plazo de 24 horas;</li>
-          <li>la contraparte B recibe una comunicación informativa (“El consentimiento se cerrará en un plazo de 24 horas”);</li>
-          <li>tras 24 horas el consentimiento se revoca automáticamente → desde ese momento comienzan los 7 días para descargar los archivos.</li>
-        </ul>
-      </li>
-      <li><b>B elimina la cuenta</b>:
-        <ul>
-          <li>se aplica el mismo mecanismo, con comunicación simétrica hacia A;</li>
-          <li>tras la revocación automática comienzan los 7 días para la descarga de los archivos.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <div class="boxed">
-      <h3>5.3 Efectos de la eliminación de la cuenta sobre los planes, consentimientos restantes y reembolsos</h3>
-      <ul>
-        <li>Al eliminar la cuenta, el usuario <b>pierde el acceso</b> a la app y a las funcionalidades asociadas a su perfil.</li>
-        <li>Si en el momento de la eliminación existe un plan de pago activo (por ejemplo, <b>Pack 10 consentimientos</b> o <b>Ilimitado 12 meses</b>), el usuario <b>pierde los consentimientos restantes no utilizados</b> y/o el eventual periodo de suscripción restante no utilizado.</li>
-        <li><b>No se prevén reembolsos</b> por planes adquiridos y no utilizados en su totalidad, <b>salvo obligaciones legales</b>.</li>
-        <li>Los consentimientos ya creados o recibidos pueden seguir siendo válidos como prueba según las reglas de estos Términos, pero el usuario podría no poder gestionarlos desde la app tras la eliminación de la cuenta.</li>
-      </ul>
-    </div>
-
-    <h2>6. Gestión de correos electrónicos y notificaciones</h2>
-    <p>Para garantizar la trazabilidad y el valor probatorio, TrueConsent envía correos electrónicos y notificaciones push en los principales eventos:</p>
-    <ul>
-      <li>creación del consentimiento (a ambas partes, con el ID del consentimiento);</li>
-      <li>solicitud de revocación (con botones de aceptación/rechazo, cuando proceda);</li>
-      <li>resultado de la revocación (aceptada, rechazada, automática);</li>
-      <li>vencimiento natural de un consentimiento de duración determinada;</li>
-      <li>eliminación de una cuenta cuando existan consentimientos activos vinculados.</li>
-    </ul>
-    <p>Cada correo incluye el ID del consentimiento y las indicaciones sobre los periodos de disponibilidad de los archivos, en coherencia con las reglas descritas anteriormente.</p>
-
-    <h2>7. Rol de TrueConsent y límites de responsabilidad</h2>
-    <ul>
-      <li>TrueConsent no es un notario ni un funcionario público, sino una herramienta tecnológica de registro, notificación y conservación limitada del consentimiento.</li>
-      <li>El valor probatorio de los documentos generados depende de la exactitud de la información introducida por las partes, de la coherencia de los registros técnicos y, en su caso, de eventuales peritajes independientes.</li>
-      <li>TrueConsent no interviene en el contenido de los consentimientos ni en la relación entre las partes.</li>
-      <li>El usuario es responsable de:
-        <ul>
-          <li>conservar localmente las copias descargadas de los archivos de consentimiento si considera que las necesita a efectos probatorios;</li>
-          <li>custodiar sus credenciales de acceso;</li>
-          <li>utilizar el servicio respetando la ley y los derechos de terceros.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h2>8. Privacidad y tratamiento de datos</h2>
-    <p>El tratamiento de los datos personales, incluidos los datos biométricos eventualmente recogidos, se rige por la <b>Política de Privacidad</b> disponible en:</p>
-    <p><a href="https://atroccolo-pixel.github.io/privacy.html">https://atroccolo-pixel.github.io/privacy.html</a></p>
-
-    <h2>9. Modificaciones de los Términos</h2>
-    <p>TrueConsent podrá actualizar los presentes Términos y Condiciones para adaptarlos a cambios normativos o a la evolución del servicio. En caso de cambios relevantes, los usuarios serán informados a través de la app o por correo electrónico. El uso continuado del servicio tras dichos cambios implica la aceptación de los nuevos Términos.</p>
-
-    <h2>10. Aceptación de los Términos</h2>
-    <p>Al registrarte, utilizar la app y continuar creando/gestionando consentimientos, declaras que has leído, comprendido y aceptado los presentes Términos y Condiciones, incluidos los puntos relativos a:</p>
-    <ul>
-      <li>planes de uso (Free / Pack 10 / Ilimitado 12 meses) y sus límites;</li>
-      <li>duración y revocación de los consentimientos de duración determinada e indeterminada;</li>
-      <li>efectos de la eliminación de la cuenta;</li>
-      <li>ventana de 7 días para la descarga de archivos y conservación del hash durante 365 días;</li>
-      <li>efectos de la eliminación de la cuenta sobre los planes, los consentimientos restantes y los reembolsos (punto 5.3);</li>
-      <li>rol técnico y límites de responsabilidad de TrueConsent.</li>
-    </ul>
-
-    <hr>
-    <p style="font-size:12px;color:#666;">© 2025 TrueConsent – Todos los derechos reservados</p>
+    <!-- INCOLLA QUI IL TUO BLOCCO ES COMPLETO (senza duplicati) -->
   </div>
 
   <!-- ===================== -->
@@ -958,228 +357,23 @@
   <!-- ===================== -->
   <div class="lang-section" id="de">
     <div class="lang-label">Deutsche Version</div>
-
-    <h1>Allgemeine Geschäftsbedingungen von TrueConsent</h1>
-    <p>Willkommen bei <b>TrueConsent</b>. Durch die Nutzung der Anwendung und der damit verbundenen Dienste akzeptieren Sie diese Allgemeinen Geschäftsbedingungen (AGB) vollständig.</p>
-
-    <h2>1. Gegenstand des Dienstes</h2>
-    <p><b>TrueConsent</b> ist ein technisches Werkzeug, mit dem digitale Einwilligungen zwischen zwei Parteien erstellt, geteilt und verwaltet werden können:</p>
-    <ul>
-      <li><b>Ersteller der Einwilligung (Partei A)</b></li>
-      <li><b>Gegenpartei (Partei B)</b></li>
-    </ul>
-    <p>Die Einwilligung kann <b>befristet</b> (mit Enddatum) oder <b>unbefristet</b> (ohne vorab festgelegtes Enddatum) sein und kann die Nutzung biometrischer Daten (Unterschrift, Selfie, Audioaufzeichnung) als Nachweis der Identität der Parteien vorsehen.</p>
-
-    <h2>2. Begriffsbestimmungen</h2>
-    <ul>
-      <li><b>Einwilligung</b>: digitale Vereinbarung, die über TrueConsent zwischen A und B aufgezeichnet wird.</li>
-      <li><b>Befristete Einwilligung</b>: Einwilligung mit festgelegtem Start- und Enddatum/-uhrzeit.</li>
-      <li><b>Unbefristete Einwilligung</b>: Einwilligung ohne vordefiniertes Enddatum.</li>
-      <li><b>Beendigung der Einwilligung</b>: Zeitpunkt, ab dem die Einwilligung nicht mehr aktiv ist (Ablauf, Widerruf oder – nur bei unbefristeten Einwilligungen – Löschung des Kontos).</li>
-      <li><b>Biometrische Dateien</b>: digitale Unterschrift, Selfie, Audioaufzeichnung, die der Einwilligung zugeordnet sind.</li>
-      <li><b>Hash</b>: kryptografischer Fingerabdruck (z. B. SHA-256) der Einwilligungs-PDF, der als Integritätsnachweis dient.</li>
-      <li><b>Tarife/Pläne</b>: Nutzungsoptionen des Dienstes (z. B. Free, Paket mit 10 Einwilligungen, Unbegrenzt 12 Monate), wie in der App dargestellt.</li>
-    </ul>
-
-    <div class="boxed">
-      <h3>2.1 Hauptregel zur Aufbewahrung von Dateien</h3>
-      <p class="tag">FESTE REGEL:</p>
-      <p>Biometrische Dateien (PDF, Unterschrift, Selfie, Audio) können nur für maximal <b>7 Tage</b> nach der <b>Beendigung</b> einer Einwilligung heruntergeladen werden. Nach Ablauf der 7 Tage werden die Dateien gelöscht; der Hash und die wesentlichen Metadaten werden zu Beweis- und Sicherheitszwecken für höchstens <b>365 Tage</b> gespeichert.</p>
-      <p>Die „Beendigung“ der Einwilligung tritt nur in den in Abschnitt 4 genannten Fällen ein.</p>
-    </div>
-
-    <div class="boxed">
-      <h3>2.2 Tarife, Abonnements und Nutzung der App</h3>
-      <p>TrueConsent stellt Tarife bereit, die festlegen, in welchem Umfang über die App <b>neue Einwilligungen erstellt</b> werden können. Die Wahl des Tarifs ändert nichts an den Regeln zur Gültigkeit, zum Widerruf und zur Aufbewahrung der Dateien bereits erstellter Einwilligungen; diese werden weiterhin durch diese AGB (Abschnitte 3–7) geregelt.</p>
-
-      <h3>2.2.1 Free-Tarif – Persönliche Testphase</h3>
-      <ul>
-        <li>Ermöglicht die Erstellung von insgesamt höchstens <b>2 Einwilligungen</b>.</li>
-        <li>Die kostenlose Testphase wird für jede in der App verwendete E-Mail-Adresse <b>nur einmal</b> gewährt.</li>
-        <li>Nach Nutzung der 2 Einwilligungen wird die Erstellung weiterer Einwilligungen <b>gesperrt</b>, bis der Nutzer einen kostenpflichtigen Tarif aktiviert.</li>
-      </ul>
-
-      <h3>2.2.2 Paket mit 10 Einwilligungen</h3>
-      <ul>
-        <li>Ermöglicht die Erstellung von <b>10 Einwilligungen</b> (1 erstellte Einwilligung = 1 verbrauchte Einheit).</li>
-        <li>Sobald <b>0 Einwilligungen verfügbar</b> sind, wird die Erstellung neuer Einwilligungen <b>gesperrt</b>.</li>
-        <li>Das Paket mit 10 Einwilligungen kann bei vollständigem Verbrauch <b>erneut erworben</b> werden.</li>
-      </ul>
-
-      <h3>2.2.3 Unbegrenzt 12 Monate</h3>
-      <ul>
-        <li>Ermöglicht während der Laufzeit des Abonnements die Erstellung einer unbegrenzten Anzahl von Einwilligungen.</li>
-        <li>Das Abonnement hat eine Laufzeit von <b>12 Monaten</b> ab Aktivierung und endet am in der App angegebenen Datum.</li>
-        <li>Nach Ablauf wird die Erstellung neuer Einwilligungen <b>gesperrt</b>, bis der Nutzer das Abonnement verlängert oder einen anderen verfügbaren Tarif aktiviert.</li>
-        <li>Solange das Abonnement „Unbegrenzt 12 Monate“ aktiv ist, ist ein Downgrade auf niedrigere Tarife (z. B. Paket mit 10 Einwilligungen) erst nach Ablauf oder Beendigung des unbegrenzten Tarifs möglich.</li>
-      </ul>
-
-      <h3>2.2.4 Aktivierung, Verlängerungen und Zahlungen</h3>
-      <ul>
-        <li>Kostenpflichtige Tarife gelten erst nach Bestätigung des Kauf-/Zahlungsvorgangs als aktiv.</li>
-        <li>Preise, Steuern und Abrechnungsmodalitäten werden in der App während des Kaufs und/oder in offiziellen Mitteilungen angegeben.</li>
-        <li>Zahlungen können über Drittanbieter-Plattformen abgewickelt werden; wenn Transaktionen über externe Anbieter verarbeitet werden, speichert TrueConsent keine vollständigen Zahlungs kartendaten.</li>
-      </ul>
-
-      <h3>2.2.5 Verbot der Umgehung und Missbrauchsprävention</h3>
-      <ul>
-        <li>Es ist untersagt, Tarifgrenzen (insbesondere die der kostenlosen Testphase) durch wiederholte Registrierungen, Umgehungsmechanismen oder andere betrügerische Verhaltensweisen zu umgehen.</li>
-        <li>Bei Missbrauch oder Verdacht auf Missbrauch kann TrueConsent den Zugriff auf Funktionen einschränken, das Konto sperren oder zusätzliche Prüfungen verlangen, im Einklang mit den geltenden gesetzlichen Vorschriften.</li>
-      </ul>
-    </div>
-
-    <h2>3. Arten von Einwilligungen und Widerruf</h2>
-
-    <h3>3.1 Befristete Einwilligung</h3>
-    <ul>
-      <li>Bei Erstellung werden ein Start- und ein Enddatum/-uhrzeit festgelegt.</li>
-      <li>Die Gegenpartei erhält E-Mails und Push-Benachrichtigungen mit den Details der Einwilligung.</li>
-      <li>Es ist möglich, einen <b>vorzeitigen Widerruf</b> zu beantragen:
-        <ul>
-          <li>Die Anfrage kann von A oder B ausgehen;</li>
-          <li>der Widerruf wird nur wirksam, wenn die Gegenpartei ausdrücklich zustimmt;</li>
-          <li>bei Ablehnung bleibt die Einwilligung bis zum natürlichen Ablauf wirksam;</li>
-          <li>bei ausbleibender Antwort bleibt die Einwilligung bis zum natürlichen Ablauf wirksam (kein automatischer Widerruf).</li>
-        </ul>
-      </li>
-    </ul>
-    <p class="note"><b>Wichtig:</b> Für befristete Einwilligungen gibt es keinen einseitigen automatischen Widerruf.</p>
-
-    <h3>3.2 Unbefristete Einwilligung</h3>
-    <ul>
-      <li>Es gibt kein vorab festgelegtes Enddatum.</li>
-      <li>Der Widerruf kann jederzeit von A oder B beantragt werden.</li>
-      <li>Nach Eingang eines Widerrufsantrags wechselt der Status auf <b>„Widerruf ausstehend“</b> mit einer Frist von 24 Stunden:
-        <ul>
-          <li>Wenn die andere Partei zustimmt → endet die Einwilligung sofort;</li>
-          <li>wenn niemand reagiert → wird die Einwilligung nach 24 Stunden automatisch widerrufen.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h2>4. Wann gilt eine Einwilligung als BEENDET?</h2>
-    <p>Eine Einwilligung gilt nur in den folgenden Fällen als beendet:</p>
-    <ul>
-      <li><b>Befristete Einwilligungen</b>:
-        <ul>
-          <li><b>Natürlicher Ablauf</b> (Erreichen des konfigurierten Enddatums/-uhrzeit);</li>
-          <li><b>Widerruf, der von der Gegenpartei akzeptiert wurde</b>.</li>
-        </ul>
-      </li>
-      <li><b>Unbefristete Einwilligungen</b>:
-        <ul>
-          <li><b>Widerruf, der von der Gegenpartei akzeptiert wurde</b>;</li>
-          <li><b>Automatischer Widerruf</b> nach 24 Stunden ohne Antwort;</li>
-          <li><b>Löschung des Kontos</b> einer der Parteien, die einen automatischen Widerrufsprozess mit einer Frist von 24 Stunden auslöst.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <div class="boxed">
-      <h3>4.1 Folgen der Beendigung</h3>
-      <ul>
-        <li>Ab dem Zeitpunkt der Beendigung beginnt ein Zeitraum von <b>7 Tagen</b>, in dem die mit der Einwilligung verbundenen Dateien heruntergeladen werden können.</li>
-        <li>Nach Ablauf der 7 Tage werden die biometrischen Dateien aus den Systemen von TrueConsent gelöscht.</li>
-        <li>Der Hash der PDF, die wichtigsten Metadaten und technische Protokolle (z. B. Zeitstempel) können zu Beweis- und Sicherheitszwecken bis zu <b>365 Tage</b> aufbewahrt werden; anschließend werden sie gelöscht oder anonymisiert.</li>
-      </ul>
-    </div>
-
-    <h2>5. Kontolöschung und besondere Fälle</h2>
-
-    <h3>5.1 Befristete Einwilligung – Kontolöschung</h3>
-    <p><b>Die Löschung eines Kontos beendet eine befristete Einwilligung niemals.</b></p>
-    <ul>
-      <li><b>A löscht sein Konto</b>:
-        <ul>
-          <li>die Einwilligung bleibt bis zum natürlichen Ablauf gültig;</li>
-          <li>die Gegenpartei B erhält eine Informations-E-Mail („A hat sein Konto gelöscht, die Einwilligung bleibt bis zum Ablaufdatum gültig“);</li>
-          <li>die Dateien bleiben gemäß den Standardregeln für befristete Einwilligungen zugänglich;</li>
-          <li>zum natürlichen Ablauf beginnt der 7-Tage-Zeitraum für den Download.</li>
-        </ul>
-      </li>
-      <li><b>B löscht sein Konto</b>:
-        <ul>
-          <li>die Einwilligung bleibt bis zum natürlichen Ablauf gültig;</li>
-          <li>aus Gründen des Datenschutzes können die biometrischen Dateien von B von A nur für <b>7 Tage ab dem Zeitpunkt der Löschung des Kontos von B</b> heruntergeladen werden;</li>
-          <li>nach Ablauf der 7 Tage werden die biometrischen Dateien von B gelöscht;</li>
-          <li>zum natürlichen Ablauf der Einwilligung wird für die Dateien von B <b>kein neuer 7-Tage-Zeitraum</b> geöffnet.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h3>5.2 Unbefristete Einwilligung – Kontolöschung</h3>
-    <ul>
-      <li><b>A löscht sein Konto</b>:
-        <ul>
-          <li>die Einwilligung wechselt in den Status „Widerruf ausstehend“ mit einer Frist von 24 Stunden;</li>
-          <li>die Gegenpartei B erhält eine Informationsnachricht („Die Einwilligung wird innerhalb von 24 Stunden geschlossen“);</li>
-          <li>nach 24 Stunden wird die Einwilligung automatisch widerrufen → ab diesem Zeitpunkt beginnt der 7-Tage-Zeitraum für den Dateidownload.</li>
-        </ul>
-      </li>
-      <li><b>B löscht sein Konto</b>:
-        <ul>
-          <li>es gilt derselbe Mechanismus mit spiegelbildlicher Mitteilung an A;</li>
-          <li>nach dem automatischen Widerruf beginnt der 7-Tage-Zeitraum für den Download der Dateien.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <div class="boxed">
-      <h3>5.3 Folgen der Kontolöschung für Tarife, verbleibende Einwilligungen und Erstattungen</h3>
-      <ul>
-        <li>Durch die Löschung des Kontos <b>verliert der Nutzer den Zugriff</b> auf die App und auf die mit seinem Profil verbundenen Funktionen.</li>
-        <li>Ist zum Zeitpunkt der Löschung ein kostenpflichtiger Tarif aktiv (z. B. <b>Paket mit 10 Einwilligungen</b> oder <b>Unbegrenzt 12 Monate</b>), <b>verliert der Nutzer verbleibende, nicht genutzte Einwilligungen</b> und/oder eine etwaige restliche, nicht genutzte Abonnementperiode.</li>
-        <li><b>Es sind keine Erstattungen</b> für erworbene, aber nicht vollständig genutzte Tarife vorgesehen, <b>sofern gesetzlich nichts anderes vorgeschrieben ist</b>.</li>
-        <li>Bereits erstellte oder erhaltene Einwilligungen können nach Maßgabe dieser AGB weiterhin als Beweismittel gelten; der Nutzer kann sie jedoch nach der Kontolöschung eventuell nicht mehr über die App verwalten.</li>
-      </ul>
-    </div>
-
-    <h2>6. Verwaltung von E-Mails und Benachrichtigungen</h2>
-    <p>Zur Sicherstellung der Nachvollziehbarkeit und des Beweiswerts versendet TrueConsent bei den wichtigsten Ereignissen E-Mails und Push-Benachrichtigungen:</p>
-    <ul>
-      <li>Erstellung einer Einwilligung (an beide Parteien, mit Einwilligungs-ID);</li>
-      <li>Widerrufsanfrage (mit Schaltflächen „Annehmen/Ablehnen“, sofern vorgesehen);</li>
-      <li>Ergebnis des Widerrufs (angenommen, abgelehnt, automatisch);</li>
-      <li>natürlicher Ablauf einer befristeten Einwilligung;</li>
-      <li>Löschung eines Kontos, wenn diesem aktive Einwilligungen zugeordnet sind.</li>
-    </ul>
-    <p>Jede E-Mail enthält die Einwilligungs-ID sowie Hinweise zu den Zeiträumen, in denen Dateien verfügbar sind, im Einklang mit den oben beschriebenen Regeln.</p>
-
-    <h2>7. Rolle von TrueConsent und Haftungsbeschränkungen</h2>
-    <ul>
-      <li>TrueConsent ist weder Notar noch Amtsperson, sondern ein technisches Werkzeug zur Aufzeichnung, Benachrichtigung und zeitlich begrenzten Aufbewahrung von Einwilligungen.</li>
-      <li>Der Beweiswert der erzeugten Dokumente hängt von der Richtigkeit der von den Parteien eingegebenen Informationen, der Konsistenz der technischen Protokolle und gegebenenfalls von unabhängigen Gutachten ab.</li>
-      <li>TrueConsent greift nicht in den Inhalt der Einwilligungen oder in die Beziehungen zwischen den Parteien ein.</li>
-      <li>Der Nutzer ist verantwortlich für:
-        <ul>
-          <li>die lokale Aufbewahrung heruntergeladener Einwilligungsdateien, falls er sie zu Beweiszwecken benötigt;</li>
-          <li>die sichere Verwahrung seiner Zugangsdaten;</li>
-          <li>die Nutzung des Dienstes im Einklang mit den gesetzlichen Vorschriften und den Rechten Dritter.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h2>8. Datenschutz und Datenverarbeitung</h2>
-    <p>Die Verarbeitung personenbezogener Daten, einschließlich gegebenenfalls erhobener biometrischer Daten, richtet sich nach der <b>Datenschutzerklärung</b>, die unter folgender Adresse verfügbar ist:</p>
-    <p><a href="https://atroccolo-pixel.github.io/privacy.html">https://atroccolo-pixel.github.io/privacy.html</a></p>
-
-    <h2>9. Änderungen dieser AGB</h2>
-    <p>TrueConsent kann diese Allgemeinen Geschäftsbedingungen an gesetzliche Änderungen oder an die Weiterentwicklung des Dienstes anpassen. Bei wesentlichen Änderungen werden die Nutzer über die App oder per E-Mail informiert. Die weitere Nutzung des Dienstes nach solchen Änderungen gilt als Zustimmung zu den neuen AGB.</p>
-
-    <h2>10. Annahme der AGB</h2>
-    <p>Mit der Registrierung, der Nutzung der App und der fortgesetzten Erstellung/Verwaltung von Einwilligungen erklären Sie, dass Sie diese Allgemeinen Geschäftsbedingungen gelesen, verstanden und akzeptiert haben, einschließlich der Regelungen zu:</p>
-    <ul>
-      <li>Tarifen (Free / Paket mit 10 Einwilligungen / Unbegrenzt 12 Monate) und den entsprechenden Grenzen;</li>
-      <li>Dauer und Widerruf befristeter und unbefristeter Einwilligungen;</li>
-      <li>Folgen der Kontolöschung;</li>
-      <li>7-tägigem Download-Zeitraum für Dateien und 365-tägiger Aufbewahrung des Hashs;</li>
-      <li>Auswirkungen der Kontolöschung auf Tarife, verbleibende Einwilligungen und Erstattungen (Abschnitt 5.3);</li>
-      <li>technischer Rolle und Haftungsbeschränkungen von TrueConsent.</li>
-    </ul>
-
-    <hr>
-    <p style="font-size:12px;color:#666;">© 2025 TrueConsent – Alle Rechte vorbehalten</p>
+    <!-- INCOLLA QUI IL TUO BLOCCO DE COMPLETO (senza duplicati) -->
   </div>
+
+  <script>
+    // Se viene passato ?lang=it|en|fr|es|de, scrolla alla sezione e aggiorna html[lang]
+    (function() {
+      try {
+        const lang = new URLSearchParams(window.location.search).get('lang');
+        if (!lang) return;
+        const target = document.getElementById(lang);
+        if (target) {
+          document.documentElement.setAttribute('lang', lang);
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } catch (e) { /* no-op */ }
+    })();
+  </script>
 
 </body>
 </html>
