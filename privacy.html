@@ -1,10 +1,106 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Informativa Privacy - TrueConsent</title>
+
   <style>
-    body { font-family: Arial, sans-serif; max-width: 960px; margin: 40px auto; line-height: 1.6; color:#222; }
+    :root {
+      --text: #222;
+      --muted: #777;
+      --border: #e9e9ee;
+      --active: #6f5bd1; /* viola/blu soft (coerente con pill selezionata in foto) */
+      --bg: #fff;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 960px;
+      margin: 0 auto;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+      padding: 0 18px 40px 18px;
+    }
+
+    /* ===== TOP BAR (come terms) ===== */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 10px;
+      margin: 0 -18px 24px -18px; /* full width dentro max */
+    }
+
+    .topbar-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 18px;
+    }
+
+    .topbar-text {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .topbar-sub {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .topbar-small {
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .sep {
+      color: var(--muted);
+      margin: 0 2px;
+      white-space: nowrap;
+    }
+
+    .lang-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .lang-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      background: #fff;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .lang-btn.active {
+      border-color: var(--active);
+      color: var(--active);
+    }
+
+    /* ===== CONTENUTO ===== */
     h1, h2, h3 { color: #2c3e50; }
     h1 { margin-bottom: 10px; }
     h2 { margin-top: 28px; }
@@ -19,6 +115,7 @@
       margin-top: 32px;
       padding-top: 24px;
       border-top: 1px solid #eee;
+      scroll-margin-top: 110px; /* evita copertura da topbar */
     }
     .lang-label {
       font-size: 12px;
@@ -29,7 +126,43 @@
     }
   </style>
 </head>
+
 <body>
+
+  <!-- ===== TOP BAR MULTILINGUA (testo cambia in base alla lingua selezionata) ===== -->
+  <div class="topbar" role="navigation" aria-label="Selezione lingua Privacy">
+    <div class="topbar-inner">
+
+      <!-- Riga 1: "Questa pagina contiene tutte le lingue:" tradotta -->
+      <span class="topbar-text" data-i18n="contains_all" data-lang="it">Questa pagina contiene tutte le lingue:</span>
+      <span class="topbar-text" data-i18n="contains_all" data-lang="en" style="display:none;">This page contains all languages:</span>
+      <span class="topbar-text" data-i18n="contains_all" data-lang="fr" style="display:none;">Cette page contient toutes les langues&nbsp;:</span>
+      <span class="topbar-text" data-i18n="contains_all" data-lang="es" style="display:none;">Esta página contiene todos los idiomas:</span>
+      <span class="topbar-text" data-i18n="contains_all" data-lang="de" style="display:none;">Diese Seite enthält alle Sprachen:</span>
+
+      <!-- elenco lingue fisso (come in terms) -->
+      <span class="topbar-small">IT <span class="sep">|</span> EN <span class="sep">|</span> FR <span class="sep">|</span> ES <span class="sep">|</span> DE</span>
+
+      <span class="topbar-small">—</span>
+
+      <!-- Riga 2: "Vai subito a:" tradotta -->
+      <span class="topbar-sub" data-i18n="jump_to" data-lang="it">Vai subito a:</span>
+      <span class="topbar-sub" data-i18n="jump_to" data-lang="en" style="display:none;">Jump to:</span>
+      <span class="topbar-sub" data-i18n="jump_to" data-lang="fr" style="display:none;">Aller directement à&nbsp;:</span>
+      <span class="topbar-sub" data-i18n="jump_to" data-lang="es" style="display:none;">Ir directamente a:</span>
+      <span class="topbar-sub" data-i18n="jump_to" data-lang="de" style="display:none;">Direkt zu:</span>
+
+      <!-- Bottoni lingua -->
+      <div class="lang-buttons" aria-label="Lingue disponibili">
+        <a class="lang-btn" href="#it" data-langbtn="it" aria-label="Italiano">IT</a>
+        <a class="lang-btn" href="#en" data-langbtn="en" aria-label="English">EN</a>
+        <a class="lang-btn" href="#fr" data-langbtn="fr" aria-label="Français">FR</a>
+        <a class="lang-btn" href="#es" data-langbtn="es" aria-label="Español">ES</a>
+        <a class="lang-btn" href="#de" data-langbtn="de" aria-label="Deutsch">DE</a>
+      </div>
+
+    </div>
+  </div>
 
   <!-- ===================== -->
   <!-- Versione ITALIANA     -->
@@ -416,7 +549,7 @@
     <h2>6. Modalités de traitement</h2>
     <p>Les données sont traitées au moyen d’outils électroniques et télématiques, selon des logiques strictement liées aux finalités indiquées, et avec des mesures de sécurité appropriées visant à protéger les données personnelles et biométriques contre tout accès non autorisé, modification ou divulgation indue.</p>
 
-    <h2>7. Destinataires des données</h2>
+    <h2>7. Destinatari dei dati</h2>
     <p>Les données peuvent être traitées par&nbsp;:</p>
     <ul>
       <li>le personnel autorisé par le responsable du traitement&nbsp;;</li>
@@ -730,6 +863,72 @@
     <hr>
     <p style="font-size:12px;color:#666;">© 2025 TrueConsent – Alle Rechte vorbehalten</p>
   </div>
+
+  <script>
+    (function () {
+      const supported = ["it", "en", "fr", "es", "de"];
+
+      function getLangFromHash() {
+        const h = (window.location.hash || "#it").replace("#", "").toLowerCase().trim();
+        return supported.includes(h) ? h : "it";
+      }
+
+      function setActiveLang(lang) {
+        // bottoni
+        document.querySelectorAll("[data-langbtn]").forEach(btn => {
+          const bLang = btn.getAttribute("data-langbtn");
+          btn.classList.toggle("active", bLang === lang);
+        });
+
+        // testi topbar
+        document.querySelectorAll("[data-i18n='contains_all']").forEach(el => {
+          el.style.display = (el.getAttribute("data-lang") === lang) ? "" : "none";
+        });
+        document.querySelectorAll("[data-i18n='jump_to']").forEach(el => {
+          el.style.display = (el.getAttribute("data-lang") === lang) ? "" : "none";
+        });
+      }
+
+      function scrollToSection(lang) {
+        const target = document.getElementById(lang);
+        if (!target) return;
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      // click: smooth scroll + active
+      document.querySelectorAll("[data-langbtn]").forEach(btn => {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          const lang = this.getAttribute("data-langbtn");
+          if (!lang) return;
+
+          if (window.location.hash !== "#" + lang) {
+            window.location.hash = "#" + lang;
+          } else {
+            setActiveLang(lang);
+            scrollToSection(lang);
+          }
+        });
+      });
+
+      // load + hash change
+      function applyFromHash(shouldScroll) {
+        const lang = getLangFromHash();
+        setActiveLang(lang);
+        if (shouldScroll) scrollToSection(lang);
+      }
+
+      window.addEventListener("hashchange", function () {
+        applyFromHash(true);
+      });
+
+      // avvio: se arrivi con #en etc, scorre; se senza hash, resta in alto
+      document.addEventListener("DOMContentLoaded", function () {
+        const hasHash = !!window.location.hash;
+        applyFromHash(hasHash);
+      });
+    })();
+  </script>
 
 </body>
 </html>
