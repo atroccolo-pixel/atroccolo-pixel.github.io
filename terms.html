@@ -110,6 +110,14 @@
       font-weight: bold;
     }
 
+    /* Testi topbar multilingua (stesso layout, cambia solo la frase) */
+    .topbar-i18n {
+      display: none;
+    }
+    .topbar-i18n.active {
+      display: inline;
+    }
+
     /* Offset per scroll con barra fissa */
     section[lang] {
       scroll-margin-top: 110px;
@@ -135,10 +143,25 @@
   <!-- Barra multilingua fissa -->
   <div class="langbar-wrap" role="navigation" aria-label="Selettore lingua Termini e Condizioni">
     <div class="langbar">
-      <span class="label">Questa pagina contiene tutte le lingue:</span>
+      <span class="label">
+        <span class="topbar-i18n" data-i18n="contains_all" data-lang="it">Questa pagina contiene tutte le lingue:</span>
+        <span class="topbar-i18n" data-i18n="contains_all" data-lang="en">This page contains all languages:</span>
+        <span class="topbar-i18n" data-i18n="contains_all" data-lang="fr">Cette page contient toutes les langues&nbsp;:</span>
+        <span class="topbar-i18n" data-i18n="contains_all" data-lang="es">Esta página contiene todos los idiomas:</span>
+        <span class="topbar-i18n" data-i18n="contains_all" data-lang="de">Diese Seite enthält alle Sprachen:</span>
+      </span>
+
       <span class="hint">IT <span class="sep">|</span> EN <span class="sep">|</span> FR <span class="sep">|</span> ES <span class="sep">|</span> DE</span>
       <span class="sep">—</span>
-      <span class="hint">Vai subito a:</span>
+
+      <span class="hint">
+        <span class="topbar-i18n" data-i18n="jump_to" data-lang="it">Vai subito a:</span>
+        <span class="topbar-i18n" data-i18n="jump_to" data-lang="en">Jump to:</span>
+        <span class="topbar-i18n" data-i18n="jump_to" data-lang="fr">Aller directement à&nbsp;:</span>
+        <span class="topbar-i18n" data-i18n="jump_to" data-lang="es">Ir directamente a:</span>
+        <span class="topbar-i18n" data-i18n="jump_to" data-lang="de">Direkt zu:</span>
+      </span>
+
       <span class="lang-links" aria-label="Lingue disponibili">
         <a href="#it" data-lang="it">IT</a>
         <a href="#en" data-lang="en">EN</a>
@@ -1250,10 +1273,6 @@
       const supported = new Set(["it","en","fr","es","de"]);
       const links = Array.from(document.querySelectorAll('.lang-links a'));
 
-      function setActive(lang) {
-        links.forEach(a => a.classList.toggle('active', a.dataset.lang === lang));
-      }
-
       function normalizeLang(v) {
         if (!v) return null;
         v = String(v).trim().toLowerCase();
@@ -1261,18 +1280,38 @@
         return supported.has(v) ? v : null;
       }
 
+      function setActiveLink(lang) {
+        links.forEach(a => a.classList.toggle('active', a.dataset.lang === lang));
+      }
+
+      function applyTopbarI18n(lang) {
+        const nodes = Array.from(document.querySelectorAll('.topbar-i18n[data-i18n][data-lang]'));
+        nodes.forEach(n => n.classList.remove('active'));
+
+        const toShow = nodes.filter(n => (n.getAttribute('data-lang') || '').toLowerCase() === lang);
+        toShow.forEach(n => n.classList.add('active'));
+
+        // Mantiene coerente anche l'attributo lang della pagina (non cambia layout)
+        document.documentElement.setAttribute('lang', lang);
+      }
+
+      function applyLang(lang) {
+        setActiveLink(lang);
+        applyTopbarI18n(lang);
+      }
+
       function scrollToLang(lang) {
         const el = document.getElementById(lang);
         if (!el) return;
-        setActive(lang);
+        applyLang(lang);
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
 
-      // Click: attiva stile subito
+      // Click: attiva stile e topbar subito
       links.forEach(a => {
         a.addEventListener('click', () => {
           const lang = normalizeLang(a.dataset.lang);
-          if (lang) setActive(lang);
+          if (lang) applyLang(lang);
         });
       });
 
@@ -1287,8 +1326,8 @@
         history.replaceState(null, '', window.location.pathname + window.location.search + '#' + qLang);
       }
 
-      // Attiva highlight anche senza scroll
-      setActive(lang);
+      // Attiva highlight + topbar anche senza scroll
+      applyLang(lang);
 
       // Scroll dopo paint
       window.requestAnimationFrame(() => {
