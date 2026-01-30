@@ -10,7 +10,7 @@
       --text: #222;
       --muted: #777;
       --border: #e9e9ee;
-      --active: #6f5bd1; /* viola/blu soft (coerente con pill selezionata in foto) */
+      --active: #6f5bd1;
       --bg: #fff;
     }
 
@@ -24,7 +24,6 @@
       padding: 0 18px 40px 18px;
     }
 
-    /* ===== TOP BAR (come terms) ===== */
     .topbar {
       position: sticky;
       top: 0;
@@ -32,7 +31,7 @@
       background: var(--bg);
       border-bottom: 1px solid var(--border);
       padding: 14px 10px;
-      margin: 0 -18px 24px -18px; /* full width dentro max */
+      margin: 0 -18px 24px -18px;
     }
 
     .topbar-inner {
@@ -100,7 +99,6 @@
       color: var(--active);
     }
 
-    /* ===== CONTENUTO ===== */
     h1, h2, h3 { color: #2c3e50; }
     h1 { margin-bottom: 10px; }
     h2 { margin-top: 28px; }
@@ -115,7 +113,7 @@
       margin-top: 32px;
       padding-top: 24px;
       border-top: 1px solid #eee;
-      scroll-margin-top: 110px; /* evita copertura da topbar */
+      scroll-margin-top: 110px;
     }
     .lang-label {
       font-size: 12px;
@@ -129,30 +127,25 @@
 
 <body>
 
-  <!-- ===== TOP BAR MULTILINGUA (testo cambia in base alla lingua selezionata) ===== -->
   <div class="topbar" role="navigation" aria-label="Selezione lingua Privacy">
     <div class="topbar-inner">
 
-      <!-- Riga 1: "Questa pagina contiene tutte le lingue:" tradotta -->
       <span class="topbar-text" data-i18n="contains_all" data-lang="it">Questa pagina contiene tutte le lingue:</span>
       <span class="topbar-text" data-i18n="contains_all" data-lang="en" style="display:none;">This page contains all languages:</span>
       <span class="topbar-text" data-i18n="contains_all" data-lang="fr" style="display:none;">Cette page contient toutes les langues&nbsp;:</span>
       <span class="topbar-text" data-i18n="contains_all" data-lang="es" style="display:none;">Esta página contiene todos los idiomas:</span>
       <span class="topbar-text" data-i18n="contains_all" data-lang="de" style="display:none;">Diese Seite enthält alle Sprachen:</span>
 
-      <!-- elenco lingue fisso (come in terms) -->
       <span class="topbar-small">IT <span class="sep">|</span> EN <span class="sep">|</span> FR <span class="sep">|</span> ES <span class="sep">|</span> DE</span>
 
       <span class="topbar-small">—</span>
 
-      <!-- Riga 2: "Vai subito a:" tradotta -->
       <span class="topbar-sub" data-i18n="jump_to" data-lang="it">Vai subito a:</span>
       <span class="topbar-sub" data-i18n="jump_to" data-lang="en" style="display:none;">Jump to:</span>
       <span class="topbar-sub" data-i18n="jump_to" data-lang="fr" style="display:none;">Aller directement à&nbsp;:</span>
       <span class="topbar-sub" data-i18n="jump_to" data-lang="es" style="display:none;">Ir directamente a:</span>
       <span class="topbar-sub" data-i18n="jump_to" data-lang="de" style="display:none;">Direkt zu:</span>
 
-      <!-- Bottoni lingua -->
       <div class="lang-buttons" aria-label="Lingue disponibili">
         <a class="lang-btn" href="#it" data-langbtn="it" aria-label="Italiano">IT</a>
         <a class="lang-btn" href="#en" data-langbtn="en" aria-label="English">EN</a>
@@ -179,7 +172,7 @@
     <h2>2. Tipologie di dati trattati</h2>
     <p>TrueConsent tratta, a seconda delle funzionalità utilizzate, le seguenti categorie di dati:</p>
     <ul>
-      <li><b>Dati di registrazione account</b>: nome, indirizzo email, numero di telefono, password (memorizzata in forma cifrata), piano di abbonamento.</li>
+      <li><b>Dati di registrazione account</b>: nome, indirizzo email, numero di telefono, password (memorizzata in forma cifrata), piano di abbonamento. L’indirizzo email è utilizzato come identificativo principale dell’account e, per ragioni di sicurezza e integrità probatoria, non può essere modificato dall’interno dell’app; l’utente può tuttavia eliminare l’account e creare un nuovo account con un indirizzo email diverso.</li>
       <li><b>Dati di utilizzo del servizio</b>: ID utente, ID dei consensi creati o ricevuti, ruoli (creatore/controparte), data e ora di creazione, modifiche di stato (es. richiesta revoca, accettazione, rifiuto).</li>
       <li><b>Dati biometrici</b> (se abilitati dall’utente e necessari al consenso):
         <ul>
@@ -188,7 +181,7 @@
           <li>registrazione audio della dichiarazione di consenso.</li>
         </ul>
       </li>
-      <li><b>Dati tecnici</b>: indirizzo IP, orari di accesso, token di notifica push, log tecnici delle operazioni.</li>
+      <li><b>Dati tecnici</b>: indirizzo IP, orari di accesso, token di notifica push, log tecnici delle operazioni (inclusi eventuali tentativi di operazioni non completate per mancanza di connessione o in modalità aereo).</li>
       <li><b>Dati di integrità</b>: hash crittografici (es. SHA-256) dei documenti generati e metadati associati (ID consenso, timestamp).</li>
       <li><b>Dati relativi ad acquisti e pagamenti</b>: informazioni essenziali sull’operazione (es. esito, identificativi tecnici della transazione, piano acquistato, data di acquisto/rinnovo). I dati completi degli strumenti di pagamento (es. numero carta) sono gestiti dai fornitori di pagamento e non vengono memorizzati integralmente da TrueConsent quando la transazione avviene tramite provider esterni.</li>
     </ul>
@@ -196,7 +189,7 @@
     <h2>3. Finalità e basi giuridiche del trattamento</h2>
     <ul>
       <li><b>Registrazione e gestione dell’account</b><br>
-        Creazione dell’utenza, autenticazione, gestione del profilo, accesso all’app.<br>
+        Creazione dell’utenza, autenticazione, gestione del profilo, accesso all’app. La gestione dell’indirizzo email come identificativo stabile dell’account rientra nelle misure necessarie per garantire la riconducibilità dei consensi a un soggetto determinato e la prevenzione di abusi (es. uso ripetuto della prova gratuita).<br>
         <i>Base giuridica:</i> esecuzione di misure precontrattuali e contrattuali (art. 6.1.b GDPR).</li>
 
       <li><b>Creazione e gestione dei consensi digitali</b><br>
@@ -218,6 +211,14 @@
       <li><b>Comunicazioni di servizio</b><br>
         Invio di email e notifiche push relative a creazione consensi, richieste di revoca, esiti delle revoche, scadenze, eliminazione account e altre informazioni operative.<br>
         <i>Base giuridica:</i> esecuzione del servizio richiesto (art. 6.1.b GDPR).</li>
+
+      <li><b>Gestione tecnica della connessione e coerenza delle operazioni</b><br>
+        Monitoraggio dei log tecnici (inclusi eventuali tentativi di operazioni effettuati quando il dispositivo è offline o in modalità aereo) per garantire che consensi, revoche, modifiche di piano ed eliminazioni di account siano registrati solo quando ricevuti e confermati dai server TrueConsent.<br>
+        <i>Base giuridica:</i> legittimo interesse del Titolare a garantire il corretto funzionamento del servizio e la coerenza probatoria dei log (art. 6.1.f GDPR).</li>
+
+      <li><b>Prevenzione abusi e frodi sull’utilizzo del servizio</b><br>
+        Analisi di log tecnici, eventi legati alla registrazione e cancellazione degli account, utilizzo dei piani (inclusa la prova gratuita), tentativi di aggiramento delle limitazioni e altri indicatori di rischio per prevenire attività fraudolente o contrarie ai Termini (es. uso sistematico della prova Free tramite registrazioni ripetute).<br>
+        <i>Base giuridica:</i> legittimo interesse del Titolare a tutelare l’applicazione, gli altri utenti e i diritti delle parti coinvolte nei consensi (art. 6.1.f GDPR).</li>
     </ul>
 
     <h2>4. Conservazione dei dati</h2>
@@ -249,6 +250,7 @@
       <li>log tecnici necessari per dimostrare la coerenza delle operazioni.</li>
     </ul>
     <p>Trascorso tale periodo, anche questi dati vengono cancellati o anonimizzati.</p>
+    <p>Alcuni log tecnici utilizzati a fini di sicurezza e prevenzione abusi possono essere conservati per un periodo circoscritto, coerente con i tempi di prescrizione delle possibili contestazioni, e comunque non superiore a 365 giorni rispetto agli eventi rilevanti, salvo obblighi di legge differenti.</p>
 
     <h2>5. Eliminazione dell’account</h2>
     <p>L’utente può richiedere l’eliminazione del proprio account all’interno dell’app. L’eliminazione comporta:</p>
@@ -305,7 +307,7 @@
   </div>
 
   <!-- ===================== -->
-  <!-- Versione INGLESE      -->
+  <!-- English version       -->
   <!-- ===================== -->
   <div class="lang-section" id="en">
     <div class="lang-label">English version</div>
@@ -319,7 +321,7 @@
     <h2>2. Types of data processed</h2>
     <p>Depending on the features used, TrueConsent processes the following categories of data:</p>
     <ul>
-      <li><b>Account registration data</b>: name, email address, phone number, password (stored in encrypted form), subscription plan.</li>
+      <li><b>Account registration data</b>: name, email address, phone number, password (stored in encrypted form), subscription plan. The email address is used as the main identifier of the account and, for security and evidentiary purposes, cannot be changed from within the app; however, users may delete the account and create a new one with a different email address.</li>
       <li><b>Service usage data</b>: user ID, IDs of consents created or received, roles (creator/counterparty), creation dates and times, status changes (e.g. revocation request, acceptance, refusal).</li>
       <li><b>Biometric data</b> (if enabled by the user and required for the consent):
         <ul>
@@ -328,7 +330,7 @@
           <li>voice recording of the consent statement.</li>
         </ul>
       </li>
-      <li><b>Technical data</b>: IP address, access times, push notification tokens, technical operation logs.</li>
+      <li><b>Technical data</b>: IP address, access times, push notification tokens, technical operation logs (including any attempts to perform operations that are not completed due to lack of connection or airplane mode).</li>
       <li><b>Integrity data</b>: cryptographic hashes (e.g. SHA-256) of generated documents and associated metadata (consent ID, timestamps).</li>
       <li><b>Purchase and payment data</b>: essential information about the operation (e.g. outcome, technical transaction identifiers, purchased plan, purchase/renewal date). Full payment instrument data (e.g. card number) are handled by payment providers and are not fully stored by TrueConsent when the transaction is processed by external providers.</li>
     </ul>
@@ -336,7 +338,7 @@
     <h2>3. Purposes and legal bases of processing</h2>
     <ul>
       <li><b>Account registration and management</b><br>
-        Creating the user account, authentication, profile management, access to the app.<br>
+        Creating the user account, authentication, profile management, access to the app. Managing the email address as a stable account identifier is one of the measures necessary to ensure that consents are linked to a specific person and to prevent abuse (e.g. repeated use of the free trial).<br>
         <i>Legal basis:</i> performance of pre-contractual and contractual measures (Art. 6(1)(b) GDPR).</li>
 
       <li><b>Creation and management of digital consents</b><br>
@@ -358,6 +360,14 @@
       <li><b>Service communications</b><br>
         Sending emails and push notifications about consent creation, revocation requests, revocation outcomes, expiries, account deletion and other operational information.<br>
         <i>Legal basis:</i> performance of the requested service (Art. 6(1)(b) GDPR).</li>
+
+      <li><b>Technical connection management and operational consistency</b><br>
+        Monitoring technical logs (including attempts to perform operations while the device is offline or in airplane mode) to ensure that consents, revocations, plan changes and account deletions are recorded only once they have been received and confirmed by TrueConsent’s servers.<br>
+        <i>Legal basis:</i> legitimate interest of the controller in ensuring the proper functioning of the service and the evidentiary consistency of logs (Art. 6(1)(f) GDPR).</li>
+
+      <li><b>Prevention of abuse and fraud in the use of the service</b><br>
+        Analysing technical logs, events related to account registration and deletion, plan usage (including the free trial), attempts to circumvent limitations and other risk indicators in order to prevent fraudulent activities or behaviours contrary to the Terms (e.g. systematic use of the Free plan via repeated registrations).<br>
+        <i>Legal basis:</i> legitimate interest of the controller in protecting the application, other users, and the rights of the parties involved in consents (Art. 6(1)(f) GDPR).</li>
     </ul>
 
     <h2>4. Data retention</h2>
@@ -389,6 +399,7 @@
       <li>technical logs required to demonstrate the consistency of operations.</li>
     </ul>
     <p>After this period, these data are deleted or anonymised.</p>
+    <p>Some technical logs used for security and abuse-prevention purposes may be stored for a limited period, consistent with the applicable limitation periods for potential claims, and in any case no longer than 365 days from the relevant events, unless otherwise required by law.</p>
 
     <h2>5. Account deletion</h2>
     <p>The user can request deletion of their account within the app. Deletion entails:</p>
@@ -459,7 +470,7 @@
     <h2>2. Catégories de données traitées</h2>
     <p>En fonction des fonctionnalités utilisées, TrueConsent peut traiter les catégories de données suivantes&nbsp;:</p>
     <ul>
-      <li><b>Données d’enregistrement du compte</b>&nbsp;: nom, adresse e-mail, numéro de téléphone, mot de passe (stocké sous forme chiffrée), plan d’abonnement.</li>
+      <li><b>Données d’enregistrement du compte</b>&nbsp;: nom, adresse e-mail, numéro de téléphone, mot de passe (stocké sous forme chiffrée), plan d’abonnement. L’adresse e-mail est utilisée comme identifiant principal du compte et, pour des raisons de sécurité et d’intégrité probatoire, ne peut pas être modifiée depuis l’app ; l’utilisateur peut toutefois supprimer le compte et créer un nouveau compte avec une adresse e-mail différente.</li>
       <li><b>Données d’utilisation du service</b>&nbsp;: ID utilisateur, ID des consentements créés ou reçus, rôles (créateur/contrepartie), dates et heures de création, changements d’état (ex.&nbsp;: demande de révocation, acceptation, refus).</li>
       <li><b>Données biométriques</b> (si activées par l’utilisateur et nécessaires pour le consentement)&nbsp;:
         <ul>
@@ -468,7 +479,7 @@
           <li>enregistrement audio de la déclaration de consentement.</li>
         </ul>
       </li>
-      <li><b>Données techniques</b>&nbsp;: adresse IP, horaires d’accès, jetons de notification push, journaux techniques des opérations.</li>
+      <li><b>Données techniques</b>&nbsp;: adresse IP, horaires d’accès, jetons de notification push, journaux techniques des opérations (y compris d’éventuelles tentatives d’opérations non complétées en raison de l’absence de connexion ou du mode avion).</li>
       <li><b>Données d’intégrité</b>&nbsp;: empreintes cryptographiques (par ex. SHA-256) des documents générés et métadonnées associées (ID du consentement, horodatages).</li>
       <li><b>Données relatives aux achats et paiements</b>&nbsp;: informations essentielles sur l’opération (ex.&nbsp;: résultat, identifiants techniques de la transaction, plan acheté, date d’achat/de renouvellement). Les données complètes des instruments de paiement (par ex.&nbsp;: numéro de carte) sont gérées par les prestataires de paiement et ne sont pas intégralement conservées par TrueConsent lorsque la transaction est traitée via des fournisseurs externes.</li>
     </ul>
@@ -476,7 +487,7 @@
     <h2>3. Finalités et bases juridiques du traitement</h2>
     <ul>
       <li><b>Création et gestion du compte</b><br>
-        Création du compte utilisateur, authentification, gestion du profil et accès à l’app.<br>
+        Création du compte utilisateur, authentification, gestion du profil et accès à l’app. La gestion de l’adresse e-mail comme identifiant stable du compte fait partie des mesures nécessaires pour garantir la liaison des consentements à une personne déterminée et la prévention des abus (ex.&nbsp;: utilisation répétée de l’essai gratuit).<br>
         <i>Base juridique&nbsp;:</i> exécution de mesures précontractuelles et contractuelles (art. 6, §1, b) RGPD).</li>
 
       <li><b>Création et gestion des consentements numériques</b><br>
@@ -498,6 +509,14 @@
       <li><b>Communications de service</b><br>
         Envoi d’e-mails et de notifications push relatifs à la création de consentements, aux demandes de révocation, aux résultats des révocations, aux expirations, à la suppression de comptes et à d’autres informations opérationnelles.<br>
         <i>Base juridique&nbsp;:</i> exécution du service demandé (art. 6, §1, b) RGPD).</li>
+
+      <li><b>Gestion technique de la connexion et cohérence des opérations</b><br>
+        Suivi des journaux techniques (y compris d’éventuelles tentatives d’opérations effectuées lorsque l’appareil est hors ligne ou en mode avion) afin de garantir que les consentements, révocations, modifications de plan et suppressions de compte ne soient enregistrés que lorsqu’ils sont effectivement reçus et confirmés par les serveurs TrueConsent.<br>
+        <i>Base juridique&nbsp;:</i> intérêt légitime du responsable du traitement à garantir le bon fonctionnement du service et la cohérence probatoire des logs (art. 6, §1, f) RGPD).</li>
+
+      <li><b>Prévention des abus et fraudes dans l’utilisation du service</b><br>
+        Analyse des journaux techniques, des événements liés à l’enregistrement et à la suppression des comptes, de l’utilisation des offres (y compris l’essai gratuit), des tentatives de contournement des limitations et d’autres indicateurs de risque afin de prévenir les activités frauduleuses ou contraires aux présentes Conditions (ex.&nbsp;: utilisation systématique de l’offre Free via des inscriptions répétées).<br>
+        <i>Base juridique&nbsp;:</i> intérêt légitime du responsable du traitement à protéger l’application, les autres utilisateurs et les droits des parties impliquées dans les consentements (art. 6, §1, f) RGPD).</li>
     </ul>
 
     <h2>4. Durée de conservation des données</h2>
@@ -529,6 +548,7 @@
       <li>les journaux techniques nécessaires pour démontrer la cohérence des opérations.</li>
     </ul>
     <p>À l’issue de cette période, ces données sont supprimées ou anonymisées.</p>
+    <p>Certaines données de journalisation technique utilisées à des fins de sécurité et de prévention des abus peuvent être conservées pendant une période limitée, cohérente avec les délais de prescription des éventuelles contestations, et en tout état de cause pas plus de 365 jours à compter des événements pertinents, sauf obligation légale différente.</p>
 
     <h2>5. Suppression du compte</h2>
     <p>L’utilisateur peut demander la suppression de son compte depuis l’app. Cette suppression implique&nbsp;:</p>
@@ -547,22 +567,22 @@
     <p>La suppression du compte n’empêche pas l’utilisateur de se réinscrire ultérieurement avec la même adresse e-mail en tant que nouvel utilisateur.</p>
 
     <h2>6. Modalités de traitement</h2>
-    <p>Les données sont traitées au moyen d’outils électroniques et télématiques, selon des logiques strictement liées aux finalités indiquées, et avec des mesures de sécurité appropriées visant à protéger les données personnelles et biométriques contre tout accès non autorisé, modification ou divulgation indue.</p>
+    <p>Les données sont traitées au moyen d’outils électroniques et télématiques, selon des logiques strictement liées aux finalités indiquées et avec des mesures de sécurité appropriées pour protéger les données personnelles et biométriques contre les accès non autorisés, les altérations ou les divulgations indues.</p>
 
-    <h2>7. Destinatari dei dati</h2>
+    <h2>7. Destinataires des données</h2>
     <p>Les données peuvent être traitées par&nbsp;:</p>
     <ul>
-      <li>le personnel autorisé par le responsable du traitement&nbsp;;</li>
-      <li>des prestataires de services technologiques (par ex.&nbsp;: hébergement, cloud, services d’e-mail et de notifications push, systèmes de paiement) désignés en tant que sous-traitants au sens de l’art. 28 RGPD&nbsp;;</li>
-      <li>des autorités judiciaires ou administratives, dans les limites prévues par la loi.</li>
+      <li>le personnel autorisé du responsable du traitement&nbsp;;</li>
+      <li>les prestataires de services technologiques (ex.&nbsp;: hébergement, cloud, systèmes d’envoi d’e-mails et de notifications push, systèmes de paiement) désignés comme sous-traitants au sens de l’art. 28 RGPD&nbsp;;</li>
+      <li>les autorités judiciaires ou administratives, dans les limites prévues par la loi.</li>
     </ul>
     <p>Les données ne sont pas vendues à des tiers à des fins de marketing.</p>
 
-    <h2>8. Transferts de données en dehors de l’UE</h2>
-    <p>Certains prestataires technologiques peuvent être situés dans des pays hors de l’Union européenne. Dans ce cas, les transferts de données sont effectués conformément aux art. 44 et suivants du RGPD, au moyen de décisions d’adéquation de la Commission européenne, de clauses contractuelles types ou d’autres garanties appropriées.</p>
+    <h2>8. Transferts hors UE</h2>
+    <p>Certains prestataires technologiques peuvent être situés dans des pays hors UE. Dans ce cas, les transferts de données ont lieu conformément aux art. 44 et suivants du RGPD, via des décisions d’adéquation de la Commission européenne, des clauses contractuelles types ou d’autres garanties appropriées.</p>
 
     <h2>9. Droits des personnes concernées</h2>
-    <p>En tant que personne concernée, l’utilisateur peut exercer à tout moment les droits prévus aux art. 15 à 22 RGPD, notamment&nbsp;:</p>
+    <p>En tant que personne concernée, l’utilisateur peut exercer à tout moment les droits prévus aux art. 15–22 RGPD, notamment&nbsp;:</p>
     <ul>
       <li>droit d’accès aux données personnelles&nbsp;;</li>
       <li>droit de rectification des données inexactes ou incomplètes&nbsp;;</li>
@@ -570,377 +590,374 @@
       <li>droit à la limitation du traitement&nbsp;;</li>
       <li>droit à la portabilité des données, dans les limites applicables&nbsp;;</li>
       <li>droit d’opposition au traitement fondé sur l’intérêt légitime&nbsp;;</li>
-      <li>droit de retirer à tout moment le consentement donné pour le traitement des données biométriques, sans porter atteinte à la licéité du traitement fondé sur le consentement avant ce retrait.</li>
+      <li>droit de retirer à tout moment le consentement donné pour le traitement des données biométriques, sans porter atteinte à la licéité du traitement fondé sur le consentement avant son retrait.</li>
     </ul>
     <p>Pour exercer ces droits, l’utilisateur peut utiliser les coordonnées indiquées dans l’app TrueConsent ou dans les communications officielles.</p>
 
     <h2>10. Réclamations</h2>
-    <p>Si l’utilisateur estime que le traitement de ses données personnelles enfreint la réglementation applicable, il peut introduire une réclamation auprès de l’autorité de contrôle compétente en matière de protection des données ou auprès d’une autre autorité de contrôle au sens du RGPD.</p>
+    <p>L’utilisateur qui estime que le traitement de ses données viole la législation en vigueur peut introduire une réclamation auprès de l’Autorité de contrôle compétente ou d’une autre autorité de contrôle au sens du RGPD.</p>
 
-    <h2>11. Mises à jour de la présente politique</h2>
-    <p>La présente politique de confidentialité peut être mise à jour. Les modifications importantes seront communiquées via l’app TrueConsent ou par e-mail. La poursuite de l’utilisation du service après ces modifications vaut prise de connaissance de la nouvelle politique.</p>
+    <h2>11. Mises à jour de la notice</h2>
+    <p>La présente notice de confidentialité peut être mise à jour. Les modifications importantes seront communiquées via l’app TrueConsent ou par e-mail. L’utilisation continue du service après ces modifications implique la prise de connaissance de la nouvelle notice.</p>
 
     <hr>
     <p style="font-size:12px;color:#666;">© 2025 TrueConsent – Tous droits réservés</p>
   </div>
 
   <!-- ===================== -->
-  <!-- Versión ESPAÑOLA      -->
+  <!-- Versión en español    -->
   <!-- ===================== -->
   <div class="lang-section" id="es">
     <div class="lang-label">Versión en español</div>
 
-    <h1>Política de Privacidad de TrueConsent</h1>
-    <p>La presente política describe cómo la aplicación <b>TrueConsent</b> trata los datos pessoais de los usuarios de conformidad con el Reglamento (UE) 2016/679 (“RGPD”).</p>
+    <h1>Política de privacidad de TrueConsent</h1>
+    <p>La presente política describe cómo la aplicación <b>TrueConsent</b> trata los datos personales de los usuarios de conformidad con el Reglamento (UE) 2016/679 (“RGPD”).</p>
 
     <h2>1. Responsable del tratamiento</h2>
     <p>El responsable del tratamiento de los datos personales es la persona indicada en la información de contacto de la app TrueConsent y en las comunicaciones oficiales enviadas por correo electrónico.</p>
 
     <h2>2. Tipos de datos tratados</h2>
-    <p>Según las funcionalidades utilizadas, TrueConsent trata las siguientes categorías de datos:</p>
+    <p>Según las funcionalidades utilizadas, TrueConsent puede tratar las siguientes categorías de datos:</p>
     <ul>
-      <li><b>Datos de registro de cuenta</b>: nombre, dirección de correo electrónico, número de teléfono, contraseña (almacenada en forma cifrada), plan de suscripción.</li>
-      <li><b>Datos de uso del servicio</b>: ID de usuario, ID de los consentimientos creados o recibidos, roles (creador/contraparte), fecha y hora de creación, cambios de estado (p. ej. solicitud de revocación, aceptación, rechazo).</li>
-      <li><b>Datos biométricos</b> (si son activados por el usuario y necesarios para el consentimiento):
+      <li><b>Datos de registro de la cuenta</b>: nombre, dirección de correo electrónico, número de teléfono, contraseña (almacenada de forma cifrada), plan de suscripción. La dirección de correo electrónico se utiliza como identificador principal de la cuenta y, por motivos de seguridad e integridad probatoria, no puede modificarse desde la app; el usuario puede, no obstante, eliminar la cuenta y crear una cuenta nueva con una dirección diferente.</li>
+      <li><b>Datos de uso del servicio</b>: ID de usuario, ID de los consentimientos creados o recibidos, roles (creador/contraparte), fechas y horas de creación, cambios de estado (por ejemplo, solicitud de revocación, aceptación, rechazo).</li>
+      <li><b>Datos biométricos</b> (si el usuario los habilita y son necesarios para el consentimiento):
         <ul>
           <li>firma digital (imagen);</li>
           <li>selfie o imagen del rostro;</li>
-          <li>grabación de audio de la declaración de consentimiento.</li>
+          <li>grabación de voz de la declaración de consentimiento.</li>
         </ul>
       </li>
-      <li><b>Datos técnicos</b>: dirección IP, horarios de acceso, tokens de notificación push, registros técnicos de las operaciones.</li>
-      <li><b>Datos de integridad</b>: huellas criptográficas (por ejemplo, SHA-256) de los documentos generados y metadatos asociados (ID del consentimiento, marcas de tiempo).</li>
-      <li><b>Datos relativos a compras y pagos</b>: información esencial sobre la operación (por ejemplo, resultado, identificadores técnicos de la transacción, plan adquirido, fecha de compra/renovación). Los datos completos de los instrumentos de pago (por ejemplo, número de tarjeta) son gestionados por los proveedores de pago y no se almacenan íntegramente en TrueConsent cuando la transacción se realiza a través de proveedores externos.</li>
+      <li><b>Datos técnicos</b>: dirección IP, horarios de acceso, tokens de notificación push, registros técnicos de las operaciones (incluidos posibles intentos de operaciones no completadas por falta de conexión o por modo avión).</li>
+      <li><b>Datos de integridad</b>: hashes criptográficos (p. ej., SHA-256) de los documentos generados y metadatos asociados (ID de consentimiento, marcas de tiempo).</li>
+      <li><b>Datos relativos a compras y pagos</b>: información esencial sobre la operación (p. ej., resultado, identificadores técnicos de la transacción, plan adquirido, fecha de compra/renovación). Los datos completos de los instrumentos de pago (p. ej., número de tarjeta) son gestionados por los proveedores de pago y no se almacenan íntegramente en TrueConsent cuando la transacción se procesa a través de proveedores externos.</li>
     </ul>
 
     <h2>3. Finalidades y bases jurídicas del tratamiento</h2>
     <ul>
       <li><b>Registro y gestión de la cuenta</b><br>
-        Creación de la cuenta, autenticación, gestión del perfil, acceso a la app.<br>
+        Creación de la cuenta de usuario, autenticación, gestión del perfil y acceso a la app. La gestión de la dirección de correo electrónico como identificador estable de la cuenta forma parte de las medidas necesarias para garantizar que los consentimientos puedan vincularse a una persona determinada y para prevenir abusos (por ejemplo, uso repetido de la prueba gratuita).<br>
         <i>Base jurídica:</i> ejecución de medidas precontractuales y contractuales (art. 6.1.b RGPD).</li>
 
       <li><b>Creación y gestión de consentimientos digitales</b><br>
-        Registro del contenido del consentimiento, envío de notificaciones a las partes, seguimiento de los estados (creación, revocación, vencimiento, eliminación de cuenta).<br>
+        Registro del contenido del consentimiento, envío de notificaciones a las partes, seguimiento de los estados (creación, revocación, caducidad, eliminación de cuenta).<br>
         <i>Base jurídica:</i> ejecución del contrato entre las partes que utilizan el servicio (art. 6.1.b RGPD).</li>
 
       <li><b>Gestión de planes, suscripciones y operaciones de compra</b><br>
-        Activación del plan elegido, cómputo/gestión de los consentimientos disponibles (p. ej. Packs), gestión de la duración de la suscripción (p. ej. Ilimitado), verificación del resultado de las operaciones de compra o renovación, prevención de abusos.<br>
-        <i>Base jurídica:</i> ejecución del contrato (art. 6.1.b RGPD) y, cuando sea necesario, interés legítimo en la seguridad y en la prevención del fraude (art. 6.1.f RGPD).</li>
+        Activación del plan elegido, cómputo/gestión de los consentimientos disponibles (p. ej., Packs), gestión de la duración de la suscripción (p. ej., Ilimitado), verificación del resultado de las operaciones de compra o renovación, prevención de abusos.<br>
+        <i>Base jurídica:</i> ejecución del contrato (art. 6.1.b RGPD) y, cuando sea necesario, interés legítimo en la seguridad y la prevención de fraudes (art. 6.1.f RGPD).</li>
 
       <li><b>Uso de datos biométricos</b><br>
-        Uso de la firma, del selfie y de la grabación de voz como prueba digital de la identidad y de la voluntad de las partes.<br>
+        Uso de la firma, el selfie y la grabación de voz como prueba digital de la identidad y la voluntad de las partes.<br>
         <i>Base jurídica:</i> consentimiento explícito del interesado (art. 9.2.a RGPD), otorgado en la app marcando la casilla correspondiente y completando el procedimiento biométrico.</li>
 
       <li><b>Conservación de la integridad probatoria</b><br>
-        Generación y conservación de hash de los documentos y de los registros técnicos para demostrar la ausencia de alteraciones en los archivos y en las operaciones.<br>
-        <i>Base jurídica:</i> interés legítimo del Responsable y de las partes en disponer de pruebas técnicas en caso de controversias (art. 6.1.f RGPD).</li>
+        Generación y conservación de hashes de los documentos y de registros técnicos para demostrar la ausencia de alteraciones en los archivos y las operaciones.<br>
+        <i>Base jurídica:</i> interés legítimo del responsable y de las partes en disponer de pruebas técnicas en caso de controversias (art. 6.1.f RGPD).</li>
 
       <li><b>Comunicaciones de servicio</b><br>
-        Envío de correos electrónicos y notificaciones push relativos a la creación de consentimientos, solicitudes de revocación, resultados de las revocaciones, vencimientos, eliminación de cuenta y otras informaciones operativas.<br>
+        Envío de correos y notificaciones push relativos a la creación de consentimientos, solicitudes de revocación, resultados de las revocaciones, caducidades, eliminación de cuentas y otra información operativa.<br>
         <i>Base jurídica:</i> ejecución del servicio solicitado (art. 6.1.b RGPD).</li>
+
+      <li><b>Gestión técnica de la conexión y coherencia de las operaciones</b><br>
+        Monitorización de los registros técnicos (incluidos los intentos de operaciones realizados cuando el dispositivo está sin conexión o en modo avión) para garantizar que los consentimientos, revocaciones, cambios de plan y eliminaciones de cuenta solo se registren cuando hayan sido recibidos y confirmados por los servidores de TrueConsent.<br>
+        <i>Base jurídica:</i> interés legítimo del responsable en garantizar el correcto funcionamiento del servicio y la coherencia probatoria de los registros (art. 6.1.f RGPD).</li>
+
+      <li><b>Prevención de abusos y fraudes en el uso del servicio</b><br>
+        Análisis de registros técnicos, eventos relacionados con el registro y la cancelación de cuentas, uso de los planes (incluida la prueba gratuita), intentos de eludir las limitaciones y otros indicadores de riesgo para prevenir actividades fraudulentas o contrarias a estos Términos (por ejemplo, uso sistemático del plan Free mediante registros repetidos).<br>
+        <i>Base jurídica:</i> interés legítimo del responsable en proteger la aplicación, a otros usuarios y los derechos de las partes implicadas en los consentimientos (art. 6.1.f RGPD).</li>
     </ul>
 
     <h2>4. Conservación de los datos</h2>
 
     <h3>4.1 Plazo de conservación de los archivos biométricos</h3>
-    <p>La conservación de los archivos biométricos se limita estrictamente al tiempo necesario para la prueba del consentimiento, de acuerdo con la siguiente regla:</p>
+    <p>La conservación de los archivos biométricos se limita estrictamente al tiempo necesario para acreditar el consentimiento, conforme a la siguiente regla:</p>
     <ul>
       <li>Para todos los consentimientos:
         <ul>
           <li>los archivos permanecen disponibles mientras el consentimiento sea válido;</li>
-          <li>en el momento de la <b>terminación</b> (vencimiento, revocación o – para los consentimientos indeterminados – eliminación de cuenta con revocación automática) se inicia una ventana de un máximo de <b>7 días</b> durante la cual las partes pueden descargar los archivos;</li>
-          <li>transcurridos 7 días, los archivos biométricos se eliminan de los sistemas de TrueConsent.</li>
+          <li>en el momento de la <b>terminación</b> (caducidad, revocación o – en los consentimientos indeterminados – eliminación de cuenta con revocación automática) se abre una ventana de un máximo de <b>7 días</b> durante la cual las partes pueden descargar los archivos;</li>
+          <li>transcurridos los 7 días, los archivos biométricos se eliminan de los sistemas de TrueConsent.</li>
         </ul>
       </li>
-      <li>Caso particular: consentimiento de duración determinada con eliminación de la cuenta de la contraparte (Parte B):
+      <li>Caso especial – Consentimiento determinado con eliminación de la cuenta de la contraparte (Parte B):
         <ul>
-          <li>el consentimiento sigue siendo válido hasta su vencimiento natural;</li>
-          <li>por motivos de privacidad, los archivos biométricos de B pueden ser descargados por A únicamente durante <b>7 días desde la eliminación de la cuenta de B</b>;</li>
-          <li>transcurridos 7 días, los archivos biométricos de B se eliminan y no se abre una nueva ventana en la fecha de vencimiento natural.</li>
+          <li>el consentimiento sigue siendo válido hasta su caducidad natural;</li>
+          <li>por motivos de privacidad, los archivos biométricos de B solo pueden descargarse por A durante <b>7 días a partir de la eliminación de la cuenta de B</b>;</li>
+          <li>transcurrido dicho plazo, los archivos biométricos de B se eliminan y no se abre una nueva ventana en la caducidad natural.</li>
         </ul>
       </li>
     </ul>
 
-    <h3>4.2 Hash y metadatos</h3>
+    <h3>4.2 Hashes y metadatos</h3>
     <p>Tras la eliminación de los archivos biométricos, TrueConsent puede conservar durante un máximo de <b>365 días</b>:</p>
     <ul>
-      <li>la huella criptográfica (hash) del PDF del consentimiento;</li>
+      <li>el hash criptográfico del PDF del consentimiento;</li>
       <li>metadatos esenciales (ID del consentimiento, roles de las partes, fechas principales, resultados de las revocaciones);</li>
       <li>registros técnicos necesarios para demostrar la coherencia de las operaciones.</li>
     </ul>
-    <p>Transcurrido este periodo, dichos datos se eliminan o se anonimizan.</p>
+    <p>Transcurrido dicho periodo, estos datos se eliminan o se anonimizan.</p>
+    <p>Algunos registros técnicos utilizados con fines de seguridad y prevención de abusos pueden conservarse durante un periodo limitado, coherente con los plazos de prescripción de posibles reclamaciones, y en todo caso no superior a 365 días desde los eventos relevantes, salvo obligaciones legales diferentes.</p>
 
     <h2>5. Eliminación de la cuenta</h2>
     <p>El usuario puede solicitar la eliminación de su cuenta desde la app. La eliminación implica:</p>
     <ul>
-      <li>el cierre del acceso a la cuenta y la pérdida de las funcionalidades vinculadas al perfil;</li>
+      <li>el cierre de acceso a la cuenta y la pérdida de las funciones asociadas al perfil;</li>
       <li>la supresión de los datos de registro que ya no sean necesarios (por ejemplo, contraseña, tokens de acceso);</li>
       <li>la gestión de los consentimientos vinculados según los escenarios descritos en los Términos y Condiciones:
         <ul>
-          <li>para los consentimientos de duración determinada, la eliminación de la cuenta no pone fin al consentimiento, pero puede abrir una ventana de 7 días para la descarga de los archivos biométricos de la parte que ha eliminado la cuenta;</li>
-          <li>para los consentimientos de duración indeterminada, la eliminación de la cuenta inicia un procedimiento de revocación automática con un límite de 24 horas, tras el cual comienza la ventana de 7 días para la descarga;</li>
-          <li>en todos los casos, al finalizar los 7 días los archivos biométricos se eliminan y solo pueden conservarse hash y metadatos durante un máximo de 365 días.</li>
+          <li>para los consentimientos determinados, la eliminación de la cuenta no pone fin al consentimiento, pero puede abrir una ventana de 7 días para descargar los archivos biométricos de la parte que ha eliminado la cuenta;</li>
+          <li>para los consentimientos indeterminados, la eliminación de la cuenta inicia un procedimiento de revocación automática con un límite de 24 horas, tras el cual comienza la ventana de 7 días para la descarga;</li>
+          <li>en todos los casos, tras los 7 días, los archivos biométricos se eliminan y solo pueden conservarse hashes y metadatos durante un máximo de 365 días.</li>
         </ul>
       </li>
-      <li>si existe un plan de pago activo, los efectos sobre los consentimientos restantes y los posibles reembolsos se rigen por los Términos y Condiciones.</li>
+      <li>si existe un plan de pago activo, los efectos sobre los consentimientos restantes y los reembolsos se rigen por los Términos y Condiciones.</li>
     </ul>
-    <p>La eliminación de la cuenta no impide que el usuario pueda volver a registrarse en el futuro con la misma dirección de correo electrónico como nuevo usuario.</p>
+    <p>La eliminación de la cuenta no impide que el usuario pueda registrarse de nuevo en el futuro con la misma dirección de correo electrónico como nuevo usuario.</p>
 
-    <h2>6. Modalidades del tratamiento</h2>
-    <p>Los datos se tratan mediante herramientas electrónicas y telemáticas, con lógicas estrictamente relacionadas con las finalidades indicadas y aplicando medidas de seguridad adecuadas para proteger los datos personales y biométricos frente a accesos no autorizados, alteraciones o divulgaciones indebidas.</p>
+    <h2>6. Modalidades de tratamiento</h2>
+    <p>Los datos se tratan mediante herramientas electrónicas y telemáticas, con lógicas estrechamente relacionadas con las finalidades indicadas y adoptando medidas de seguridad adecuadas para proteger los datos personales y biométricos frente a accesos no autorizados, alteraciones o divulgaciones indebidas.</p>
 
     <h2>7. Destinatarios de los datos</h2>
     <p>Los datos pueden ser tratados por:</p>
     <ul>
-      <li>personal autorizado por el Responsable;</li>
-      <li>proveedores de servicios tecnológicos (por ejemplo, hosting, cloud, sistemas de envío de correos y notificaciones push, sistemas de pago) designados como encargados del tratamiento conforme al art. 28 RGPD;</li>
+      <li>personal autorizado por el responsable;</li>
+      <li>proveedores de servicios tecnológicos (por ejemplo, alojamiento, cloud, sistemas de envío de correos y notificaciones push, sistemas de pago) designados como encargados del tratamiento conforme al art. 28 RGPD;</li>
       <li>autoridades judiciales o administrativas, dentro de los límites previstos por la ley.</li>
     </ul>
     <p>Los datos no se venden a terceros con fines de marketing.</p>
 
     <h2>8. Transferencias fuera de la UE</h2>
-    <p>Algunos proveedores tecnológicos pueden estar situados en países fuera de la Unión Europea. En tales casos, las transferencias de datos se realizan de conformidad con los arts. 44 y ss. RGPD, mediante decisiones de adecuación de la Comisión Europea, cláusulas contractuales tipo u otras garantías adecuadas.</p>
+    <p>Algunos proveedores tecnológicos pueden estar ubicados en países fuera de la UE. En tales casos, las transferencias de datos se realizan de conformidad con los arts. 44 y ss. RGPD, mediante decisiones de adecuación de la Comisión Europea, cláusulas contractuales tipo u otras garantías adecuadas.</p>
 
     <h2>9. Derechos de los interesados</h2>
-    <p>En calidad de interesado, el usuario puede ejercer en cualquier momento los derechos previstos en los arts. 15–22 RGPD, entre ellos:</p>
+    <p>Como interesado, el usuario puede ejercer en cualquier momento los derechos previstos en los arts. 15–22 RGPD, entre ellos:</p>
     <ul>
       <li>derecho de acceso a los datos personales;</li>
       <li>derecho de rectificación de los datos inexactos o incompletos;</li>
       <li>derecho de supresión (“derecho al olvido”) en los casos previstos por la ley;</li>
       <li>derecho a la limitación del tratamiento;</li>
-      <li>derecho a la portabilidad de los datos, dentro de los límites aplicables;</li>
+      <li>derecho a la portabilidad de los datos, en los límites aplicables;</li>
       <li>derecho de oposición al tratamiento basado en el interés legítimo;</li>
-      <li>derecho a retirar en cualquier momento el consentimiento otorgado para el tratamiento de los datos biométricos, sin afectar a la licitud del tratamiento basado en el consentimiento previo a su retirada.</li>
+      <li>derecho a retirar en cualquier momento el consentimiento otorgado para el tratamiento de datos biométricos, sin que ello afecte a la licitud del tratamiento basado en el consentimiento previo a la retirada.</li>
     </ul>
     <p>Para ejercer estos derechos, el usuario puede utilizar los datos de contacto indicados en la app TrueConsent o en las comunicaciones oficiales.</p>
 
     <h2>10. Reclamaciones</h2>
-    <p>Si el usuario considera que el tratamiento de sus datos personales infringe la normativa aplicable, puede presentar una reclamación ante la autoridad de control competente en materia de protección de datos o ante otra autoridad de control según el RGPD.</p>
+    <p>El usuario que considere que el tratamiento de sus datos vulnera la normativa vigente puede presentar una reclamación ante la autoridad de control competente o ante otra autoridad de control en virtud del RGPD.</p>
 
-    <h2>11. Actualizaciones de la presente política</h2>
-    <p>La presente política de privacidad puede ser objeto de actualizaciones. Los cambios relevantes se comunicarán a través de la app TrueConsent o por correo electrónico. El uso continuado del servicio tras dichos cambios implica la toma de conocimiento de la nueva política.</p>
+    <h2>11. Actualizaciones de la política</h2>
+    <p>La presente política de privacidad puede actualizarse. Los cambios relevantes se comunicarán a través de la app TrueConsent o por correo electrónico. El uso continuado del servicio después de dichos cambios implica la toma de conocimiento de la nueva política.</p>
 
     <hr>
     <p style="font-size:12px;color:#666;">© 2025 TrueConsent – Todos los derechos reservados</p>
   </div>
 
   <!-- ===================== -->
-  <!-- Deutsche VERSION      -->
+  <!-- Deutsche Version      -->
   <!-- ===================== -->
   <div class="lang-section" id="de">
     <div class="lang-label">Deutsche Version</div>
 
     <h1>Datenschutzhinweise von TrueConsent</h1>
-    <p>Diese Hinweise beschreiben, wie die Anwendung <b>TrueConsent</b> personenbezogene Daten der Nutzerinnen und Nutzer gemäß der Verordnung (EU) 2016/679 („DSGVO“/„GDPR“) verarbeitet.</p>
+    <p>Diese Hinweise beschreiben, wie die Anwendung <b>TrueConsent</b> personenbezogene Daten der Nutzer gemäß Verordnung (EU) 2016/679 (“DSGVO”) verarbeitet.</p>
 
     <h2>1. Verantwortlicher</h2>
-    <p>Verantwortlicher für die Verarbeitung der personenbezogenen Daten ist die in den Kontaktinformationen der TrueConsent-App und in den offiziellen E-Mail-Mitteilungen angegebene Person.</p>
+    <p>Verantwortlicher für die Verarbeitung personenbezogener Daten ist die in den Kontaktinformationen der TrueConsent-App und in offiziellen E-Mail-Mitteilungen genannte Person.</p>
 
     <h2>2. Arten der verarbeiteten Daten</h2>
-    <p>Je nach genutzten Funktionen verarbeitet TrueConsent folgende Kategorien von Daten:</p>
+    <p>Je nach genutzten Funktionen verarbeitet TrueConsent insbesondere folgende Kategorien von Daten:</p>
     <ul>
-      <li><b>Kontoregistrierungsdaten</b>: Name, E-Mail-Adresse, Telefonnummer, Passwort (in verschlüsselter Form gespeichert), Abonnement-Tarif.</li>
-      <li><b>Nutzungsdaten des Dienstes</b>: Benutzer-ID, IDs der erstellten oder empfangenen Einwilligungen, Rollen (Ersteller/Gegenpartei), Datum und Uhrzeit der Erstellung, Statusänderungen (z.&nbsp;B. Widerrufsanfrage, Annahme, Ablehnung).</li>
-      <li><b>Biometrische Daten</b> (sofern vom Nutzer aktiviert und für die Einwilligung erforderlich):
+      <li><b>Kontoregistrierungsdaten</b>: Name, E-Mail-Adresse, Telefonnummer, Passwort (verschlüsselt gespeichert), Abonnementplan. Die E-Mail-Adresse wird als Hauptkennzeichen des Kontos verwendet und kann aus Sicherheits- und Beweisgründen nicht innerhalb der App geändert werden; der Nutzer kann jedoch das Konto löschen und ein neues Konto mit einer anderen E-Mail-Adresse anlegen.</li>
+      <li><b>Nutzungsdaten des Dienstes</b>: Nutzer-ID, IDs der erstellten oder empfangenen Einwilligungen, Rollen (Ersteller/Gegenpartei), Erstellungsdatum und -uhrzeit, Statusänderungen (z. B. Widerrufsanfrage, Annahme, Ablehnung).</li>
+      <li><b>Biometrische Daten</b> (falls vom Nutzer aktiviert und für die Einwilligung erforderlich):
         <ul>
           <li>digitale Unterschrift (Bild);</li>
-          <li>Selfie oder Bild des Gesichts;</li>
-          <li>Tonaufzeichnung der Einwilligungserklärung.</li>
+          <li>Selfie bzw. Gesichtsfoto;</li>
+          <li>Sprachaufzeichnung der Einwilligungserklärung.</li>
         </ul>
       </li>
-      <li><b>Technische Daten</b>: IP-Adresse, Zugriffszeiten, Push-Benachrichtigungstoken, technische Protokolle der Vorgänge.</li>
-      <li><b>Integritätsdaten</b>: kryptografische Hash-Werte (z.&nbsp;B. SHA-256) der erzeugten Dokumente und zugehörige Metadaten (Einwilligungs-ID, Zeitstempel).</li>
-      <li><b>Daten zu Käufen und Zahlungen</b>: wesentliche Informationen zum Vorgang (z.&nbsp;B. Ergebnis, technische Transaktionskennungen, erworbener Tarif, Kauf-/Verlängerungsdatum). Vollständige Zahlungsdaten (z.&nbsp;B. Kartennummer) werden von Zahlungsdienstleistern verarbeitet und nicht vollständig von TrueConsent gespeichert, wenn der Vorgang über externe Anbieter abgewickelt wird.</li>
+      <li><b>Technische Daten</b>: IP-Adresse, Zugriffszeiten, Push-Token, technische Protokolle der Vorgänge (einschließlich etwaiger Versuche, Vorgänge ohne Internetverbindung oder im Flugmodus auszuführen, die nicht abgeschlossen werden).</li>
+      <li><b>Integritätsdaten</b>: kryptografische Hashwerte (z. B. SHA-256) der erzeugten Dokumente und zugehörige Metadaten (Einwilligungs-ID, Zeitstempel).</li>
+      <li><b>Daten zu Käufen und Zahlungen</b>: wesentliche Informationen zur Transaktion (z. B. Ergebnis, technische Transaktionskennungen, erworbener Plan, Kauf-/Verlängerungsdatum). Vollständige Zahlungsdaten (z. B. Kartennummer) werden von Zahlungsdienstleistern verarbeitet und nicht vollständig bei TrueConsent gespeichert, wenn die Transaktion extern abgewickelt wird.</li>
     </ul>
 
     <h2>3. Zwecke und Rechtsgrundlagen der Verarbeitung</h2>
     <ul>
       <li><b>Registrierung und Verwaltung des Kontos</b><br>
-        Erstellung des Kontos, Authentifizierung, Profilverwaltung, Zugang zur App.<br>
-        <i>Rechtsgrundlage:</i> Durchführung vorvertraglicher und vertraglicher Maßnahmen (Art. 6 Abs. 1 Buchst. b DSGVO).</li>
+        Einrichtung des Nutzerkontos, Authentifizierung, Profilverwaltung und App-Zugang. Die Verwendung der E-Mail-Adresse als stabiles Konto-Kennzeichen ist eine Maßnahme, um die Zuordnung von Einwilligungen zu einer bestimmten Person zu gewährleisten und Missbrauch (z. B. wiederholte Nutzung der kostenlosen Testphase) zu verhindern.<br>
+        <i>Rechtsgrundlage:</i> Durchführung vorvertraglicher und vertraglicher Maßnahmen (Art. 6 Abs. 1 lit. b DSGVO).</li>
 
       <li><b>Erstellung und Verwaltung digitaler Einwilligungen</b><br>
-        Protokollierung des Einwilligungsinhalts, Versand von Benachrichtigungen an die Parteien, Nachverfolgung der Statusänderungen (Erstellung, Widerruf, Ablauf, Kontolöschung).<br>
-        <i>Rechtsgrundlage:</i> Erfüllung des Vertrags zwischen den Parteien, die den Dienst nutzen (Art. 6 Abs. 1 Buchst. b DSGVO).</li>
+        Erfassung des Einwilligungsinhalts, Versand von Benachrichtigungen an die Parteien, Nachverfolgung von Statusänderungen (Erstellung, Widerruf, Ablauf, Kontolöschung).<br>
+        <i>Rechtsgrundlage:</i> Vertragserfüllung zwischen den Parteien, die den Dienst nutzen (Art. 6 Abs. 1 lit. b DSGVO).</li>
 
-      <li><b>Verwaltung von Tarifen, Abonnements und Kaufvorgängen</b><br>
-        Aktivierung des gewählten Tarifs, Zählung/Verwaltung der verfügbaren Einwilligungen (z.&nbsp;B. Pakete), Verwaltung der Abonnementdauer (z.&nbsp;B. „Unbegrenzt“), Überprüfung des Ergebnisses von Kauf- oder Verlängerungsvorgängen, Missbrauchsvermeidung.<br>
-        <i>Rechtsgrundlage:</i> Vertragserfüllung (Art. 6 Abs. 1 Buchst. b DSGVO) und, soweit erforderlich, berechtigtes Interesse an Sicherheit und Betrugsprävention (Art. 6 Abs. 1 Buchst. f DSGVO).</li>
+      <li><b>Verwaltung von Plänen, Abonnements und Kaufvorgängen</b><br>
+        Aktivierung des gewählten Plans, Zählung/Verwaltung verfügbarer Einwilligungen (z. B. Pakete), Verwaltung der Abonnementdauer (z. B. Unbegrenzt), Überprüfung des Ergebnisses von Kauf- und Verlängerungsvorgängen, Missbrauchsprävention.<br>
+        <i>Rechtsgrundlage:</i> Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO) und, soweit erforderlich, berechtigtes Interesse an Sicherheit und Betrugsprävention (Art. 6 Abs. 1 lit. f DSGVO).</li>
 
       <li><b>Verwendung biometrischer Daten</b><br>
-        Verwendung von Unterschrift, Selfie und Tonaufzeichnung als digitaler Nachweis der Identität und des Willens der beteiligten Parteien.<br>
-        <i>Rechtsgrundlage:</i> ausdrückliche Einwilligung der betroffenen Person (Art. 9 Abs. 2 Buchst. a DSGVO), erteilt in der App durch Ankreuzen des entsprechenden Kästchens und Abschluss des biometrischen Verfahrens.</li>
+        Nutzung von Unterschrift, Selfie und Sprachaufnahme als digitaler Nachweis der Identität und Willenserklärung der Parteien.<br>
+        <i>Rechtsgrundlage:</i> ausdrückliche Einwilligung der betroffenen Person (Art. 9 Abs. 2 lit. a DSGVO), erteilt in der App durch Aktivierung der entsprechenden Option und Abschluss des biometrischen Verfahrens.</li>
 
-      <li><b>Wahrung der Beweisintegrität</b><br>
-        Erzeugung und Aufbewahrung von Hash-Werten der Dokumente und technischen Protokollen, um die Unveränderlichkeit der Dateien und Vorgänge nachzuweisen.<br>
-        <i>Rechtsgrundlage:</i> berechtigtes Interesse des Verantwortlichen und der Parteien, im Streitfall über technische Beweise zu verfügen (Art. 6 Abs. 1 Buchst. f DSGVO).</li>
+      <li><b>Sicherung der Beweisintegrität</b><br>
+        Erstellung und Speicherung von Dokumenten-Hashes und technischen Protokollen, um die Unverändertheit von Dateien und Vorgängen belegen zu können.<br>
+        <i>Rechtsgrundlage:</i> berechtigtes Interesse des Verantwortlichen und der Parteien, über technische Beweismittel im Streitfall zu verfügen (Art. 6 Abs. 1 lit. f DSGVO).</li>
 
-      <li><b>Service-Kommunikationen</b><br>
-        Versand von E-Mails und Push-Benachrichtigungen zu Erstellung von Einwilligungen, Widerrufsanfragen, Ergebnissen von Widerrufen, Abläufen, Kontolöschungen und weiteren betrieblichen Informationen.<br>
-        <i>Rechtsgrundlage:</i> Erfüllung des angeforderten Dienstes (Art. 6 Abs. 1 Buchst. b DSGVO).</li>
+      <li><b>Servicekommunikation</b><br>
+        Versand von E-Mails und Push-Benachrichtigungen zur Erstellung von Einwilligungen, zu Widerrufsanfragen, Widerrufsergebnissen, Abläufen, Kontolöschungen und weiteren betrieblichen Informationen.<br>
+        <i>Rechtsgrundlage:</i> Erfüllung des angeforderten Dienstes (Art. 6 Abs. 1 lit. b DSGVO).</li>
+
+      <li><b>Technische Verbindungssteuerung und Konsistenz der Vorgänge</b><br>
+        Auswertung technischer Protokolle (einschließlich Versuchen, Vorgänge im Offline- oder Flugmodus auszuführen), um sicherzustellen, dass Einwilligungen, Widerrufe, Planänderungen und Kontolöschungen nur dann erfasst werden, wenn sie von den TrueConsent-Servern tatsächlich empfangen und bestätigt worden sind.<br>
+        <i>Rechtsgrundlage:</i> berechtigtes Interesse des Verantwortlichen am ordnungsgemäßen Funktionieren des Dienstes und an der Konsistenz der Protokolle (Art. 6 Abs. 1 lit. f DSGVO).</li>
+
+      <li><b>Missbrauchs- und Betrugsprävention bei der Nutzung des Dienstes</b><br>
+        Analyse technischer Protokolle, Ereignisse im Zusammenhang mit Kontoeröffnung und -löschung, Nutzung der Pläne (einschließlich der Testphase), Versuche zur Umgehung von Beschränkungen und andere Risikokennzeichen, um betrügerische Aktivitäten oder vertraglich unzulässige Nutzungen (z. B. systematische Nutzung des Free-Plans durch wiederholte Neuregistrierung) zu verhindern.<br>
+        <i>Rechtsgrundlage:</i> berechtigtes Interesse des Verantwortlichen, die Anwendung, andere Nutzer und die Rechte der an Einwilligungen beteiligten Parteien zu schützen (Art. 6 Abs. 1 lit. f DSGVO).</li>
     </ul>
 
-    <h2>4. Speicherdauer der Daten</h2>
+    <h2>4. Speicherung der Daten</h2>
 
-    <h3>4.1 Speicherdauer der biometrischen Dateien</h3>
-    <p>Die Speicherung biometrischer Dateien ist strikt auf den Zeitraum begrenzt, der zur Nachweisführung der Einwilligung erforderlich ist, und folgt der folgenden Regel:</p>
+    <h3>4.1 Speicherdauer biometrischer Dateien</h3>
+    <p>Die Speicherung biometrischer Dateien ist strikt auf den Zeitraum begrenzt, der zur Nachweisführung der Einwilligung erforderlich ist, und folgt dieser Regel:</p>
     <ul>
       <li>Für alle Einwilligungen:
         <ul>
-          <li>die Dateien bleiben verfügbar, solange die Einwilligung gültig ist;</li>
-          <li>zum Zeitpunkt der <b>Beendigung</b> (Ablauf, Widerruf oder – bei unbefristeten Einwilligungen – Kontolöschung mit automatischem Widerruf) beginnt ein Zeitraum von maximal <b>7 Tagen</b>, in dem beide Parteien die Dateien herunterladen können;</li>
-          <li>nach Ablauf dieser 7 Tage werden die biometrischen Dateien aus den Systemen von TrueConsent gelöscht.</li>
+          <li>Dateien sind während der Gültigkeit der Einwilligung verfügbar;</li>
+          <li>bei <b>Beendigung</b> (Ablauf, Widerruf oder – bei unbefristeten Einwilligungen – Kontolöschung mit automatischem Widerruf) beginnt ein Fenster von maximal <b>7 Tagen</b>, in dem die Parteien die Dateien herunterladen können;</li>
+          <li>nach 7 Tagen werden biometrische Dateien aus den Systemen von TrueConsent gelöscht.</li>
         </ul>
       </li>
-      <li>Besonderer Fall – Befristete Einwilligung mit Löschung des Kontos der Gegenpartei (Partei B):
+      <li>Sonderfall – Befristete Einwilligung mit Löschung des Kontos der Gegenpartei (Partei B):
         <ul>
-          <li>die Einwilligung bleibt bis zum natürlichen Ablaufdatum gültig;</li>
-          <li>aus Datenschutzgründen können die biometrischen Dateien von B von A nur für <b>7 Tage ab Löschung des Kontos von B</b> heruntergeladen werden;</li>
-          <li>nach 7 Tagen werden die biometrischen Dateien von B gelöscht und es öffnet sich kein neues Zeitfenster zum Ablaufzeitpunkt.</li>
+          <li>die Einwilligung bleibt bis zum natürlichen Ablauf gültig;</li>
+          <li>aus Datenschutzgründen können biometrische Dateien von B von A nur <b>7 Tage ab Löschung des B-Kontos</b> heruntergeladen werden;</li>
+          <li>nach Ablauf dieser Frist werden die biometrischen Dateien von B gelöscht und es öffnet sich beim natürlichen Ablauf kein neues Zeitfenster.</li>
         </ul>
       </li>
     </ul>
 
-    <h3>4.2 Hash-Werte und Metadaten</h3>
-    <p>Nach Löschung der biometrischen Dateien kann TrueConsent für maximal <b>365 Tage</b> Folgendes aufbewahren:</p>
+    <h3>4.2 Hashes und Metadaten</h3>
+    <p>Nach Löschung der biometrischen Dateien kann TrueConsent für bis zu <b>365 Tage</b> speichern:</p>
     <ul>
-      <li>den kryptografischen Hash des Einwilligungs-PDF;</li>
-      <li>wesentliche Metadaten (Einwilligungs-ID, Rollen der Parteien, Hauptdaten, Ergebnisse von Widerrufen);</li>
-      <li>technische Protokolle, die zur Nachweisführung der Konsistenz der Vorgänge erforderlich sind.</li>
+      <li>den kryptografischen Hash des PDF-Dokuments der Einwilligung;</li>
+      <li>wesentliche Metadaten (Einwilligungs-ID, Rollen der Parteien, wichtigste Daten, Widerrufsergebnisse);</li>
+      <li>technische Protokolle, die zur Nachweisführung der Vorgangskonsistenz erforderlich sind.</li>
     </ul>
     <p>Nach Ablauf dieses Zeitraums werden diese Daten gelöscht oder anonymisiert.</p>
+    <p>Bestimmte technische Protokolle, die zu Sicherheits- und Missbrauchspräventionszwecken verwendet werden, können für einen begrenzten Zeitraum gespeichert werden, der mit den Verjährungsfristen möglicher Ansprüche im Einklang steht und in jedem Fall 365 Tage ab dem jeweiligen Ereignis nicht überschreitet, sofern gesetzlich nichts anderes vorgeschrieben ist.</p>
 
-    <h2>5. Löschung des Kontos</h2>
-    <p>Der Nutzer kann die Löschung seines Kontos innerhalb der App beantragen. Die Löschung umfasst:</p>
+    <h2>5. Kontolöschung</h2>
+    <p>Der Nutzer kann die Löschung seines Kontos innerhalb der App beantragen. Die Löschung bewirkt:</p>
     <ul>
-      <li>die Schließung des Zugangs zum Konto und den Verlust der mit dem Profil verknüpften Funktionen;</li>
-      <li>die Löschung der nicht mehr benötigten Registrierungsdaten (z.&nbsp;B. Passwort, Zugriffstokens);</li>
-      <li>die Verwaltung der verknüpften Einwilligungen gemäß den in den Nutzungsbedingungen beschriebenen Szenarien:
+      <li>die Schließung des Zugangs zum Konto und den Verlust der profilbezogenen Funktionen;</li>
+      <li>die Löschung nicht mehr benötigter Registrierungsdaten (z. B. Passwort, Zugriffstoken);</li>
+      <li>die Handhabung verknüpfter Einwilligungen entsprechend den in den AGB beschriebenen Szenarien:
         <ul>
-          <li>bei befristeten Einwilligungen führt die Kontolöschung nicht zur Beendigung der Einwilligung, kann aber ein 7-tägiges Zeitfenster zum Herunterladen der biometrischen Dateien der Partei eröffnen, die ihr Konto gelöscht hat;</li>
-          <li>bei unbefristeten Einwilligungen löst die Kontolöschung ein automatisches Widerrufsverfahren mit einer Frist von 24 Stunden aus; danach beginnt das 7-tägige Download-Zeitfenster;</li>
-          <li>in allen Fällen werden die biometrischen Dateien nach Ablauf der 7 Tage gelöscht; Hash-Werte und Metadaten können bis zu 365 Tage aufbewahrt werden.</li>
+          <li>bei befristeten Einwilligungen führt die Kontolöschung nicht zur Beendigung der Einwilligung, kann aber ein 7-tägiges Zeitfenster zum Herunterladen der biometrischen Dateien der löschenden Partei eröffnen;</li>
+          <li>bei unbefristeten Einwilligungen löst die Kontolöschung ein Verfahren des automatischen Widerrufs mit einer Frist von 24 Stunden aus, nach deren Ablauf das 7-tägige Downloadfenster beginnt;</li>
+          <li>in allen Fällen werden biometrische Dateien nach Ablauf der 7 Tage gelöscht und es können nur Hashes und Metadaten für maximal 365 Tage gespeichert werden.</li>
         </ul>
       </li>
-      <li>besteht ein aktiver kostenpflichtiger Tarif, richten sich die Auswirkungen auf verbleibende Einwilligungen und etwaige Rückerstattungen nach den Nutzungsbedingungen.</li>
+      <li>bei bestehendem kostenpflichtigem Plan richten sich die Folgen für Restguthaben und Rückerstattungen nach den AGB.</li>
     </ul>
-    <p>Die Kontolöschung schließt nicht aus, dass sich der Nutzer künftig erneut mit derselben E-Mail-Adresse als neuer Nutzer registrieren kann.</p>
+    <p>Die Kontolöschung hindert den Nutzer nicht daran, sich künftig mit derselben E-Mail-Adresse erneut als neuer Nutzer zu registrieren.</p>
 
     <h2>6. Art der Verarbeitung</h2>
-    <p>Die Daten werden mit elektronischen und telematischen Hilfsmitteln verarbeitet, anhand von Verarbeitungslogiken, die eng mit den genannten Zwecken verbunden sind, und unter Einsatz geeigneter Sicherheitsmaßnahmen, um personenbezogene und biometrische Daten vor unbefugtem Zugriff, Veränderung oder unzulässiger Offenlegung zu schützen.</p>
+    <p>Die Daten werden mithilfe elektronischer und telematischer Mittel verarbeitet, nach Zwecken ausgerichtet und mit geeigneten Sicherheitsmaßnahmen geschützt, um personenbezogene und biometrische Daten vor unbefugtem Zugriff, Veränderung oder unzulässiger Offenlegung zu sichern.</p>
 
     <h2>7. Empfänger der Daten</h2>
-    <p>Die Daten können verarbeitet werden von:</p>
+    <p>Daten können verarbeitet werden von:</p>
     <ul>
-      <li>Mitarbeitern, die vom Verantwortlichen entsprechend autorisiert wurden;</li>
-      <li>Anbietern technologischer Dienste (z.&nbsp;B. Hosting, Cloud, Systeme für E-Mails und Push-Benachrichtigungen, Zahlungssysteme), die gemäß Art. 28 DSGVO als Auftragsverarbeiter eingesetzt werden;</li>
-      <li>Justiz- oder Verwaltungsbehörden, im Rahmen der gesetzlichen Vorgaben.</li>
+      <li>vom Verantwortlichen autorisiertem Personal;</li>
+      <li>Dienstleistern für technische Leistungen (z. B. Hosting, Cloud, E-Mail- und Push-Systeme, Bezahlsysteme), die als Auftragsverarbeiter im Sinne von Art. 28 DSGVO eingesetzt werden;</li>
+      <li>Justiz- oder Verwaltungsbehörden im gesetzlich vorgesehenen Umfang.</li>
     </ul>
-    <p>Die Daten werden nicht zu Marketingzwecken an Dritte verkauft.</p>
+    <p>Daten werden nicht zu Marketingzwecken an Dritte verkauft.</p>
 
-    <h2>8. Datenübermittlungen in Drittländer</h2>
-    <p>Einige Technologieanbieter können in Ländern außerhalb der Europäischen Union ansässig sein. In solchen Fällen erfolgt die Übermittlung der Daten in Übereinstimmung mit Art. 44 ff. DSGVO, beispielsweise auf Grundlage von Angemessenheitsbeschlüssen der Europäischen Kommission, Standardvertragsklauseln oder anderen geeigneten Garantien.</p>
+    <h2>8. Übermittlungen in Drittländer</h2>
+    <p>Einige technologische Anbieter können in Nicht-EU-Ländern ansässig sein. In solchen Fällen erfolgen Datenübermittlungen gemäß Art. 44 ff. DSGVO, etwa mittels Angemessenheitsbeschlüssen der EU-Kommission, Standardvertragsklauseln oder anderer geeigneter Garantien.</p>
 
     <h2>9. Rechte der betroffenen Personen</h2>
-    <p>Als betroffene Person kann der Nutzer jederzeit die in den Art. 15–22 DSGVO vorgesehenen Rechte ausüben, insbesondere:</p>
+    <p>Als betroffene Person kann der Nutzer jederzeit die Rechte nach Art. 15–22 DSGVO ausüben, insbesondere:</p>
     <ul>
       <li>Recht auf Auskunft über die verarbeiteten personenbezogenen Daten;</li>
       <li>Recht auf Berichtigung unrichtiger oder unvollständiger Daten;</li>
       <li>Recht auf Löschung („Recht auf Vergessenwerden“) in den gesetzlich vorgesehenen Fällen;</li>
       <li>Recht auf Einschränkung der Verarbeitung;</li>
-      <li>Recht auf Datenübertragbarkeit, soweit anwendbar;</li>
-      <li>Recht auf Widerspruch gegen eine Verarbeitung, die auf einem berechtigten Interesse beruht;</li>
-      <li>Recht, eine erteilte Einwilligung in die Verarbeitung biometrischer Daten jederzeit zu widerrufen, ohne dass die Rechtmäßigkeit der bis zum Widerruf erfolgten Verarbeitung berührt wird.</li>
+      <li>Recht auf Datenübertragbarkeit im jeweils anwendbaren Umfang;</li>
+      <li>Recht auf Widerspruch gegen Verarbeitungen auf Basis berechtigten Interesses;</li>
+      <li>Recht, eine erteilte Einwilligung in die Verarbeitung biometrischer Daten jederzeit zu widerrufen, ohne die Rechtmäßigkeit der bis zum Widerruf erfolgten Verarbeitung zu beeinträchtigen.</li>
     </ul>
-    <p>Zur Ausübung dieser Rechte können die in der TrueConsent-App oder in offiziellen Mitteilungen angegebenen Kontaktdaten genutzt werden.</p>
+    <p>Zur Ausübung dieser Rechte kann der Nutzer die in der TrueConsent-App oder in offiziellen Mitteilungen angegebenen Kontaktdaten verwenden.</p>
 
     <h2>10. Beschwerden</h2>
-    <p>Hält ein Nutzer die Verarbeitung seiner personenbezogenen Daten für rechtswidrig, kann er bei der zuständigen Datenschutzaufsichtsbehörde oder einer anderen Aufsichtsbehörde im Sinne der DSGVO Beschwerde einlegen.</p>
+    <p>Wer der Ansicht ist, dass die Verarbeitung seiner Daten gegen geltendes Recht verstößt, kann Beschwerde bei der zuständigen Datenschutzaufsichtsbehörde oder einer anderen Aufsichtsbehörde gemäß DSGVO einlegen.</p>
 
-    <h2>11. Aktualisierung dieser Hinweise</h2>
-    <p>Diese Datenschutzhinweise können aktualisiert werden. Wesentliche Änderungen werden über die TrueConsent-App oder per E-Mail mitgeteilt. Die weitere Nutzung des Dienstes nach solchen Änderungen bedeutet, dass die Nutzer von den neuen Hinweisen Kenntnis genommen haben.</p>
+    <h2>11. Aktualisierung der Hinweise</h2>
+    <p>Diese Datenschutzhinweise können aktualisiert werden. Wesentliche Änderungen werden über die TrueConsent-App oder per E-Mail mitgeteilt. Die weitere Nutzung des Dienstes nach solchen Änderungen gilt als Kenntnisnahme der neuen Hinweise.</p>
 
     <hr>
     <p style="font-size:12px;color:#666;">© 2025 TrueConsent – Alle Rechte vorbehalten</p>
   </div>
 
   <script>
-    (function () {
-      const supported = ["it", "en", "fr", "es", "de"];
+    (function(){
+      const supported = new Set(["it","en","fr","es","de"]);
+      const btns = Array.from(document.querySelectorAll('[data-langbtn]'));
+      const texts = Array.from(document.querySelectorAll('[data-i18n][data-lang]'));
 
-      function getLangFromHash() {
-        const h = (window.location.hash || "#it").replace("#", "").toLowerCase().trim();
-        return supported.includes(h) ? h : "it";
+      function normalize(v){
+        if(!v) return null;
+        v = String(v).trim().toLowerCase();
+        if(v.length>2) v = v.slice(0,2);
+        return supported.has(v) ? v : null;
       }
 
-      function getLangFromQuery() {
-        try {
-          const params = new URLSearchParams(window.location.search || "");
-          const q = (params.get("lang") || "").toLowerCase().trim();
-          return supported.includes(q) ? q : null;
-        } catch (e) {
-          return null;
-        }
-      }
-
-      function setActiveLang(lang) {
-        // bottoni
-        document.querySelectorAll("[data-langbtn]").forEach(btn => {
-          const bLang = btn.getAttribute("data-langbtn");
-          btn.classList.toggle("active", bLang === lang);
+      function setActive(lang){
+        btns.forEach(b => {
+          b.classList.toggle('active', b.getAttribute('data-langbtn') === lang);
         });
-
-        // testi topbar
-        document.querySelectorAll("[data-i18n='contains_all']").forEach(el => {
-          el.style.display = (el.getAttribute("data-lang") === lang) ? "" : "none";
+        texts.forEach(t => {
+          t.style.display = (t.getAttribute('data-lang') === lang) ? '' : 'none';
         });
-        document.querySelectorAll("[data-i18n='jump_to']").forEach(el => {
-          el.style.display = (el.getAttribute("data-lang") === lang) ? "" : "none";
-        });
+        document.documentElement.setAttribute('lang', lang);
       }
 
-      function scrollToSection(lang) {
-        const target = document.getElementById(lang);
-        if (!target) return;
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      function scrollToLang(lang){
+        const el = document.getElementById(lang);
+        if(!el) return;
+        setActive(lang);
+        el.scrollIntoView({behavior:'smooth', block:'start'});
       }
 
-      // click: smooth scroll + active
-      document.querySelectorAll("[data-langbtn]").forEach(btn => {
-        btn.addEventListener("click", function (e) {
-          e.preventDefault();
-          const lang = this.getAttribute("data-langbtn");
-          if (!lang) return;
-
-          if (window.location.hash !== "#" + lang) {
-            window.location.hash = "#" + lang;
-          } else {
-            setActiveLang(lang);
-            scrollToSection(lang);
+      btns.forEach(b => {
+        b.addEventListener('click', e => {
+          const lang = normalize(b.getAttribute('data-langbtn'));
+          if(lang){
+            setActive(lang);
           }
         });
       });
 
-      // load + hash change
-      function applyFromHash(shouldScroll) {
-        const lang = getLangFromHash();
-        setActiveLang(lang);
-        if (shouldScroll) scrollToSection(lang);
+      const params = new URLSearchParams(window.location.search);
+      const qLang = normalize(params.get('lang'));
+      const hLang = normalize((window.location.hash || '').replace('#',''));
+      const lang = qLang || hLang || 'it';
+
+      if(qLang && window.location.hash !== '#' + qLang){
+        history.replaceState(null, '', window.location.pathname + window.location.search + '#' + qLang);
       }
 
-      window.addEventListener("hashchange", function () {
-        applyFromHash(true);
+      setActive(lang);
+      window.requestAnimationFrame(() => {
+        if(lang) scrollToLang(lang);
       });
 
-      // avvio: gestisce prima ?lang=xx, poi eventuale hash, altrimenti resta in alto (IT)
-      document.addEventListener("DOMContentLoaded", function () {
-        const qLang = getLangFromQuery();
-        if (qLang && window.location.hash !== "#" + qLang) {
-          window.location.hash = "#" + qLang; // scatena hashchange + scroll
-          return;
-        }
-        const hasHash = !!window.location.hash;
-        applyFromHash(hasHash);
+      window.addEventListener('hashchange', () => {
+        const newLang = normalize((window.location.hash || '').replace('#','')) || 'it';
+        scrollToLang(newLang);
       });
     })();
   </script>
