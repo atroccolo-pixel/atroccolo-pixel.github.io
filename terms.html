@@ -189,6 +189,11 @@
     </ul>
     <p>Il consenso può essere a tempo <b>determinato</b> (con data di fine) o <b>indeterminato</b> (senza scadenza preimpostata) e può prevedere l’uso di dati biometrici (firma, selfie, registrazione audio) come prova dell’identità delle parti.</p>
 
+    <h3>1.1 Account, indirizzo email e identificazione dell’utente</h3>
+    <p>L’indirizzo email inserito nella fase di registrazione viene utilizzato come identificativo principale dell’account e come riferimento stabile per tutte le comunicazioni (email di servizio, notifiche relative ai consensi, gestione del piano).</p>
+    <p>Per ragioni di sicurezza, prova digitale e prevenzione abusi, l’indirizzo email associato a un account non è modificabile dall’interno dell’app. Se l’utente desidera utilizzare un indirizzo email diverso dovrà eliminare l’account esistente e registrare un nuovo account con il nuovo indirizzo.</p>
+    <p>L’utente è responsabile della correttezza dell’email inserita in fase di registrazione e di mantenerne l’accesso, poiché tale indirizzo sarà utilizzato per tutte le comunicazioni probatorie (ad es. invio dei consensi, notifiche di revoca, conferme di eliminazione account).</p>
+
     <h2>2. Definizioni</h2>
     <ul>
       <li><b>Consenso</b>: accordo digitale registrato tramite TrueConsent tra A e B.</li>
@@ -243,7 +248,17 @@
       <h3>2.2.5 Divieto di aggiramento e prevenzione abusi</h3>
       <ul>
         <li>È vietato tentare di aggirare i limiti dei piani (in particolare della prova gratuita) tramite registrazioni ripetute, meccanismi elusivi o altri comportamenti fraudolenti.</li>
-        <li>In caso di abuso o sospetto abuso, TrueConsent può limitare l’accesso alle funzionalità, sospendere l’account o richiedere verifiche aggiuntive, nel rispetto della normativa applicabile.</li>
+        <li>TrueConsent può utilizzare controlli automatici e verifiche tecniche (ad es. confronto tra numero di consensi creati, cronologia degli account collegati allo stesso indirizzo email o allo stesso dispositivo, frequenza di registrazioni ed eliminazioni account) per individuare pattern anomali o potenzialmente fraudolenti.</li>
+        <li>In caso di abuso o sospetto abuso, TrueConsent può: (i) bloccare temporaneamente o definitivamente la creazione di nuovi consensi; (ii) impedire l’attivazione di nuovi piani, inclusa la prova gratuita; (iii) sospendere o chiudere l’account interessato, nel rispetto della normativa applicabile.</li>
+        <li>L’immutabilità dell’indirizzo email associato all’account contribuisce a garantire che ogni prova gratuita sia effettivamente limitata a un singolo indirizzo email e a rendere più trasparente la tracciabilità probatoria dei consensi.</li>
+      </ul>
+
+      <h3>2.2.6 Requisiti di connessione e funzionamento offline</h3>
+      <ul>
+        <li>TrueConsent è progettata per funzionare in modalità connessa: la creazione e la modifica dei consensi, l’invio di richieste di revoca, la gestione o il cambio del piano, l’eliminazione dell’account e le altre operazioni che incidono sui diritti delle parti vengono eseguite solo quando i server TrueConsent confermano l’operazione.</li>
+        <li>Se il dispositivo è offline o in modalità aereo, l’app può bloccare temporaneamente tali azioni e mostrare un messaggio che invita a ripristinare la connessione. In questi casi, il consenso non viene creato, modificato o revocato finché l’operazione non è stata ricevuta e registrata dai server.</li>
+        <li>Gli eventi ricevuti dall’altra parte (ad esempio una revoca inviata da B) vengono applicati non appena il dispositivo torna online e l’app si sincronizza con i server.</li>
+        <li>In caso di discrepanza tra quanto visualizzato temporaneamente nell’app (ad es. durante un periodo offline) e i dati conservati sui server, fanno fede i log e i timestamp registrati sui sistemi TrueConsent.</li>
       </ul>
     </div>
 
@@ -363,6 +378,7 @@
       <li>eliminazione di un account quando sono presenti consensi attivi collegati.</li>
     </ul>
     <p>Ogni email contiene l’ID del consenso e le indicazioni sui tempi di disponibilità dei file, in coerenza con le regole sopra descritte.</p>
+    <p class="note">In presenza di problemi di connessione del dispositivo, la ricezione di email e notifiche push può avvenire con un lieve ritardo, ma la data/ora rilevante per la gestione del consenso e dei termini di 7 giorni resta quella registrata dai server TrueConsent.</p>
 
     <h2>7. Ruolo di TrueConsent e limiti di responsabilità</h2>
     <ul>
@@ -416,6 +432,11 @@
       <li><b>Counterpart (Party B)</b></li>
     </ul>
     <p>Consent may be <b>fixed-term</b> (with an end date) or <b>open-ended</b> (without a preset end date) and may include biometric data (signature, selfie, audio recording) as evidence of the parties’ identity.</p>
+
+    <h3>1.1 Account, email address, and user identification</h3>
+    <p>The email address entered during registration is used as the main identifier of the account and as the stable reference for all communications (service emails, consent notifications, plan management).</p>
+    <p>For security, evidentiary, and abuse-prevention reasons, the email address associated with an account cannot be changed from within the app. If a user wishes to use a different email address, they must delete the existing account and register a new account with the new address.</p>
+    <p>The user is responsible for the accuracy of the email address provided at registration and for maintaining access to it, as this address will be used for all evidentiary communications (e.g. sending consents, revocation notifications, account deletion confirmations).</p>
 
     <h2>2. Definitions</h2>
     <ul>
@@ -471,7 +492,17 @@
       <h3>2.2.5 Anti-circumvention and abuse prevention</h3>
       <ul>
         <li>Attempting to bypass plan limits (especially the free trial) via repeated registrations or fraudulent behavior is prohibited.</li>
-        <li>In case of abuse or suspected abuse, TrueConsent may restrict features, suspend the account, or request additional verification, in accordance with applicable law.</li>
+        <li>TrueConsent may use automated checks and technical verifications (e.g., comparing the number of consents created, history of accounts linked to the same email address or device, frequency of account registrations and deletions) to identify anomalous or potentially fraudulent patterns.</li>
+        <li>In case of abuse or suspected abuse, TrueConsent may: (i) temporarily or permanently block the creation of new consents; (ii) prevent the activation of new plans, including the free trial; (iii) suspend or close the affected account, in accordance with applicable law.</li>
+        <li>The immutability of the email address associated with the account helps ensure that each free trial is effectively limited to a single email address and makes consent traceability more transparent for evidentiary purposes.</li>
+      </ul>
+
+      <h3>2.2.6 Connection requirements and offline operation</h3>
+      <ul>
+        <li>TrueConsent is designed to work in connected mode: creating and modifying consents, sending revocation requests, managing or changing the plan, deleting the account, and other operations affecting the parties’ rights are performed only when TrueConsent’s servers confirm the operation.</li>
+        <li>If the device is offline or in airplane mode, the app may temporarily block such actions and display a message asking the user to restore the connection. In these cases, the consent is not created, modified, or revoked until the operation has been received and recorded by the servers.</li>
+        <li>Events received from the other party (for example a revocation sent by B) are applied as soon as the device goes back online and the app synchronizes with the servers.</li>
+        <li>In case of discrepancies between what is temporarily displayed in the app (e.g., during an offline period) and the data stored on the servers, the logs and timestamps recorded on TrueConsent systems prevail.</li>
       </ul>
     </div>
 
@@ -527,7 +558,7 @@
       <ul>
         <li>From termination, a <b>7-day</b> period starts during which consent files can be downloaded.</li>
         <li>After 7 days, biometric files are deleted from TrueConsent systems.</li>
-        <li>The PDF hash, key metadata, and technical logs (e.g., timestamps) may be retained for up to <b>365 days</b> for evidentiary and security purposes, then deleted or anonymized.</li>
+        <li>The PDF hash, key metadata, and technical logs (e.g., timestamps) may be retained for up to <b>365 days</b> for evidentiary and security purposes, then deleted or anonymised.</li>
       </ul>
     </div>
 
@@ -591,6 +622,7 @@
       <li>account deletion when active consents are connected.</li>
     </ul>
     <p>Each email includes the consent ID and file availability timing consistent with the rules above.</p>
+    <p class="note">If there are connection issues on the device, emails and push notifications may be received with a slight delay, but the relevant date/time for consent management and the 7-day period is the one recorded by TrueConsent’s servers.</p>
 
     <h2>7. TrueConsent role and limitation of liability</h2>
     <ul>
@@ -644,6 +676,11 @@
       <li><b>Contrepartie (Partie B)</b></li>
     </ul>
     <p>Le consentement peut être <b>à durée déterminée</b> (avec une date de fin) ou <b>à durée indéterminée</b> (sans date de fin prédéfinie) et peut inclure des données biométriques (signature, selfie, enregistrement audio) comme preuve de l’identité des parties.</p>
+
+    <h3>1.1 Compte, adresse e-mail et identification de l’utilisateur</h3>
+    <p>L’adresse e-mail saisie lors de l’inscription est utilisée comme identifiant principal du compte et comme référence stable pour toutes les communications (e-mails de service, notifications relatives aux consentements, gestion de l’offre).</p>
+    <p>Pour des raisons de sécurité, de valeur probatoire et de prévention des abus, l’adresse e-mail associée à un compte ne peut pas être modifiée depuis l’application. Si l’utilisateur souhaite utiliser une autre adresse e-mail, il devra supprimer le compte existant et créer un nouveau compte avec la nouvelle adresse.</p>
+    <p>L’utilisateur est responsable de l’exactitude de l’adresse e-mail fournie lors de l’inscription et du maintien de l’accès à cette adresse, qui sera utilisée pour toutes les communications à valeur probatoire (par ex. envoi des consentements, notifications de révocation, confirmations de suppression de compte).</p>
 
     <h2>2. Définitions</h2>
     <ul>
@@ -699,7 +736,17 @@
       <h3>2.2.5 Interdiction de contournement et prévention des abus</h3>
       <ul>
         <li>Il est interdit de contourner les limites des offres (notamment l’essai) via des inscriptions répétées ou tout comportement frauduleux.</li>
-        <li>En cas d’abus ou de suspicion d’abus, TrueConsent peut limiter les fonctionnalités, suspendre le compte ou demander des vérifications supplémentaires, conformément à la loi applicable.</li>
+        <li>TrueConsent peut utiliser des contrôles automatiques et des vérifications techniques (ex. comparaison entre le nombre de consentements créés, l’historique des comptes liés à la même adresse e-mail ou au même appareil, fréquence des inscriptions et suppressions de compte) pour détecter des schémas anormaux ou potentiellement frauduleux.</li>
+        <li>En cas d’abus ou de suspicion d’abus, TrueConsent peut : (i) bloquer temporairement ou définitivement la création de nouveaux consentements ; (ii) empêcher l’activation de nouveaux plans, y compris l’essai gratuit ; (iii) suspendre ou fermer le compte concerné, conformément à la loi applicable.</li>
+        <li>L’immutabilité de l’adresse e-mail associée au compte contribue à garantir que chaque essai gratuit soit effectivement limité à une seule adresse e-mail et à rendre plus transparente la traçabilité probatoire des consentements.</li>
+      </ul>
+
+      <h3>2.2.6 Exigences de connexion et fonctionnement hors ligne</h3>
+      <ul>
+        <li>TrueConsent est conçu pour fonctionner en mode connecté : la création et la modification des consentements, l’envoi des demandes de révocation, la gestion ou la modification de l’offre, la suppression du compte et les autres opérations impactant les droits des parties ne sont exécutées que lorsque les serveurs TrueConsent confirment l’opération.</li>
+        <li>Si l’appareil est hors ligne ou en mode avion, l’app peut bloquer temporairement ces actions et afficher un message invitant à rétablir la connexion. Dans ces cas, le consentement n’est pas créé, modifié ou révoqué tant que l’opération n’a pas été reçue et enregistrée par les serveurs.</li>
+        <li>Les événements reçus de l’autre partie (par ex. une révocation envoyée par B) sont appliqués dès que l’appareil revient en ligne et que l’app se synchronise avec les serveurs.</li>
+        <li>En cas de divergence entre ce qui est temporairement affiché dans l’app (par ex. pendant une période hors ligne) et les données conservées sur les serveurs, ce sont les journaux (logs) et les horodatages des systèmes TrueConsent qui font foi.</li>
       </ul>
     </div>
 
@@ -819,6 +866,7 @@
       <li>suppression de compte lorsqu’il existe des consentements actifs liés.</li>
     </ul>
     <p>Chaque e-mail contient l’ID du consentement et les informations sur la disponibilité des fichiers, conformément aux règles ci-dessus.</p>
+    <p class="note">En cas de problèmes de connexion de l’appareil, la réception des e-mails et des notifications push peut être légèrement différée, mais la date/heure pertinente pour la gestion du consentement et de la fenêtre de 7 jours reste celle enregistrée par les serveurs TrueConsent.</p>
 
     <h2>7. Rôle de TrueConsent et limitation de responsabilité</h2>
     <ul>
@@ -873,6 +921,11 @@
     </ul>
     <p>El consentimiento puede ser <b>de duración determinada</b> (con fecha de fin) o <b>indeterminado</b> (sin fecha de fin preestablecida) y puede incluir datos biométricos (firma, selfie, grabación de audio) como prueba de identidad de las partes.</p>
 
+    <h3>1.1 Cuenta, dirección de correo electrónico e identificación del usuario</h3>
+    <p>La dirección de correo electrónico introducida en la fase de registro se utiliza como identificador principal de la cuenta y como referencia estable para todas las comunicaciones (correos de servicio, notificaciones sobre los consentimientos, gestión del plan).</p>
+    <p>Por razones de seguridad, de valor probatorio y de prevención de abusos, la dirección de correo electrónico asociada a una cuenta no puede modificarse desde la app. Si el usuario desea utilizar otra dirección, deberá eliminar la cuenta existente y registrar una nueva cuenta con la nueva dirección.</p>
+    <p>El usuario es responsable de la corrección del correo electrónico introducido en la fase de registro y de mantener el acceso a dicha cuenta, ya que esta dirección se utilizará para todas las comunicaciones probatorias (por ejemplo, envío de consentimientos, notificaciones de revocación, confirmaciones de eliminación de cuenta).</p>
+
     <h2>2. Definiciones</h2>
     <ul>
       <li><b>Consentimiento</b>: acuerdo digital registrado mediante TrueConsent entre A y B.</li>
@@ -919,15 +972,25 @@
 
       <h3>2.2.4 Activación, renovaciones y pagos</h3>
       <ul>
-        <li>Los planes de pago se consideran activos solo tras la confirmación del compra/pago.</li>
+        <li>Los planes de pago se consideran activos solo tras la confirmación de la compra/pago.</li>
         <li>Las condiciones económicas (precios, impuestos, facturación) se muestran en la app durante la compra y/o en comunicaciones oficiales.</li>
         <li>Los pagos pueden gestionarse mediante terceros; TrueConsent no almacena los datos completos de la tarjeta si la transacción se procesa externamente.</li>
       </ul>
 
       <h3>2.2.5 Prohibición de elusión y prevención de abusos</h3>
       <ul>
-        <li>Está prohibido intentar eludir límites (especialmente la prueba) mediante registros repetidos u otras conductas fraudulentas.</li>
-        <li>En caso de abuso o sospecha de abuso, TrueConsent puede limitar funciones, suspender la cuenta o solicitar verificaciones adicionales, conforme a la normativa aplicable.</li>
+        <li>Está prohibido intentar eludir los límites de los planes (especialmente la prueba gratuita) mediante registros repetidos u otras conductas fraudulentas.</li>
+        <li>TrueConsent puede utilizar controles automáticos y verificaciones técnicas (p. ej., comparación entre el número de consentimientos creados, historial de cuentas vinculadas al mismo correo o dispositivo, frecuencia de registros y eliminaciones de cuenta) para identificar patrones anómalos o potencialmente fraudulentos.</li>
+        <li>En caso de abuso o sospecha de abuso, TrueConsent puede: (i) bloquear temporal o definitivamente la creación de nuevos consentimientos; (ii) impedir la activación de nuevos planes, incluida la prueba gratuita; (iii) suspender o cerrar la cuenta afectada, conforme a la normativa aplicable.</li>
+        <li>La inmutabilidad de la dirección de correo electrónico asociada a la cuenta contribuye a asegurar que cada prueba gratuita se limite realmente a una sola dirección y a hacer más transparente la trazabilidad probatoria de los consentimientos.</li>
+      </ul>
+
+      <h3>2.2.6 Requisitos de conexión y funcionamiento sin conexión</h3>
+      <ul>
+        <li>TrueConsent está diseñada para funcionar en modo conectado: la creación y modificación de consentimientos, el envío de solicitudes de revocación, la gestión o cambio de plan, la eliminación de la cuenta y otras operaciones que afectan a los derechos de las partes solo se ejecutan cuando los servidores de TrueConsent confirman la operación.</li>
+        <li>Si el dispositivo está sin conexión o en modo avión, la app puede bloquear temporalmente estas acciones y mostrar un mensaje indicando que se restablezca la conexión. En estos casos, el consentimiento no se crea, modifica ni revoca hasta que la operación se reciba y registre en los servidores.</li>
+        <li>Los eventos recibidos de la otra parte (por ejemplo, una revocación enviada por B) se aplican en cuanto el dispositivo vuelve a estar en línea y la app se sincroniza con los servidores.</li>
+        <li>En caso de discrepancia entre lo que se muestra temporalmente en la app (por ejemplo, durante un periodo sin conexión) y los datos conservados en los servidores, prevalecen los registros y las marcas de tiempo almacenados en los sistemas de TrueConsent.</li>
       </ul>
     </div>
 
@@ -1046,12 +1109,21 @@
       <li>caducidad natural de un consentimiento determinado;</li>
       <li>eliminación de cuenta cuando existen consentimientos activos vinculados.</li>
     </ul>
+    <p>Cada email contiene el ID del consentimiento y la información sobre la disponibilidad de archivos, de acuerdo con las reglas anteriores.</p>
+    <p class="note">En caso de problemas de conexión del dispositivo, la recepción de correos y notificaciones push puede sufrir ligeros retrasos, pero la fecha/hora relevante para la gestión del consentimiento y del plazo de 7 días será la registrada por los servidores de TrueConsent.</p>
 
     <h2>7. Rol de TrueConsent y limitación de responsabilidad</h2>
     <ul>
       <li>TrueConsent no es notario ni autoridad pública; es una herramienta tecnológica.</li>
       <li>El valor probatorio depende de la corrección de datos, consistencia de logs y, si procede, peritajes.</li>
-      <li>El usuario es responsable de conservar copias descargadas si las necesita, proteger credenciales y usar el servicio conforme a la ley.</li>
+      <li>TrueConsent no interviene en el contenido de los consentimientos ni en la relación entre las partes.</li>
+      <li>El usuario es responsable de:
+        <ul>
+          <li>conservar copias descargadas si las necesita como prueba;</li>
+          <li>proteger sus credenciales;</li>
+          <li>usar el servicio conforme a la ley y a los derechos de terceros.</li>
+        </ul>
+      </li>
     </ul>
 
     <h2>8. Privacidad</h2>
@@ -1084,6 +1156,11 @@
       <li><b>Gegenpartei (Partei B)</b></li>
     </ul>
     <p>Die Einwilligung kann <b>befristet</b> (mit Enddatum) oder <b>unbefristet</b> (ohne vordefiniertes Enddatum) sein und kann biometrische Daten (Unterschrift, Selfie, Audioaufnahme) als Identitätsnachweis enthalten.</p>
+
+    <h3>1.1 Konto, E-Mail-Adresse und Nutzeridentifikation</h3>
+    <p>Die bei der Registrierung angegebene E-Mail-Adresse wird als Hauptkennzeichen des Kontos und als fester Bezugspunkt für sämtliche Mitteilungen verwendet (Servicemails, Benachrichtigungen zu Einwilligungen, Planverwaltung).</p>
+    <p>Aus Gründen der Sicherheit, Beweisführung und Missbrauchsprävention kann die mit einem Konto verknüpfte E-Mail-Adresse nicht innerhalb der App geändert werden. Möchte ein Nutzer eine andere E-Mail-Adresse verwenden, muss er das bestehende Konto löschen und ein neues Konto mit der neuen Adresse registrieren.</p>
+    <p>Der Nutzer ist für die Richtigkeit der bei der Registrierung angegebenen E-Mail-Adresse und den Zugang zu diesem Postfach verantwortlich, da diese Adresse für alle beweisrelevanten Mitteilungen genutzt wird (z. B. Zusendung von Einwilligungen, Widerrufsbenachrichtigungen, Bestätigungen der Kontolöschung).</p>
 
     <h2>2. Definitionen</h2>
     <ul>
@@ -1139,7 +1216,17 @@
       <h3>2.2.5 Umgehungsverbot und Missbrauchsprävention</h3>
       <ul>
         <li>Das Umgehen von Planlimits (insbesondere der kostenlosen Testphase) durch wiederholte Registrierungen oder betrügerisches Verhalten ist untersagt.</li>
-        <li>Bei Missbrauch oder Verdacht kann TrueConsent Funktionen einschränken, Konten sperren oder zusätzliche Prüfungen anfordern, im Rahmen des geltenden Rechts.</li>
+        <li>TrueConsent kann automatisierte Prüfungen und technische Kontrollen einsetzen (z. B. Vergleich der Anzahl erstellter Einwilligungen, Verlauf von Konten mit derselben E-Mail-Adresse oder demselben Gerät, Häufigkeit von Registrierungen und Kontolöschungen), um auffällige oder potenziell betrügerische Muster zu erkennen.</li>
+        <li>Bei Missbrauch oder Missbrauchsverdacht kann TrueConsent: (i) die Erstellung neuer Einwilligungen vorübergehend oder dauerhaft sperren; (ii) die Aktivierung neuer Pläne einschließlich des kostenlosen Tests verhindern; (iii) das betroffene Konto sperren oder schließen, im Rahmen des geltenden Rechts.</li>
+        <li>Die Unveränderbarkeit der mit dem Konto verknüpften E-Mail-Adresse trägt dazu bei, dass jeder kostenlose Test tatsächlich auf eine einzelne E-Mail-Adresse begrenzt ist und die Nachvollziehbarkeit der Einwilligungen zu Beweiszwecken verbessert wird.</li>
+      </ul>
+
+      <h3>2.2.6 Anforderungen an die Verbindung und Offline-Betrieb</h3>
+      <ul>
+        <li>TrueConsent ist für den Betrieb im Online-Modus konzipiert: Erstellung und Änderung von Einwilligungen, Versand von Widerrufsanfragen, Verwaltung oder Wechsel des Plans, Kontolöschung und andere Vorgänge, die die Rechte der Parteien betreffen, werden nur ausgeführt, wenn die TrueConsent-Server den Vorgang bestätigen.</li>
+        <li>Ist das Gerät offline oder im Flugmodus, kann die App diese Aktionen vorübergehend sperren und eine Meldung anzeigen, die zur Wiederherstellung der Verbindung auffordert. In diesen Fällen wird die Einwilligung erst erstellt, geändert oder widerrufen, wenn der Vorgang von den Servern empfangen und gespeichert wurde.</li>
+        <li>Ereignisse, die von der anderen Partei stammen (z. B. ein von B gesendeter Widerruf), werden angewendet, sobald das Gerät wieder online ist und die App mit den Servern synchronisiert.</li>
+        <li>Bei Abweichungen zwischen der temporären Anzeige in der App (z. B. während einer Offline-Phase) und den auf den Servern gespeicherten Daten sind die Protokolle (Logs) und Zeitstempel der TrueConsent-Systeme maßgeblich.</li>
       </ul>
     </div>
 
@@ -1251,6 +1338,7 @@
 
     <h2>6. E-Mails und Benachrichtigungen</h2>
     <p>TrueConsent sendet E-Mails und Push-Benachrichtigungen zu wichtigen Ereignissen (Erstellung, Widerrufsanfrage, Ergebnis, Ablauf, Kontolöschung bei aktiven Einwilligungen).</p>
+    <p class="note">Bei Verbindungsproblemen des Geräts kann der Empfang von E-Mails und Push-Benachrichtigungen leicht verzögert erfolgen; maßgeblich für die Verwaltung der Einwilligung und die 7-Tage-Frist ist jedoch stets das Datum/die Uhrzeit, die von den TrueConsent-Servern protokolliert wird.</p>
 
     <h2>7. Rolle von TrueConsent und Haftungsbeschränkung</h2>
     <p>TrueConsent ist kein Notar/keine Behörde, sondern ein technisches Tool. Beweiswert hängt u. a. von Datenkorrektheit, Logs und ggf. Gutachten ab. Nutzer sind verantwortlich für lokale Aufbewahrung, Zugangsdaten und rechtmäßige Nutzung.</p>
