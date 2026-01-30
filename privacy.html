@@ -591,7 +591,7 @@
     <div class="lang-label">Versión en español</div>
 
     <h1>Política de Privacidad de TrueConsent</h1>
-    <p>La presente política describe cómo la aplicación <b>TrueConsent</b> trata los datos personales de los usuarios de conformidad con el Reglamento (UE) 2016/679 (“RGPD”).</p>
+    <p>La presente política describe cómo la aplicación <b>TrueConsent</b> trata los datos pessoais de los usuarios de conformidad con el Reglamento (UE) 2016/679 (“RGPD”).</p>
 
     <h2>1. Responsable del tratamiento</h2>
     <p>El responsable del tratamiento de los datos personales es la persona indicada en la información de contacto de la app TrueConsent y en las comunicaciones oficiales enviadas por correo electrónico.</p>
@@ -873,6 +873,16 @@
         return supported.includes(h) ? h : "it";
       }
 
+      function getLangFromQuery() {
+        try {
+          const params = new URLSearchParams(window.location.search || "");
+          const q = (params.get("lang") || "").toLowerCase().trim();
+          return supported.includes(q) ? q : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
       function setActiveLang(lang) {
         // bottoni
         document.querySelectorAll("[data-langbtn]").forEach(btn => {
@@ -922,8 +932,13 @@
         applyFromHash(true);
       });
 
-      // avvio: se arrivi con #en etc, scorre; se senza hash, resta in alto
+      // avvio: gestisce prima ?lang=xx, poi eventuale hash, altrimenti resta in alto (IT)
       document.addEventListener("DOMContentLoaded", function () {
+        const qLang = getLangFromQuery();
+        if (qLang && window.location.hash !== "#" + qLang) {
+          window.location.hash = "#" + qLang; // scatena hashchange + scroll
+          return;
+        }
         const hasHash = !!window.location.hash;
         applyFromHash(hasHash);
       });
