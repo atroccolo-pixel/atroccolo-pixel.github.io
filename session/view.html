@@ -11,42 +11,35 @@
       font-family: Arial, sans-serif;
       background: #fafafa;
       padding: 20px;
-      font-size: 13px; /* ridotto da 15px per far stare più contenuto in 1 pagina */
+      font-size: 15px;
     }
-    h2 { 
-      color: #6c63ff; 
-      margin-top: 0;
-      margin-bottom: 10px;
-    }
-    .section { 
-      margin-bottom: 12px; /* ridotto da 18px */
-    }
+    h2 { color: #6c63ff; }
+    .section { margin-bottom: 18px; }
     button {
       background-color: #6c63ff;
       color: #fff;
       border: none;
       border-radius: 6px;
-      padding: 8px 14px; /* leggermente ridotto */
+      padding: 10px 18px;
       cursor: pointer;
-      margin: 8px 6px 16px 0; /* leggermente ridotto */
-      font-size: 13px; /* ridotto da 15px */
+      margin: 10px 8px 20px 0;
+      font-size: 15px;
     }
     button:hover { background-color: #5548e2; }
     img {
-      max-width: 180px; /* ridotto da 220px */
-      max-height: 160px; /* aggiunto limite verticale */
+      max-width: 220px;
       border: 1px solid #ddd;
-      padding: 3px; /* ridotto da 4px */
+      padding: 4px;
       border-radius: 6px;
       cursor: pointer;
       transition: transform 0.2s;
     }
     img:hover { transform: scale(1.02); }
     audio {
-      margin-top: 6px; /* ridotto */
+      margin-top: 10px;
       display: block;
       width: 100%;
-      min-height: 44px; /* ridotto da 60px */
+      min-height: 60px;
       background: #f9f9f9;
       border: 1px solid #ccc;
       border-radius: 6px;
@@ -70,52 +63,36 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.6);
     }
     .footer {
-      margin-top: 28px; /* ridotto da 40px */
-      font-size: 12px; /* leggermente ridotto */
+      margin-top: 40px;
+      font-size: 13px;
       color: #555;
       border-top: 1px solid #ddd;
-      padding-top: 14px; /* ridotto */
-      line-height: 1.5;
+      padding-top: 20px;
+      line-height: 1.6;
     }
     .expired {
       color: #ff4c4c;
       background: #ffecec;
       border: 1px solid #ffb3b3;
-      padding: 10px; /* ridotto */
+      padding: 12px;
       border-radius: 6px;
-      margin-bottom: 14px; /* ridotto */
-      font-size: 12px; /* più compatto */
+      margin-bottom: 20px;
     }
     .warning {
       color: #8a6d3b;
       background: #fff3cd;
       border: 1px solid #ffeeba;
-      padding: 10px;
+      padding: 12px;
       border-radius: 6px;
-      margin-bottom: 14px;
-      font-size: 12px;
+      margin-bottom: 20px;
     }
     .info {
       color: #00529B;
       background: #BDE5F8;
       border: 1px solid #9ECDEB;
-      padding: 10px;
+      padding: 12px;
       border-radius: 6px;
-      margin-bottom: 14px;
-      font-size: 12px;
-    }
-
-    /* Ottimizzazione specifica per la stampa/PDF */
-    @media print {
-      body {
-        font-size: 12px;
-      }
-      .section {
-        margin-bottom: 10px;
-      }
-      button {
-        display: none;
-      }
+      margin-bottom: 20px;
     }
   </style>
 </head>
@@ -194,7 +171,7 @@
         "Questo consenso digitale è stato generato tramite la piattaforma TrueConsent.<br>" +
         "La sua validità è regolata esclusivamente dalla durata indicata al momento della creazione " +
         "e dalle condizioni di revoca previste dai " +
-        '<a href=\"https://atroccolo-pixel.github.io/terms.html\" target=\"_blank\">Termini e Condizioni ufficiali</a>.<br>' +
+        '<a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Termini e Condizioni ufficiali</a>.<br>' +
         "Scaricare e conservare copia di questo consenso consente di dimostrare in futuro " +
         "l’autorizzazione effettiva concessa in questa data, anche se l’account o i file originali " +
         "dovessero essere rimossi.<br>" +
@@ -230,7 +207,7 @@
         "This digital consent was generated through the TrueConsent platform.<br>" +
         "Its validity is governed solely by the duration set at creation time " +
         "and by the revocation conditions defined in the " +
-        '<a href=\"https://atroccolo-pixel.github.io/terms.html\" target=\"_blank\">official Terms and Conditions</a>.<br>' +
+        '<a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">official Terms and Conditions</a>.<br>' +
         "Downloading and keeping a copy of this consent allows you to prove the authorization " +
         "given on this date, even if the account or the original files are later removed.<br>" +
         "TrueConsent is a recording and notification system, not a permanent archive.<br>" +
@@ -266,7 +243,7 @@
         "Ce consentement numérique a été généré via la plateforme TrueConsent.<br>" +
         "Sa validité est régie uniquement par la durée définie au moment de la création " +
         "et par les conditions de révocation prévues dans les " +
-        '<a href=\"https://atroccolo-pixel.github.io/terms.html\" target=\"_blank\">Conditions générales officielles</a>.<br>' +
+        '<a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Conditions générales officielles</a>.<br>' +
         "Télécharger et conserver une copie de ce consentement permet de démontrer ultérieurement " +
         "l’autorisation effectivement donnée à cette date, même si le compte ou les fichiers originaux " +
         "sont ensuite supprimés.<br>" +
@@ -303,7 +280,7 @@
         "Este consentimiento digital ha sido generado a través de la plataforma TrueConsent.<br>" +
         "Su validez se rige exclusivamente por la duración fijada en el momento de la creación " +
         "y por las condiciones de revocación previstas en los " +
-        '<a href=\"https://atroccolo-pixel.github.io/terms.html\" target=\"_blank\">Términos y Condiciones oficiales</a>.<br>' +
+        '<a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">Términos y Condiciones oficiales</a>.<br>' +
         "Descargar y conservar una copia de este consentimiento le permite demostrar en el futuro " +
         "la autorización efectivamente otorgada en esta fecha, incluso si la cuenta o los archivos originales " +
         "fueran eliminados posteriormente.<br>" +
@@ -340,7 +317,7 @@
         "Diese digitale Einwilligung wurde über die Plattform TrueConsent erstellt.<br>" +
         "Ihre Gültigkeit wird ausschließlich durch die bei der Erstellung festgelegte Dauer " +
         "und durch die Widerrufsbedingungen in den " +
-        '<a href=\"https://atroccolo-pixel.github.io/terms.html\" target=\"_blank\">offiziellen Allgemeinen Geschäftsbedingungen</a> geregelt.<br>' +
+        '<a href="https://atroccolo-pixel.github.io/terms.html" target="_blank">offiziellen Allgemeinen Geschäftsbedingungen</a> geregelt.<br>' +
         "Das Herunterladen und Aufbewahren einer Kopie dieser Einwilligung ermöglicht es, " +
         "die tatsächlich an diesem Datum erteilte Zustimmung nachzuweisen, auch wenn das Konto " +
         "oder die Originaldateien später gelöscht werden sollten.<br>" +
