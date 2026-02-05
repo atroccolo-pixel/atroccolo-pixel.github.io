@@ -94,11 +94,6 @@
       border-radius: 6px;
       margin-bottom: 20px;
     }
-
-    /* 🔹 SOLO per la generazione PDF (Chrome headless / Puppeteer) */
-    body.pdf-mode {
-      zoom: 0.65; /* riduce tutto al 65% nel PDF, la view normale resta identica */
-    }
   </style>
 </head>
 
@@ -142,12 +137,6 @@
   const url = new URL(window.location.href);
   const userId = url.searchParams.get("userId");
   const sessionId = url.searchParams.get("sessionId");
-
-  // 🔹 Se la pagina è aperta da Chrome headless (Puppeteer per il PDF)
-  // applichiamo la classe che riduce tutto il layout SOLO nel PDF.
-  if (navigator.userAgent && navigator.userAgent.indexOf("HeadlessChrome") !== -1) {
-    document.body.classList.add("pdf-mode");
-  }
 
   // ==============================
   // 🔠 Testi IT / EN / FR / ES / DE
